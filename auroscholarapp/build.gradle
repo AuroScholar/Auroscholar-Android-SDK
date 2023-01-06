@@ -1,0 +1,123 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply from: "dependencies.gradle"
+apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'maven-publish'
+
+android {
+    compileSdkVersion 32
+    ndkVersion '21.1.6352462'
+
+    buildTypes {
+        release {
+          //  multiDexEnabled true
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug{}
+        uat{}
+    }
+
+    dataBinding {
+        enabled = true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    lintOptions {
+        abortOnError false
+    }
+    android {
+        compileOptions {
+            sourceCompatibility = '1.8'
+            targetCompatibility = '1.8'
+        }
+        dataBinding {
+            enabled = true
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation supportDependencies.values()
+    implementation networkDependencies.values()
+    implementation googleDependencies.values()
+    api googleDependencies.dagger
+    implementation 'com.google.dagger:dagger:2.x'
+    implementation 'com.google.dagger:dagger-compiler:2.x'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.4.0-alpha02'
+
+    implementation 'com.instabug.library:instabug:11.5.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'io.branch.sdk.android:library:5.2.6'
+    implementation 'com.google.android.gms:play-services-ads-identifier:17.1.0+'
+    implementation 'androidx.browser:browser:1.0.0'
+    implementation 'androidx.navigation:navigation-runtime:2.3.0'
+    implementation 'androidx.navigation:navigation-ui:2.3.0'
+    implementation 'androidx.navigation:navigation-fragment:2.3.0'
+    implementation 'me.toptas.fancyshowcase:fancyshowcaseview:1.3.0'
+    implementation 'com.robinhood.ticker:ticker:2.0.2'
+    implementation 'com.android.installreferrer:installreferrer:2.2'
+    implementation 'com.google.firebase:firebase-database:20.0.6'
+    annotationProcessor googleDependencies.daggerCompiler
+    //Rx Dependencies
+    //api rxDependencies.rx_android
+    implementation DatabaseDependencies.roomRuntime
+    annotationProcessor DatabaseDependencies.roomCompiler
+    implementation DatabaseDependencies.lifecyleRuntime
+    implementation DatabaseDependencies.lifecyleExtension
+    implementation TruecallerDependencies.truecaller
+    implementation FacebookDependencies.facebook
+    implementation OtpDependencies.otpdependencies
+    implementation FirebaseDependencies.values()
+    implementation otherDependencies.glide
+    annotationProcessor otherDependencies.glideCompiler
+    implementation otherDependencies.shimmer
+    implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
+    implementation 'com.intuit.sdp:sdp-android:1.0.6'
+    implementation 'com.google.android.gms:play-services-vision:20.1.3'
+    implementation 'com.google.android.gms:play-services-vision-common:19.1.3'
+    implementation 'com.google.android.gms:play-services-vision-image-label:18.1.1'
+    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:11.1.0'
+    implementation CrashLyticsDependencies.crashlytics
+    implementation 'com.google.firebase:firebase-ml-vision:'
+    implementation platform('com.google.firebase:firebase-bom:28.0.1')
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+    implementation 'com.github.dhaval2404:imagepicker:2.1'
+    implementation 'com.github.pwittchen:reactivenetwork-rx2:3.0.2'
+    def camerax_version = '1.0.0-alpha06'
+    implementation "androidx.camera:camera-core:${camerax_version}"
+    implementation "androidx.camera:camera-camera2:${camerax_version}"
+    implementation 'androidx.core:core-ktx:1.8.0'
+
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'io.github.chaosleung:pinview:1.4.4'
+    implementation 'com.github.fueled:snippety:1.1.1'
+    implementation 'com.google.android.material:material:1.7.0'
+    annotationProcessor 'com.gabrielittner.auto.value:auto-value-with:1.1.1'
+}
+
+apply plugin: 'com.google.gms.google-services'
+
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.github.AuroScholar'
+                artifactId = 'auroscholar-android-sdk'
+                version = '1.0'
+            }
+        }
+    }
+}
