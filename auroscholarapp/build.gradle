@@ -65,6 +65,8 @@ dependencies {
     implementation 'com.robinhood.ticker:ticker:2.0.2'
     implementation 'com.android.installreferrer:installreferrer:2.2'
     implementation 'com.google.firebase:firebase-database:20.0.6'
+    implementation 'com.github.aabhasr1:OtpView:v1.1.2'
+    implementation 'com.google.firebase:firebase-ml-vision:24.1.0'
     annotationProcessor googleDependencies.daggerCompiler
     //Rx Dependencies
     //api rxDependencies.rx_android
@@ -74,7 +76,6 @@ dependencies {
     implementation DatabaseDependencies.lifecyleExtension
     implementation TruecallerDependencies.truecaller
     implementation FacebookDependencies.facebook
-    implementation OtpDependencies.otpdependencies
     implementation FirebaseDependencies.values()
     implementation otherDependencies.glide
     annotationProcessor otherDependencies.glideCompiler
@@ -87,7 +88,6 @@ dependencies {
     implementation 'com.google.android.gms:play-services-vision-image-label:18.1.1'
     implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:11.1.0'
     implementation CrashLyticsDependencies.crashlytics
-    implementation 'com.google.firebase:firebase-ml-vision:'
     implementation platform('com.google.firebase:firebase-bom:28.0.1')
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
     implementation 'com.github.dhaval2404:imagepicker:2.1'
@@ -114,9 +114,10 @@ afterEvaluate {
         publications {
             release(MavenPublication) {
                 from components.release
+
                 groupId = 'com.github.AuroScholar'
                 artifactId = 'auroscholar-android-sdk'
-                version = '1.0'
+                version = '1.1'
             }
         }
     }

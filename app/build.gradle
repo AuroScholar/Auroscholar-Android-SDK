@@ -1,18 +1,9 @@
-//plugins {
-//    id 'com.android.application'
-////    id 'com.google.gms.google-services'
-////    id 'com.google.firebase.crashlytics'
-//    id 'kotlin-android'
-//    id 'kotlin-android-extensions'
-//
-//}
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'maven-publish'
-apply from: "dependencies.gradle"
 
 android {
     compileSdkVersion 32
@@ -64,8 +55,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'com.google.android.material:material:1.7.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-
     implementation project(':auroscholarapp')
+
 }
 
 
