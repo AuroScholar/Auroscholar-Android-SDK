@@ -2,10 +2,13 @@ package com.auro.application.home.presentation.view.fragment;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +18,8 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -36,26 +41,44 @@ import com.auro.application.core.database.AuroAppPref;
 import com.auro.application.core.database.PrefModel;
 import com.auro.application.databinding.StudentKycInfoLayoutBinding;
 import com.auro.application.home.data.model.DashboardResModel;
+import com.auro.application.home.data.model.Details;
+import com.auro.application.home.data.model.FetchStudentPrefReqModel;
 import com.auro.application.home.data.model.KYCDocumentDatamodel;
+import com.auro.application.home.data.model.ParentProfileDataModel;
 import com.auro.application.home.data.model.response.InstructionsResModel;
 import com.auro.application.home.data.model.response.StudentKycStatusResModel;
 import com.auro.application.home.data.model.signupmodel.InstructionModel;
 import com.auro.application.home.presentation.view.activity.DashBoardMainActivity;
 import com.auro.application.home.presentation.view.activity.HomeActivity;
+import com.auro.application.home.presentation.view.activity.ParentProfileActivity;
 import com.auro.application.home.presentation.view.adapter.StudentKycDocumentAdapter;
 import com.auro.application.home.presentation.viewmodel.KYCViewModel;
+import com.auro.application.kyc.presentation.view.fragment.UploadDocumentFragment;
 import com.auro.application.teacher.data.model.response.MyProfileResModel;
+import com.auro.application.teacher.data.model.response.TeacherKycStatusResModel;
+import com.auro.application.teacher.presentation.view.adapter.TeacherKycDocumentAdapter;
 import com.auro.application.util.AppLogger;
 import com.auro.application.util.AppUtil;
+import com.auro.application.util.RemoteApi;
 import com.auro.application.util.ViewUtil;
 import com.auro.application.util.alert_dialog.disclaimer.DisclaimerKycDialog;
 import com.auro.application.util.strings.AppStringDynamic;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.Target;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 public class StudentKycInfoFragment extends BaseFragment implements CommonCallBackListner, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 

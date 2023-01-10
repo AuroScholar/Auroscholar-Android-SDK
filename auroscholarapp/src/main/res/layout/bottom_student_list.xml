@@ -98,9 +98,25 @@
                     android:layout_height="match_parent"
                     android:layout_below="@+id/txtchildaccount"
                     android:layout_marginTop="@dimen/_10sdp"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginBottom="5dp"
                     />
-
+                <com.auro.application.core.util.uiwidget.RPTextView
+                    android:id="@+id/btnaddstudent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    android:layout_marginBottom="@dimen/_20sdp"
+                    android:layout_below="@+id/studentList"
+                    android:background="@drawable/button_submit"
+                    android:gravity="center"
+                    android:padding="@dimen/_11sdp"
+                    android:text="@string/continue_addstudent"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
+                    android:visibility="visible"
+                    app:Font="ArticulatCF-Regular.otf" />
 
                 <ImageView
                     android:layout_width="wrap_content"

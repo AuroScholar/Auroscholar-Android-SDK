@@ -1,12 +1,16 @@
 package com.auro.application.home.presentation.view.activity;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.telephony.TelephonyManager;
@@ -17,10 +21,10 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.auro.application.BuildConfig;
 import com.auro.application.R;
 import com.auro.application.core.application.AuroApp;
 import com.auro.application.core.application.base_component.BaseActivity;
@@ -55,6 +59,14 @@ import com.auro.application.util.alert_dialog.CustomDialog;
 import com.auro.application.util.alert_dialog.CustomDialogModel;
 import com.auro.application.util.alert_dialog.CustomMemoryStatusDialog;
 import com.auro.application.util.firebase.FirebaseDynamicLink;
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.InstallStateUpdatedListener;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.InstallStatus;
+import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.android.play.core.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.HashMap;
@@ -70,6 +82,7 @@ import static com.auro.application.util.MemoryStatus.getTotalExternalMemorySize;
 import static com.auro.application.util.MemoryStatus.getTotalInternalMemorySize;
 import static com.auro.application.util.MemoryStatus.humanReadableByteCountSI;
 
+import io.branch.referral.validators.IntegrationValidator;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -84,9 +97,11 @@ public class SplashScreenAnimationActivity extends BaseActivity {
     private Context mContext;
     NotificationDataModel notificationDataModel;
     LanguageListResModel languageListResModel;
+     AppUpdateManager appUpdateManager;
+    private static final int IMMEDIATE_APP_UPDATE_REQ_CODE = 124;
+    private InstallStateUpdatedListener installStateUpdatedListener;
 
     Details details;
-    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,20 +118,20 @@ public class SplashScreenAnimationActivity extends BaseActivity {
         init();
         setListener();
 
-
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
+
     @Override
     protected void init() {
         binding = DataBindingUtil.setContentView(this, getLayout());
         ((AuroApp) this.getApplication()).getAppComponent().doInjection(this);
-        //view model and handler setup
+
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(SplashScreenViewModel.class);
         binding.setLifecycleOwner(this);
         mContext = SplashScreenAnimationActivity.this;
-        // AppUtil.loadAppLogo(binding.auroScholarLogo);
+
         checkForVersionCode();
+
         startAnimation();
        initiateData();
         checkDeepLink();
@@ -128,23 +143,48 @@ public class SplashScreenAnimationActivity extends BaseActivity {
         AuroAppPref.INSTANCE.getModelInstance().setAssignmentReqModel(null);
     }
 
+    private void checkForUpdate() {
+        PackageInfo pinfo = null;
+        try {
+            pinfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            int versionNumber = pinfo.versionCode;
+            String versionName = pinfo.versionName;
+            if (versionNumber != 76) {
+                final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                } catch (android.content.ActivityNotFoundException anfe) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                }
+            }
+            else{
+                whichScreenOpen();
 
+
+
+            }
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+
+    }
     private void checkForVersionCode() {
-
-
         PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
-
+        int versionCode = BuildConfig.VERSION_CODE;
         AppLogger.e("checkForVersionCode- saved-", "" + prefModel.getVersionCode());
         AppLogger.e("checkForVersionCode- saved-", "" + AppUtil.getVersionCode(this));
         if (prefModel.getVersionCode() == 0) {
             AuroAppPref.INSTANCE.clearAuroAppPref();
             PrefModel prefModel1 = AuroAppPref.INSTANCE.getModelInstance();
-            prefModel1.setVersionCode(AppUtil.getVersionCode(this));
+            prefModel1.setVersionCode(versionCode); //AppUtil.getVersionCode(this)
             AuroAppPref.INSTANCE.setPref(prefModel1);
             return;
         }
 
-        if (prefModel.getVersionCode() != AppUtil.getVersionCode(this)) {
+        if (prefModel.getVersionCode() != versionCode) {
             AuroAppPref.INSTANCE.clearAuroAppPref();
             PrefModel prefModel1 = AuroAppPref.INSTANCE.getModelInstance();
             prefModel1.setVersionCode(AppUtil.getVersionCode(this));
@@ -174,7 +214,7 @@ public class SplashScreenAnimationActivity extends BaseActivity {
     }
 
     public void toptoDownAnimation(View view, Map<Integer, View> listView) {
-        view.setVisibility(View.VISIBLE);
+        view.setVisibility(View.GONE);
         Animation secondanim = AnimationUtils.loadAnimation(this, R.anim.slide_down);
         view.startAnimation(secondanim);
         secondanim.setAnimationListener(new Animation.AnimationListener() {
@@ -220,10 +260,9 @@ public class SplashScreenAnimationActivity extends BaseActivity {
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    // This method will be executed once the timer is over
+
                                     callLanguageList();
-                                    //memoryCheck();
-                                    // whichScreenOpen();
+
                                 }
                             }, 1000);
                         }
@@ -243,7 +282,6 @@ public class SplashScreenAnimationActivity extends BaseActivity {
 
     private void callLanguageList() {
 
-      //  Details details = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
 
 
         try {
@@ -270,7 +308,7 @@ public class SplashScreenAnimationActivity extends BaseActivity {
     }
 
     void initiateData() {
-        /*Set the notification model*/
+
         if (getIntent() != null) {
             notificationDataModel = getIntent().getParcelableExtra("message");
             PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
@@ -282,7 +320,7 @@ public class SplashScreenAnimationActivity extends BaseActivity {
         }
 
         FirebaseDynamicLink mfirebase = new FirebaseDynamicLink(this);
-        //mfirebase.dynamiclinking();
+
         mfirebase.getFirebaseData();
         ViewUtil.setLanguageonUi(this);
 
@@ -298,111 +336,16 @@ public class SplashScreenAnimationActivity extends BaseActivity {
         AuroAppPref.INSTANCE.setPref(prefModel);
     }
 
-    private void getProfile()
-    {
-        SharedPreferences prefs = getSharedPreferences("My_Pref", MODE_PRIVATE);
-        int susertype = prefs.getInt("session_usertype", 0);
-        PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
-
-        int userType = prefModel.getUserType();
-        String username = prefModel.getUserName();
-        String languageid = prefModel.getUserLanguageId();
-        HashMap<String,String> map_data = new HashMap<>();
-        map_data.put("user_name",username);
-        map_data.put("user_type", String.valueOf(userType));
-        map_data.put("user_prefered_language_id",languageid);
-        RemoteApi.Companion.invoke().getUserCheck(map_data)
-                .enqueue(new Callback<CheckUserResModel>()
-                {
-                    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
-                    @Override
-                    public void onResponse(Call<CheckUserResModel> call, Response<CheckUserResModel> response)
-                    {
-                        if (response.isSuccessful())
-                        {
-                                if (prefModel.isLogin()) {
-                                    if (userType == susertype) {
-                                        if (prefModel.isLogin()) {
-                                            if (prefModel.isTeacherProfileScreen()) {
-                                                teacherProfileActivity();
-                                            } else {
-                                                openTeacherActivity();
-                                            }
-                                        } else {
-                                            openLoginActivity();
-                                        }
-                                    }
-
-                                    else if (userType == susertype) {
-                                        AppLogger.e("whichScreenOpen step 2-", "" + userType);
-                                        if (prefModel.isLogin()) {
-                                            AppLogger.e("whichScreenOpen step 3-", "" + prefModel.isLogin());
-                                            int studentClass = ConversionUtil.INSTANCE.convertStringToInteger(prefModel.getStudentData().getGrade());
-                                            AppLogger.e("whichScreenOpen step 4-", "" + studentClass);
-                                            AppLogger.e("whichScreenOpen step 5-", "" + prefModel.getCurrentScreenFlag());
-                                            if (prefModel.getCheckUserResModel().getUserDetails().get(0).getPassword().isEmpty() || prefModel.getCheckUserResModel().getUserDetails().get(0).getPassword().equals("")){
-
-                                                openSetPasswordActivity();
-                                            }
-                                           else if (prefModel.getCheckUserResModel().getUserDetails().get(1).getGrade().isEmpty() || prefModel.getCheckUserResModel().getUserDetails().get(1).getGrade().equals("") || prefModel.getCheckUserResModel().getUserDetails().get(1).getGrade().equals("0")){
-                                                openSetGrde();
-
-                                            }
-
-                                            else if (prefModel.getCheckUserResModel().getUserDetails().get(1).getStudentName().isEmpty() || prefModel.getCheckUserResModel().getUserDetails().get(1).getStudentName().equals("")){
-
-                                                openSetUserProfileActivity();
-                                            }
-
-                                           else if (studentClass > 0) {
-                                                Log.d("manju", "" + studentClass);
-                                                //  openSetUserProfileActivity();
-                                                startDashboardActivity(prefModel.getCheckUserResModel().getUserDetails().get(0).getUserMobile());  //prefModel.getUserMobile()
-                                            } else {
-                                                startDashboardActivity(prefModel.getCheckUserResModel().getUserDetails().get(0).getUserMobile());  //prefModel.getUserMobile()
-
-                                                // openChooseGradeActivity();
-                                            }
-                                        }
-
-
-                                        else {
-                                            openLoginActivity();
-                                        }
-                                    }
-                                }
-                                else {
-                                    openAppLanguageActivity();
-                                }
 
 
 
-
-
-                        }
-                        else
-                        {
-                            Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<CheckUserResModel> call, Throwable t)
-                    {
-                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-
-    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     private void whichScreenOpen() {
         PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
         int userType = prefModel.getUserType();
 
-
         SharedPreferences prefs = getSharedPreferences("My_Pref", MODE_PRIVATE);
         String statusparentprofile = prefs.getString("statusparentprofile", "");
+
         String statusfillstudentprofile = prefs.getString("statusfillstudentprofile", "");
         String statussetpasswordscreen = prefs.getString("statussetpasswordscreen", "");
         String statuschoosegradescreen = prefs.getString("statuschoosegradescreen", "");
@@ -410,92 +353,25 @@ public class SplashScreenAnimationActivity extends BaseActivity {
         String statusentermobilenumber = prefs.getString("statusentermobilenumber","");
         String statusopenprofilewithoutpin = prefs.getString("statusopenprofilewithoutpin","");
         String statussubjectpref = prefs.getString("statussubjectpref","");
+        String isLogin = prefs.getString("isLogin","");
+
         int susertype = prefs.getInt("session_usertype", 0);
-        String session_userid = prefs.getString("session_userid", "");
-        String session_username = prefs.getString("session_username", "");
+        String statusopenprofileteacher = prefs.getString("statusopenprofileteacher","");
         AppLogger.e("whichScreenOpen step 1-", "" + userType + "--prefModel--" + prefModel.isLogin());
-     if (prefModel.isLogin()) {
-//            if (userType == AppConstant.UserType.TEACHER) {
-//                if (prefModel.isLogin()) {
-//                    if (prefModel.isTeacherProfileScreen()) {
-//                        teacherProfileActivity();
-//                    } else {
-//                        openTeacherActivity();
-//                    }
-//                } else {
-//                    openLoginActivity();
-//                }
-//            }
-//
-//            else if (userType == AppConstant.UserType.STUDENT) {
-//                AppLogger.e("whichScreenOpen step 2-", "" + userType);
-//                if (prefModel.isLogin()) {
-//                    AppLogger.e("whichScreenOpen step 3-", "" + prefModel.isLogin());
-//                    int studentClass = ConversionUtil.INSTANCE.convertStringToInteger(prefModel.getStudentData().getGrade());
-//                    AppLogger.e("whichScreenOpen step 4-", "" + studentClass);
-//                    AppLogger.e("whichScreenOpen step 5-", "" + prefModel.getCurrentScreenFlag());
-//                    if (!TextUtil.isEmpty(prefModel.getCurrentScreenFlag()) && prefModel.getCurrentScreenFlag().equalsIgnoreCase(AppConstant.CurrentFlagStatus.SET_PASSWORD)) {
-//                        openSetPasswordActivity();
-//                    } else if (TextUtil.isEmpty(prefModel.getCurrentScreenFlag()) && prefModel.getCurrentScreenFlag().equalsIgnoreCase(AppConstant.CurrentFlagStatus.SET_PROFILE_SCREEN)) {
-//                        openSetUserProfileActivity();
-//                    } else if (studentClass > 0) {
-//                        // openUserProfileActivity();
-//                        Log.d("manju", "" + studentClass);
-//                      //  openSetUserProfileActivity();
-//                        startDashboardActivity(prefModel.getCheckUserResModel().getUserDetails().get(0).getUserMobile());  //prefModel.getUserMobile()
-//                    } else {
-//                        startDashboardActivity(prefModel.getCheckUserResModel().getUserDetails().get(0).getUserMobile());  //prefModel.getUserMobile()
-//
-//                        // openChooseGradeActivity();
-//                    }
-//                }
-//                else {
-//                    openLoginActivity();
-//                }
-//            }
-//        }
-//        else {
-//            openAppLanguageActivity();
-//        }
 
+        if (isLogin.equals("true")){
+        if (susertype == 1) {
 
-           if (susertype == 1) {
-               if (prefModel.isLogin()) {
-                   if (prefModel.isTeacherProfileScreen()) {
+                   if (statusopenprofileteacher.equals("true")) {
                        teacherProfileActivity();
                    } else {
                        openTeacherActivity();
                    }
-               } else {
-                   openLoginActivity();
-               }
+
            }
            else if (susertype == 0) {
                AppLogger.e("whichScreenOpen step 2-", "" + userType);
-//               if (prefModel.isLogin()) {
-//                   AppLogger.e("whichScreenOpen step 3-", "" + prefModel.isLogin());
-//                   String studentClass = prefModel.getStudentData().getGrade();
-//                   AppLogger.e("whichScreenOpen step 4-", "" + studentClass);
-//                   AppLogger.e("whichScreenOpen step 5-", "" + prefModel.getCurrentScreenFlag());
-//                   if (prefModel.getCheckUserResModel().getUserDetails().get(0).getPassword().isEmpty() || prefModel.getCheckUserResModel().getUserDetails().get(0).getPassword().equals("")) {
-//
-//                       openSetPasswordActivity();
-//                   } else if (prefModel.getCheckUserResModel().getUserDetails().get(1).getGrade().isEmpty() || prefModel.getCheckUserResModel().getUserDetails().get(1).getGrade().equals("") || prefModel.getCheckUserResModel().getUserDetails().get(1).getGrade().equals("0")) {
-//                       openSetGrde();
-//
-//                   } else if (prefModel.getCheckUserResModel().getUserDetails().get(1).getStudentName().isEmpty() || prefModel.getCheckUserResModel().getUserDetails().get(1).getStudentName().equals("")) {
-//
-//                       openSetUserProfileActivity();
-//                   } else if (studentClass =="0") {
-//                       Log.d("manju", "" + studentClass);
-//                       //  openSetUserProfileActivity();
-//                       startDashboardActivity(prefModel.getCheckUserResModel().getUserDetails().get(0).getUserMobile());  //prefModel.getUserMobile()
-//                   } else {
-//                       startDashboardActivity(prefModel.getCheckUserResModel().getUserDetails().get(0).getUserMobile());  //prefModel.getUserMobile()
-//
-//                       // openChooseGradeActivity();
-//                   }
-//               }
+
                if (statussetpasswordscreen.equals("true")) {
 
                    openSetPasswordActivity();
@@ -525,7 +401,8 @@ public class SplashScreenAnimationActivity extends BaseActivity {
                        openAppLanguageActivity();
                    }
 
-               } else {
+               }
+               else {
                    openAppLanguageActivity();
                }
            }
@@ -533,11 +410,11 @@ public class SplashScreenAnimationActivity extends BaseActivity {
                openAppLanguageActivity();
            }
 
-    }
-        else {
-           openAppLanguageActivity();
-        }
+  }
 
+     else {
+          openAppLanguageActivity();
+        }
     }
 
     private void openSetUserProfileActivity() {
@@ -581,30 +458,7 @@ public class SplashScreenAnimationActivity extends BaseActivity {
         finish();
     }
 
-    private void openLoginActivity() {
-        Intent newIntent = new Intent(SplashScreenAnimationActivity.this, LoginActivity.class);
-        startActivity(newIntent);
-        finish();
-    }
 
-    void openEnterNumberActivity() {
-        Intent intent = new Intent(this, EnterNumberActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-
-    private void openUserProfileActivity() {
-        Intent newIntent = new Intent(SplashScreenAnimationActivity.this, SubjectPreferencesActivity.class);
-        startActivity(newIntent);
-        finish();
-    }
-
-    private void openChooseGradeActivity() {
-        Intent tescherIntent = new Intent(this, ChooseGradeActivity.class);
-        startActivity(tescherIntent);
-        finish();
-    }
 
     private void openTeacherActivity() {
         PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
@@ -628,7 +482,6 @@ public class SplashScreenAnimationActivity extends BaseActivity {
 
             }
 
-            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void logOut() {
                 AppLogger.e("Chhonker", "Logout");
@@ -657,13 +510,12 @@ public class SplashScreenAnimationActivity extends BaseActivity {
             Uri data = getIntent().getData();
             AppLogger.e("chhonker", data.toString());
             String pickuplatitude = data.getQueryParameter("test");
-            //  auroscholar://auroscholar.com/action?test=value
+
             AppLogger.e("chhonker", pickuplatitude);
         }
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     public void memoryCheck() {
         long size = getAvailableInternalMemorySize();
         long externalStorage = getTotalExternalMemorySize();
@@ -674,12 +526,13 @@ public class SplashScreenAnimationActivity extends BaseActivity {
         String totalexformatSize = humanReadableByteCountSI(externalStorage);
 
 
-        //check is Memory Aavilable to run our app
+
         if (MEMORY_REQUIRED >= size) {
             openMemoryDialog(totalsize, size);
         } else {
-           // getProfile();
-            whichScreenOpen();
+
+            checkForUpdate();
+
         }
 
         AppLogger.v("MEMORY", "Size of memory in mb or kb -----> " + size + "   " + totalsize + "-----byte  " + formatSize + "////byte ----->" + size + "   Total---" + totalformatSize + "  external" + totalexformatSize);
@@ -700,12 +553,7 @@ public class SplashScreenAnimationActivity extends BaseActivity {
                 customDialog.dismiss();
                 finish();
 
-              /*  if (!resModel.isError()) {
-                    ((SendMoneyFragment) getParentFragment()).backButton();
-                    customDialog.dismiss();
-                } else {
-                    customDialog.dismiss();
-                }*/
+
             }
         });
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
@@ -726,7 +574,6 @@ public class SplashScreenAnimationActivity extends BaseActivity {
         finish();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     private void observeServiceResponse() {
 
         viewModel.serviceLiveData().observeForever(responseApi -> {
@@ -768,11 +615,9 @@ public class SplashScreenAnimationActivity extends BaseActivity {
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     void callLanguageMasterApi() {
         PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
-//        LanguageMasterDynamic model = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic();
-//        Details details = model.getDetails();
+
 
         try {
             LanguageMasterDynamic model = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic();
@@ -828,7 +673,7 @@ public class SplashScreenAnimationActivity extends BaseActivity {
                 binding.customProgressLayout.textMsg.setVisibility(View.VISIBLE);
                 binding.customProgressLayout.textMsg.setText(msg);
                 binding.customProgressLayout.btRetry.setVisibility(View.VISIBLE);
-                binding.customProgressLayout.background.setBackgroundColor(this.getResources().getColor(R.color.color_red));
+                binding.customProgressLayout.background.setBackgroundColor(this.getResources().getColor(R.color.red));
                 binding.customProgressLayout.btRetry.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -840,7 +685,5 @@ public class SplashScreenAnimationActivity extends BaseActivity {
         }
 
     }
-
-
 
 }

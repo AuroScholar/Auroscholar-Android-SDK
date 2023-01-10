@@ -37,12 +37,7 @@ public class DistrictSpinnerUserAdapter extends ArrayAdapter {
         this.onItemClickState = onItemClickState;
     }
 
-/*
-    public DistrictSpinnerUserAdapter(List<DistrictDataModel> list) {
-        inflter = (LayoutInflater.from(getApplicationContext()));
-        this.list = list;
-    }
-*/
+
 
     @Override
     public int getCount() {

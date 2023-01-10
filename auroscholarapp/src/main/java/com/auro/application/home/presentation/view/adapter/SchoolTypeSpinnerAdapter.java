@@ -37,10 +37,7 @@ public class SchoolTypeSpinnerAdapter extends ArrayAdapter {
 
     }
 
-/*    public StateSpinnerUserAdapter(List<StateDataModel> list) {
-        super(c);
 
-    }*/
 
     @Override
     public int getCount() {
@@ -69,8 +66,7 @@ public class SchoolTypeSpinnerAdapter extends ArrayAdapter {
                 if (onItemClickState != null) {
                     onItemClickState.commonEventListner(AppUtil.getCommonClickModel(position, Status.SCHHOLTYPE, list.get(position)));
                 }
-               // onItemClickState.onItemClick(list.get(position ).getState_name());
-                // onItemClickState.onItemClick(list.get(position ).getState_name());
+
             }
         });
         return binding.getRoot();

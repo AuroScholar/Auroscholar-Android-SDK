@@ -159,9 +159,6 @@ public class ChildAccountsActivity extends BaseActivity implements CommonCallBac
 
         }
 
-
-//        checkUserResModel = AuroAppPref.INSTANCE.getModelInstance().getCheckUserResModel();
-//        setAdapterAllListStudent(checkUserResModel.getUserDetails());
     }
 
     public void setAdapterAllListStudent(List<UserDetailResModel> totalStudentList) {
@@ -179,16 +176,6 @@ public class ChildAccountsActivity extends BaseActivity implements CommonCallBac
             }
 
         }
-
-
-
-
-
-
-
-
-
-
     }
 
     @Override
@@ -225,66 +212,6 @@ public class ChildAccountsActivity extends BaseActivity implements CommonCallBac
         return R.layout.viewchildaccount_activity;
     }
 
-//    private void getAddedChild()
-//    {
-//        Details details = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
-//
-//        ProgressDialog progress = new ProgressDialog(ChildAccountsActivity.this);
-//        progress.setTitle(details.getProcessing());
-//        progress.setMessage(details.getProcessing());
-//        progress.setCancelable(true); // disable dismiss by tapping outside of the dialog
-//        progress.show();
-//        SharedPreferences prefs = getSharedPreferences("My_Pref", MODE_PRIVATE);
-//        String parentuserid = prefs.getString("parentuserid", "");
-//        PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
-//        String user_id = prefModel.getCheckUserResModel().getUserDetails().get(0).getUserId();
-//        HashMap<String,String> map_data = new HashMap<>();
-//        map_data.put("user_id",user_id);
-//        RemoteApi.Companion.invoke().getAllChild(map_data)
-//                .enqueue(new Callback<GetAllChildModel>()
-//                {
-//                    @Override
-//                    public void onResponse(Call<GetAllChildModel> call, Response<GetAllChildModel> response)
-//                    {
-//
-//                            if (response.isSuccessful())
-//                            {
-//
-//
-//                                    listchilds = response.body().getUserDetails();
-//
-//                                    Log.e("childlist",response.body().getUserDetails().toString());
-//                                    for (int i =0; i<listchilds.size(); i++){
-//                                        // if (listchilds.get(i).getIsMaster().equals("0")||listchilds.get(i).getIsMaster().equals(0)){
-//                                        list.add(listchilds.get(i));
-//                                       // listuserdetails.addAll(list.get(i));
-//                                       // Toast.makeText(ChildAccountsActivity.this, listuserdetails.get(i).getUserName(), Toast.LENGTH_SHORT).show();
-//
-//                                        // }
-//                                    }
-//
-//                                    SelectYourParentChildAdapter studentListAdapter = new SelectYourParentChildAdapter(ChildAccountsActivity.this, list, ChildAccountsActivity.this);
-//                                    studentList.setAdapter(studentListAdapter);
-//                                    progress.dismiss();
-//
-//
-//                            }
-//                            else
-//                            {
-//                                Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_SHORT).show();
-//                            }
-//
-//
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Call<GetAllChildModel> call, Throwable t)
-//                    {
-//                        progress.dismiss();
-//                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//    }
 
 
     private void getAddedChild(String user_name)
@@ -302,10 +229,7 @@ public class ChildAccountsActivity extends BaseActivity implements CommonCallBac
                     public void onResponse(Call<CheckUserResModel> call, Response<CheckUserResModel> response)
                     {
                         try {
-
-
                             if (response.isSuccessful()) {
-
                                 list.clear();
                                 listchilds.clear();
                                 if (!(response.body().getUserDetails() == null) || !(response.body().getUserDetails().isEmpty())) {
@@ -320,13 +244,9 @@ public class ChildAccountsActivity extends BaseActivity implements CommonCallBac
                                                 list.add(listchilds.get(i));
                                             }
 
-
                                         }
                                     }
-//                                checkUserResModel = (CheckUserResModel) response.body().getUserDetails();
-//                                PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
-//                                prefModel.setCheckUserResModel(checkUserResModel);
-//                                AuroAppPref.INSTANCE.setPref(prefModel);
+//
                                     SelectYourParentChildAdapter studentListAdapter = new SelectYourParentChildAdapter(ChildAccountsActivity.this, list, ChildAccountsActivity.this);
                                     studentList.setAdapter(studentListAdapter);
                                 }

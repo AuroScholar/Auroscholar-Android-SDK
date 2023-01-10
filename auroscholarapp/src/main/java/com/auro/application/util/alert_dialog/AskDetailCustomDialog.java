@@ -96,29 +96,33 @@ public class AskDetailCustomDialog extends Dialog implements View.OnClickListene
 
     @Override
     public void onClick(View view) {
-        int id = view.getId();
-        if (id == R.id.btDone) {
-            if (viewNameStatus) {
-                String name = binding.textName.getText().toString();
-                if (TextUtil.isEmpty(name)) {
-                    showSnackBar("Please Enter Name");
-                    return;
-                }
-            }
-            if (viewEmailStatus) {
-                String email = binding.textEmail.getText().toString();
-                if (TextUtil.isEmpty(email)) {
-                    showSnackBar("Please Enter Email");
-                    return;
-                } else if (!TextUtil.isEmpty(email) && !TextUtil.isValidEmail(email)) {
-                    showSnackBar("Please Enter Valid Email");
-                    return;
-                }
-            }
+        switch (view.getId()) {
+            case R.id.btDone:
 
-            senCallback();
-        } else if (id == R.id.close_button) {
-            dismiss();
+                if (viewNameStatus) {
+                    String name = binding.textName.getText().toString();
+                    if (TextUtil.isEmpty(name)) {
+                        showSnackBar("Please Enter Name");
+                        return;
+                    }
+                }
+                if (viewEmailStatus) {
+                    String email = binding.textEmail.getText().toString();
+                    if (TextUtil.isEmpty(email)) {
+                        showSnackBar("Please Enter Email");
+                        return;
+                    } else if (!TextUtil.isEmpty(email) && !TextUtil.isValidEmail(email)) {
+                        showSnackBar("Please Enter Valid Email");
+                        return;
+                    }
+                }
+
+                senCallback();
+                break;
+
+            case R.id.close_button:
+                dismiss();
+                break;
         }
 
     }

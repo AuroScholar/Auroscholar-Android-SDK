@@ -116,6 +116,17 @@
         <item name="colorControlHighlight">@color/color_dim_grey</item>
 
     </style>
+    <style name="MyEditTextSchol" parent="Theme.AppCompat.Light">
+
+        <item name="hintTextAppearance">@style/HintText</item>
+        <item name="errorTextAppearance">@color/red</item>
+        <item name="android:textColor">@color/color_dim_grey</item>
+        <item name="android:textColorHint">@color/color_dim_grey</item>
+
+
+
+
+    </style>
 
 
     <style name="SpinnerTheme" parent="android:Widget.Spinner">

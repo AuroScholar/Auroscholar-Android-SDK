@@ -62,7 +62,7 @@ public class FriendRequestListDialogFragment extends BottomSheetDialogFragment i
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // return inflater.inflate(R.layout.fragment_friend_list_dialog, container, false);
+
 
         binding = DataBindingUtil.inflate(inflater, getLayout(), container, false);
         ((AuroApp) getActivity().getApplication()).getAppComponent().doInjection(this);

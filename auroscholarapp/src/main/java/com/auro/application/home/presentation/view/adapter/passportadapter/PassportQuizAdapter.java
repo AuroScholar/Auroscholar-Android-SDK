@@ -68,7 +68,7 @@ public class PassportQuizAdapter extends RecyclerView.Adapter<PassportQuizAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder Vholder, @SuppressLint("RecyclerView") int position) {
-        //   Vholder.setData(mValues.get(position), position);
+
         binding.topicName.setText(mValues.get(position).getTopicName());
         int pos = position + 1;
         String num = "" + pos;
@@ -98,7 +98,7 @@ public class PassportQuizAdapter extends RecyclerView.Adapter<PassportQuizAdapte
 
 
     public void setQuizAdapter(int position) {
-        // binding.subjectList.setLayoutManager(new GridLayoutManager(mContext, 2));
+
         binding.subjectList.setLayoutManager(new LinearLayoutManager(mContext));
         binding.subjectList.setHasFixedSize(true);
         binding.subjectList.setNestedScrollingEnabled(false);

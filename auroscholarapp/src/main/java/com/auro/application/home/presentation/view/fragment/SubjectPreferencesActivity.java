@@ -81,11 +81,14 @@ public class SubjectPreferencesActivity extends BaseActivity implements CommonCa
 
         SharedPreferences.Editor editor = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
         editor.putString("statusparentprofile", "false");
+        editor.putString("isLogin","true");
         editor.putString("statusfillstudentprofile", "false");
         editor.putString("statussetpasswordscreen", "false");
         editor.putString("statuschoosegradescreen", "false");
         editor.putString("statuschoosedashboardscreen", "false");
         editor.putString("statussubjectpref","true");
+        editor.putString("statusopenprofileteacher", "false");
+        editor.putString("statusopendashboardteacher", "false");
         editor.putString("statusopenprofilewithoutpin", "false");
         editor.apply();
 
@@ -197,12 +200,17 @@ public class SubjectPreferencesActivity extends BaseActivity implements CommonCa
     @Override
     public void onClick(View v) {
         AppLogger.e(TAG, "On click called");
-        int id = v.getId();
-        if (id == R.id.ic_close) {
-            finish();
-            startDashboardActivity();
-        } else if (id == R.id.bt_continue) {
-            callUpdatePrefApi();
+        switch (v.getId()) {
+            case R.id.ic_close:
+                finish();
+                startDashboardActivity();
+                break;
+
+            case R.id.bt_continue:
+                callUpdatePrefApi();
+
+                break;
+
         }
     }
 

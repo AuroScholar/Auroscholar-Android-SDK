@@ -10,7 +10,6 @@
       android:layout_height="match_parent"
       android:id="@+id/coordinatorLayout">
 
-
     <ImageView
         android:src="@drawable/ic_book_slot_bg_image"
         android:layout_width="match_parent"

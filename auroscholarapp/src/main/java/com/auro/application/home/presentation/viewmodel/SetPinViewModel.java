@@ -68,8 +68,6 @@ public class SetPinViewModel extends ViewModel {
                         break;
 
                     case SET_USER_PIN:
-
-
                         setUserPin((SetUsernamePinReqModel) object);
                         break;
 

@@ -9,8 +9,6 @@
         android:background="@color/white"
         tools:context=".teacher.presentation.view.fragment.new_desgin.MyClassRoomGroupFragment">
 
-
-
         <RelativeLayout
             android:id="@+id/mainParentLayout"
             android:layout_width="match_parent"
@@ -90,6 +88,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/_2sdp"
+
                         android:divider="@android:color/transparent"
                         app:cardCornerRadius="@dimen/_5sdp">
 
@@ -100,8 +99,17 @@
                             android:src="@drawable/ic_profile"
                             android:scaleType="fitXY" />
                     </androidx.cardview.widget.CardView>
-                </androidx.cardview.widget.CardView>
 
+                </androidx.cardview.widget.CardView>
+                <TextView
+                    android:id="@+id/txtviewprofile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/_55sdp"
+                    android:paddingLeft="@dimen/_5ssp"
+                    android:text="View Profile"
+
+                    tools:ignore="MissingConstraints"></TextView>
                 <LinearLayout
                     android:id="@+id/language_layout"
                     android:layout_width="wrap_content"

@@ -132,18 +132,25 @@ public class CustomOtpDialog extends Dialog implements OTPListener, View.OnClick
 
     @Override
     public void onClick(View v) {
-        int id = v.getId();
-        if (id == R.id.resend_timer_txt) {
-            ((DashBoardMainActivity) activity).sendOtpApiReqPass();
-            initRecordingTimer();
-        } else if (id == R.id.RPVerify) {
-            dismiss();
-            ((DashBoardMainActivity) activity).sendOtpApiReqPass();
-        } else if (id == R.id.opt_over_call_txt) {
-            dismiss();
-            ((DashBoardMainActivity) activity).callOverOTPApi();
-        } else if (id == R.id.closeButton) {
-            dismiss();
+        switch (v.getId()) {
+            case R.id.resend_timer_txt:
+                ((DashBoardMainActivity) activity).sendOtpApiReqPass();
+                initRecordingTimer();
+                break;
+
+            case R.id.RPVerify:
+                dismiss();
+                ((DashBoardMainActivity) activity).sendOtpApiReqPass();
+                break;
+            case R.id.opt_over_call_txt:
+                dismiss();
+                ((DashBoardMainActivity) activity).callOverOTPApi();
+                break;
+
+            case R.id.closeButton:
+                dismiss();
+                break;
+
         }
     }
 }

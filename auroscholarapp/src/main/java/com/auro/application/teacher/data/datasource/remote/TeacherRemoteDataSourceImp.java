@@ -6,6 +6,7 @@ import com.auro.application.core.database.AuroAppPref;
 import com.auro.application.home.data.model.AuroScholarDataModel;
 import com.auro.application.home.data.model.FetchStudentPrefReqModel;
 import com.auro.application.home.data.model.KYCDocumentDatamodel;
+import com.auro.application.home.data.model.RefferalReqModel;
 import com.auro.application.home.data.model.response.DynamiclinkResModel;
 import com.auro.application.home.data.model.response.GetStudentUpdateProfile;
 import com.auro.application.teacher.data.model.request.AddGroupReqModel;
@@ -24,6 +25,7 @@ import com.auro.application.teacher.data.repository.TeacherRepo;
 import com.auro.application.util.AppLogger;
 import com.auro.application.util.AppUtil;
 import com.auro.application.util.ConversionUtil;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.util.HashMap;
@@ -43,9 +45,6 @@ public class TeacherRemoteDataSourceImp implements TeacherRepo.TeacherRemoteData
     public TeacherRemoteDataSourceImp(TeacherRemoteApi teacherRemoteApi) {
         this.teacherRemoteApi = teacherRemoteApi;
     }
-
-
-
 
     @Override
     public Single<Response<JsonObject>> updateTeacherProfileApi(TeacherReqModel model) {
@@ -108,7 +107,6 @@ public class TeacherRemoteDataSourceImp implements TeacherRepo.TeacherRemoteData
 
             MultipartBody.Part profilePic = ConversionUtil.INSTANCE.makeMultipartRequestTeacherProfile(model.getTeacher_profile_pic());
             AppLogger.e("update profile api-", "step 36" + model.getTeacher_profile_pic());
-
 
             return teacherRemoteApi.updateTeacherProfileApi( userId,
                     teacherName,
@@ -186,15 +184,15 @@ public class TeacherRemoteDataSourceImp implements TeacherRepo.TeacherRemoteData
     @Override
     public Single<Response<JsonObject>> uploadTeacherKYC(List<KYCDocumentDatamodel> list) {
         RequestBody phonenumber = RequestBody.create(MultipartBody.FORM, AuroAppPref.INSTANCE.getModelInstance().getStudentData().getUserId());
-        MultipartBody.Part id_proof = ConversionUtil.INSTANCE.makeMultipartRequest(list.get(0));
+        MultipartBody.Part id_proof_front = ConversionUtil.INSTANCE.makeMultipartRequest(list.get(0));
         MultipartBody.Part id_proof_back = ConversionUtil.INSTANCE.makeMultipartRequest(list.get(1));
         MultipartBody.Part school_id_card = ConversionUtil.INSTANCE.makeMultipartRequest(list.get(2));
-        MultipartBody.Part teacher_photo = ConversionUtil.INSTANCE.makeMultipartRequest(list.get(3));
+        MultipartBody.Part student_photo = ConversionUtil.INSTANCE.makeMultipartRequest(list.get(3));
         return teacherRemoteApi.uploadTeacherKYC(phonenumber,
-                id_proof,
+                id_proof_front,
                 id_proof_back,
                 school_id_card,
-                teacher_photo);
+                student_photo);
     }
 
     @Override
@@ -212,6 +210,19 @@ public class TeacherRemoteDataSourceImp implements TeacherRepo.TeacherRemoteData
         return teacherRemoteApi.getZohoAppointments();
     }
 
+    @Override
+    public Single<Response<JsonObject>> sendRefferalDataApi(RefferalReqModel model) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put(AppConstant.SendRefferalApiCode.REFERRED_USER_ID, model.getReferredUserId());
+        params.put(AppConstant.SendRefferalApiCode.REFERRED_BY_ID, model.getReferredById());
+        params.put(AppConstant.SendRefferalApiCode.REFERRED_USER_MOBILE, model.getReferredUserMobile());
+        //  params.put(AppConstant.SendRefferalApiCode.REFERRED_BY_PHONE, model.getRefferMobileno());
+        // params.put(AppConstant.SendRefferalApiCode.MESSAGE, "save it");
+        // params.put(AppConstant.SendRefferalApiCode.SUCCESS, "true");
+        params.put(AppConstant.SendRefferalApiCode.REFERRED_BY_TYPE, model.getReferredByType());
+        params.put(AppConstant.Language.USER_PREFERED_LANGUAGE,Integer.parseInt(AuroAppPref.INSTANCE.getModelInstance().getUserLanguageId()));
+        return teacherRemoteApi.sendRefferalapi(model);
+    }
     @Override
     public Single<Response<JsonObject>> bookZohoAppointments(String from_time, String name, String email, String phone_number) {
         return teacherRemoteApi.bookZohoAppointments(from_time, name, email, phone_number);

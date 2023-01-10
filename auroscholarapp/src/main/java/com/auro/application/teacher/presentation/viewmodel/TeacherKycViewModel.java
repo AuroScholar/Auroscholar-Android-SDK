@@ -138,7 +138,7 @@ public class TeacherKycViewModel extends ViewModel {
                             @Override
                             public void accept(Disposable __) throws Exception {
                                 /*Do code here*/
-                               // serviceLiveData.setValue(ResponseApi.loading(Status.TEACHER_KYC_API));
+                                // serviceLiveData.setValue(ResponseApi.loading(Status.TEACHER_KYC_API));
                             }
                         })
                         .subscribe(new Consumer<ResponseApi>() {

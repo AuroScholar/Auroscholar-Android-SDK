@@ -28,6 +28,8 @@ public class SendOtpResModel {
 	@Expose
 	private boolean isLog;
 
+
+
 	public String getStatus() {
 		return status;
 	}

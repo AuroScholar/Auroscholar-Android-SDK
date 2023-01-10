@@ -75,17 +75,22 @@ public class ValidatePhoneDialog extends Dialog implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
-        int id = v.getId();
-        if (id == R.id.icClose) {
-            dismiss();
-        } else if (id == R.id.RPButtonSendOtp) {
-            if (commonCallBackListner != null) {
-                commonCallBackListner.commonEventListner(AppUtil.getCommonClickModel(0, Status.SEND_OTP, ""));
-            }
-        } else if (id == R.id.RPButtonChangeNumber) {
-            if (commonCallBackListner != null) {
-                commonCallBackListner.commonEventListner(AppUtil.getCommonClickModel(0, Status.CHANGE_NUMBER, ""));
-            }
+        switch (v.getId()) {
+            case R.id.icClose:
+                dismiss();
+                break;
+
+            case R.id.RPButtonSendOtp:
+                if (commonCallBackListner != null) {
+                    commonCallBackListner.commonEventListner(AppUtil.getCommonClickModel(0, Status.SEND_OTP, ""));
+                }
+                break;
+
+            case R.id.RPButtonChangeNumber:
+                if (commonCallBackListner != null) {
+                    commonCallBackListner.commonEventListner(AppUtil.getCommonClickModel(0, Status.CHANGE_NUMBER, ""));
+                }
+                break;
         }
     }
 

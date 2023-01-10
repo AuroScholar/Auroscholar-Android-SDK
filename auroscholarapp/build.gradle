@@ -7,10 +7,13 @@ apply plugin: 'maven-publish'
 android {
     compileSdkVersion 32
     ndkVersion '21.1.6352462'
+    defaultConfig {
+        vectorDrawables.useSupportLibrary = true
+    }
 
     buildTypes {
         release {
-          //  multiDexEnabled true
+            //  multiDexEnabled true
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -104,6 +107,7 @@ dependencies {
     implementation 'com.github.fueled:snippety:1.1.1'
     implementation 'com.google.android.material:material:1.7.0'
     annotationProcessor 'com.gabrielittner.auto.value:auto-value-with:1.1.1'
+    implementation files('libs/yubobotsdk-debug.aar')
 }
 
 apply plugin: 'com.google.gms.google-services'
@@ -117,7 +121,7 @@ afterEvaluate {
 
                 groupId = 'com.github.AuroScholar'
                 artifactId = 'auroscholar-android-sdk'
-                version = '1.1'
+                version = '1.2'
             }
         }
     }

@@ -1,7 +1,9 @@
 package com.auro.application.teacher.data.datasource.remote;
 
 import com.auro.application.core.common.AppConstant;
+import com.auro.application.core.database.AuroAppPref;
 import com.auro.application.core.network.URLConstant;
+import com.auro.application.home.data.model.RefferalReqModel;
 import com.auro.application.home.data.model.response.DynamiclinkResModel;
 import com.auro.application.teacher.data.model.request.BookSlotReqModel;
 import com.auro.application.teacher.data.model.request.BookedSlotReqModel;
@@ -9,8 +11,11 @@ import com.auro.application.teacher.data.model.request.CancelWebinarSlot;
 import com.auro.application.teacher.data.model.request.TeacherAddStudentInGroupReqModel;
 import com.auro.application.teacher.data.model.request.TeacherCreateGroupReqModel;
 import com.auro.application.teacher.data.model.request.TeacherUserIdReq;
+import com.auro.application.util.AppLogger;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import io.reactivex.Single;
@@ -28,8 +33,6 @@ import retrofit2.http.Part;
 
 public interface TeacherRemoteApi {
 
-
-
     @POST(URLConstant.GET_PROFILE_UPDATE_API)
     @FormUrlEncoded
     Single<Response<JsonObject>> getTeacherDashboardApi(@FieldMap Map<String, String> params);
@@ -46,13 +49,12 @@ public interface TeacherRemoteApi {
     Single<Response<JsonObject>> getTeacherKYCStatusApi(@Body Map<String, String> params);
 
 
-
     @POST(URLConstant.TEACHER_KYC_API)
     @Multipart
     Single<Response<JsonObject>> uploadTeacherKYC(
             @Part(AppConstant.DashBoardParams.USER_ID) RequestBody userid,
-            @Part MultipartBody.Part govt_id_front,
-            @Part MultipartBody.Part govt_id_back,
+            @Part MultipartBody.Part id_proof,
+            @Part MultipartBody.Part id_proof_back,
             @Part MultipartBody.Part school_id_card,
             @Part MultipartBody.Part teacher_photo
     );
@@ -66,7 +68,8 @@ public interface TeacherRemoteApi {
     @GET(URLConstant.GET_ZOHO_APPOINTMENT)
     Single<Response<JsonObject>> getZohoAppointments();
 
-
+    @POST(URLConstant.SEND_REFERRAL_API)
+    Single<Response<JsonObject>> sendRefferalapi(@Body RefferalReqModel reqModel);
 
     @POST(URLConstant.BOOK_ZOHO_APPOINTMENT)
     @FormUrlEncoded

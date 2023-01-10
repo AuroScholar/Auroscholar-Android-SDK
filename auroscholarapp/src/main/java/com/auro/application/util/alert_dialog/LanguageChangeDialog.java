@@ -2,6 +2,7 @@ package com.auro.application.util.alert_dialog;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.auro.application.databinding.LanguageSelectionLayoutBinding;
 import com.auro.application.home.data.model.SelectLanguageModel;
 import com.auro.application.home.data.model.response.LanguageListResModel;
 import com.auro.application.home.data.model.response.LanguageResModel;
+import com.auro.application.home.presentation.view.activity.DashBoardMainActivity;
 import com.auro.application.home.presentation.view.adapter.LanguageAdapter;
 import com.auro.application.util.ViewUtil;
 import com.auro.application.util.strings.AppStringDynamic;
@@ -65,14 +67,20 @@ public class LanguageChangeDialog extends Dialog implements View.OnClickListener
     @Override
     public void onClick(View v) {
 
-        int id = v.getId();
-        if (id == R.id.button) {
-            dismiss();
-            // ViewUtil.setLanguage(lang);
-            ViewUtil.setLocaleInstant(context);
-            setLanguage();
-        } else if (id == R.id.close_button) {
-            dismiss();
+        switch (v.getId()) {
+
+            case R.id.button:
+                dismiss();
+                // ViewUtil.setLanguage(lang);
+                ViewUtil.setLocaleInstant(context);
+                setLanguage();
+                break;
+
+
+            case R.id.close_button:
+                dismiss();
+                break;
+
         }
     }
 
@@ -140,7 +148,7 @@ public class LanguageChangeDialog extends Dialog implements View.OnClickListener
 
             } else {
                 laugList.get(i).setCheck(false);
-                lang = prefModel.getUserLanguageId();
+                //lang = prefModel.getUserLanguageId();
             }
         }
 
@@ -150,24 +158,27 @@ public class LanguageChangeDialog extends Dialog implements View.OnClickListener
 
     private void setLanguage() {
         try {
-
             if (selectLanguageModel != null) {
                 PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
                 prefModel.setUserLanguageCode(selectLanguageModel.getLanguageCode());
                 prefModel.setUserLanguageShortCode(selectLanguageModel.getLanguageShortCode());
                 prefModel.setUserLanguageId(selectLanguageModel.getLanguageId());
                 AuroAppPref.INSTANCE.setPref(prefModel);
+//                Intent i = new Intent(context, DashBoardMainActivity.class);
+//
+//                context.startActivity(i);
             }
             else{
-                PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
-                prefModel.setUserLanguageCode(selectLanguageModel.getLanguageCode());
-                prefModel.setUserLanguageShortCode(selectLanguageModel.getLanguageShortCode());
-                prefModel.setUserLanguageId(selectLanguageModel.getLanguageId());
-                AuroAppPref.INSTANCE.setPref(prefModel);
+                Intent i = new Intent(context, DashBoardMainActivity.class);
+                context.startActivity(i);
             }
 
-        } catch (Exception e) {
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        catch (Exception e) {
+            Intent i = new Intent(context, DashBoardMainActivity.class);
+
+            context.startActivity(i);
+           // Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
         // ViewUtil.setLanguage(lang);
     }

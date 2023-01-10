@@ -54,14 +54,11 @@ public class EnterStudentPinActivity extends BaseActivity implements View.OnClic
     @Override
     protected void init() {
         binding = DataBindingUtil.setContentView(this, getLayout());
-       // ((AuroApp) this.getApplication()).getAppComponent().doInjection(this);
-        //view model and handler setup
-       // viewModel = ViewModelProviders.of(this, viewModelFactory).get(SetPinViewModel.class);
+
         binding.setLifecycleOwner(this);
-//        if (getIntent() != null) {
+
         binding.forgotPassword.setVisibility(View.GONE);
-//            resModel = (UserDetailResModel) getIntent().getParcelableExtra(AppConstant.USER_PROFILE_DATA_MODEL);
-//        }
+
         if (getIntent() != null) {
             resModel = (UserDetailResModel) getIntent().getParcelableExtra(AppConstant.USER_PROFILE_DATA_MODEL);
         }
@@ -85,14 +82,19 @@ public class EnterStudentPinActivity extends BaseActivity implements View.OnClic
     @Override
     public void onClick(View v) {
         ViewUtil.hideKeyboard(this);
-        int id = v.getId();
-        if (id == R.id.bt_continue) {
-            PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
-            SharedPreferences prefs = getSharedPreferences("My_Pref", MODE_PRIVATE);
-            String childid = prefs.getString("studentuserid", "");
-            getProfile(childid);
-        } else if (id == R.id.back_button) {
-            onBackPressed();
+        switch (v.getId()) {
+            case R.id.bt_continue:
+                PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
+                SharedPreferences prefs = getSharedPreferences("My_Pref", MODE_PRIVATE);
+                String childid = prefs.getString("studentuserid", "");
+                getProfile(childid);
+                break;
+
+            case R.id.back_button:
+                onBackPressed();
+                break;
+
+
         }
     }
 

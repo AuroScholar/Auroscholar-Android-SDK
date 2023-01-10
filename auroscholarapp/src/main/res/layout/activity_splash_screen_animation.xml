@@ -79,9 +79,9 @@
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/_10sdp"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:layout_marginStart="@dimen/_8sdp"
-        android:layout_marginEnd="@dimen/_8sdp"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_layout" />
+        android:layout_marginEnd="@dimen/_8sdp" />
 
 
     <ImageView

@@ -45,13 +45,9 @@ public class UpdateChildPinActivity extends BaseActivity implements View.OnClick
     @Named("SetPinActivity")
     ViewModelFactory viewModelFactory;
     ActivitySetPinBinding binding;
-
-    SetPinViewModel viewModel;
     UserDetailResModel resModel;
     String isComingFrom = "";
-    CheckUserResModel checkUserResModel;
-    RegisterApiResModel registerApiResModel;
-    UserDetailResModel userDetailForSecondStudent;
+
     Details details;
 
     @Override
@@ -62,15 +58,13 @@ public class UpdateChildPinActivity extends BaseActivity implements View.OnClick
         setListener();
          details = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
 
-        //setContentView(R.layout.activity_set_pin);
+
     }
 
     @Override
     protected void init() {
         binding = DataBindingUtil.setContentView(this, getLayout());
-       // ((AuroApp) this.getApplication()).getAppComponent().doInjection(this);
-        //view model and handler setup
-       // viewModel = ViewModelProviders.of(this, viewModelFactory).get(SetPinViewModel.class);
+
         binding.setUserName.setVisibility(View.GONE);
         binding.mobileLayout.setVisibility(View.GONE);
 
@@ -81,11 +75,11 @@ public class UpdateChildPinActivity extends BaseActivity implements View.OnClick
 
         }
         binding.titleFirst.setVisibility(View.GONE);
-       // if (isComingFrom.equalsIgnoreCase(AppConstant.ComingFromStatus.COMING_FROM_ADD_STUDENT)) {
+
             binding.titleFirst.setText(this.getString(R.string.set_pin));
-       // } else {
+
             binding.titleFirst.setText(this.getString(R.string.set_pin));
-       // }
+
         AppStringDynamic.setPinPagetrings(binding);
 
     }
@@ -103,31 +97,39 @@ public class UpdateChildPinActivity extends BaseActivity implements View.OnClick
 
     @Override
     public void onClick(View v) {
-        int id = v.getId();
-        if (id == R.id.back_button) {
-            onBackPressed();
-        } else if (id == R.id.bt_done_new) {
-            AppLogger.e("onClick--", "step 1");
-            String pin = binding.pinView.getText().toString();
-            String confirmpin = binding.confirmPin.getText().toString();
-            Details details1 = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
+        switch (v.getId()) {
+            case R.id.back_button:
+                onBackPressed();
+                break;
 
-            if (pin.isEmpty() || pin.equals("")) {
-                Toast.makeText(this, details1.getEnter_the_pin(), Toast.LENGTH_SHORT).show();
-            } else if (pin.length() < 4) {
-                Toast.makeText(this, details1.getEnter_pin_digit(), Toast.LENGTH_SHORT).show();
+            case R.id.bt_done_new:
+                AppLogger.e("onClick--", "step 1");
+                String pin = binding.pinView.getText().toString();
+                String confirmpin = binding.confirmPin.getText().toString();
+                Details details1 = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
 
-            } else if (confirmpin.isEmpty() || confirmpin.equals("")) {
-                Toast.makeText(this, details1.getEnter_the_confirm_pin(), Toast.LENGTH_SHORT).show();
+                if(pin.isEmpty()||pin.equals("")){
+                    Toast.makeText(this, details1.getEnter_the_pin(), Toast.LENGTH_SHORT).show();
+                }
+                else if (pin.length()<4){
+                    Toast.makeText(this, details1.getEnter_pin_digit(), Toast.LENGTH_SHORT).show();
 
-            } else if (confirmpin.length() < 4) {
-                Toast.makeText(this, details1.getEnter_confirmpin_digit(), Toast.LENGTH_SHORT).show();
+                }
+                else if (confirmpin.isEmpty()||confirmpin.equals("")){
+                    Toast.makeText(this, details1.getEnter_the_confirm_pin(), Toast.LENGTH_SHORT).show();
 
-            } else if (pin == confirmpin || pin.equals(confirmpin)) {
-                setchildpin(pin);
-            } else {
-                Toast.makeText(this, details1.getPin_and_confirm_not_match(), Toast.LENGTH_SHORT).show();
-            }
+                }
+                else if (confirmpin.length()<4){
+                    Toast.makeText(this, details1.getEnter_confirmpin_digit(), Toast.LENGTH_SHORT).show();
+
+                }
+                else if (pin == confirmpin || pin.equals(confirmpin)){
+                    setchildpin(pin);
+                }
+                else{
+                    Toast.makeText(this, details1.getPin_and_confirm_not_match(), Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
     }
 
@@ -174,7 +176,6 @@ public class UpdateChildPinActivity extends BaseActivity implements View.OnClick
 
 
                             } else {
-                               // ViewUtil.showSnackBar(binding.getRoot(), response.message());
                                 Toast.makeText(UpdateChildPinActivity.this, response.message(), Toast.LENGTH_SHORT).show();
                             }
                         } catch (Exception e) {

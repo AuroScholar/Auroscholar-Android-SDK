@@ -60,14 +60,11 @@ public class EnterParentPinActivity extends BaseActivity implements View.OnClick
     @Override
     protected void init() {
         binding = DataBindingUtil.setContentView(this, getLayout());
-       // ((AuroApp) this.getApplication()).getAppComponent().doInjection(this);
-        //view model and handler setup
-       // viewModel = ViewModelProviders.of(this, viewModelFactory).get(SetPinViewModel.class);
+
         binding.setLifecycleOwner(this);
-//        if (getIntent() != null) {
+
         binding.forgotPassword.setVisibility(View.VISIBLE);
-//            resModel = (UserDetailResModel) getIntent().getParcelableExtra(AppConstant.USER_PROFILE_DATA_MODEL);
-//        }
+
         setListener();
         AppStringDynamic.setEnterPinPagetrings(binding);
     }
@@ -88,25 +85,38 @@ public class EnterParentPinActivity extends BaseActivity implements View.OnClick
     @Override
     public void onClick(View v) {
         ViewUtil.hideKeyboard(this);
-        int id = v.getId();
-        if (id == R.id.bt_continue) {
-            PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
-            String username = prefModel.getCheckUserResModel().getUserDetails().get(0).getUserName();
-            Details details1 = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
+        switch (v.getId()) {
+            case R.id.bt_continue:
+                PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
+                String username = prefModel.getCheckUserResModel().getUserDetails().get(0).getUserName();
+                Details details1 = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
 
 
-            if (binding.pinView.getText().toString().length() < 4) {
-                Toast.makeText(this, details1.getEnter_pin_digit(), Toast.LENGTH_SHORT).show();
-            } else if (binding.pinView.getText().toString().equals("") || binding.pinView.getText().toString().isEmpty()) {
-                Toast.makeText(this, details1.getEnter_the_pin(), Toast.LENGTH_SHORT).show();
-            } else {
-                getProfile(username);
-            }
-        } else if (id == R.id.back_button) {
-            onBackPressed();
-        } else if (id == R.id.forgotPassword) {
-            Intent intent = new Intent(EnterParentPinActivity.this, ParentForgotPinActivity.class);
-            startActivity(intent);
+                if (binding.pinView.getText().toString().length() < 4){
+                    Toast.makeText(this, details1.getEnter_pin_digit(), Toast.LENGTH_SHORT).show();
+                }
+
+                else if (binding.pinView.getText().toString().equals("")||binding.pinView.getText().toString().isEmpty()){
+                    Toast.makeText(this, details1.getEnter_the_pin(), Toast.LENGTH_SHORT).show();
+                }
+
+
+
+               else{
+                   getProfile(username);
+               }
+
+                break;
+
+            case R.id.back_button:
+                onBackPressed();
+                break;
+            case R.id.forgotPassword:
+
+                Intent intent = new Intent(EnterParentPinActivity.this, ParentForgotPinActivity.class);
+                startActivity(intent);
+                break;
+
         }
     }
 

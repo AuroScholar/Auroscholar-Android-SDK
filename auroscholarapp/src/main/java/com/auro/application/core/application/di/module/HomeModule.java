@@ -20,7 +20,7 @@ import retrofit2.Retrofit;
 @Module
 public class HomeModule {
 
-    //////////////////////////// DashBoard //////////////////////////////////
+
 
     @Provides
     @Singleton
@@ -86,26 +86,6 @@ public class HomeModule {
     ViewModelFactory provideRelaxHomeFragmentViewModelFactory(HomeUseCase homeUseCase, HomeDbUseCase homeDbUseCase, HomeRemoteUseCase homeRemoteUseCase) {
         return new ViewModelFactory(homeUseCase, homeDbUseCase, homeRemoteUseCase);
     }
-
-
-
-/*    @Provides
-    @Singleton
-    @Named("SplashScreenActivity")
-    ViewModelFactory provideSplashScreenActivityViewModelFactory(HomeUseCase homeUseCase,HomeDbUseCase homeDbUseCase,HomeRemoteUseCase homeRemoteUseCase){
-        return new ViewModelFactory(homeUseCase,homeDbUseCase,homeRemoteUseCase);
-    }*/
-
-/*
-    @Provides
-    @Singleton
-    @Named("LoginScreenActivity")
-    ViewModelFactory provideLoginScreenActivityViewModelFactory(HomeUseCase homeUseCase,HomeDbUseCase homeDbUseCase,HomeRemoteUseCase homeRemoteUseCase){
-        return new ViewModelFactory(homeUseCase,homeDbUseCase,homeRemoteUseCase);
-    }
-*/
-
-
 
 
 
@@ -212,14 +192,7 @@ public class HomeModule {
         return new ViewModelFactory(homeUseCase, homeDbUseCase, homeRemoteUseCase);
     }
 
-/*
-    @Provides
-    @Singleton
-    @Named("QuizHomeNewFragment")
-    ViewModelFactory provideQuizViewNewModelFactory(HomeUseCase homeUseCase, HomeDbUseCase homeDbUseCase, HomeRemoteUseCase homeRemoteUseCase) {
-        return new ViewModelFactory(homeUseCase, homeDbUseCase, homeRemoteUseCase);
-    }
-*/
+
 
 
     @Provides
@@ -260,7 +233,7 @@ public class HomeModule {
     }
 
 
-    /*New Ui Pages Start*/
+
 
     @Provides
     @Singleton

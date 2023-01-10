@@ -36,7 +36,6 @@ import com.auro.application.home.presentation.view.activity.SetPinActivity;
 import com.auro.application.util.AppUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 
 import org.jetbrains.annotations.NotNull;
@@ -101,17 +100,7 @@ public class SelectParentAdapter extends RecyclerView.Adapter<SelectParentAdapte
                 }
             }
         });
-//        if(!AuroAppPref.INSTANCE.getModelInstance().isLogin()) {
-//            Vholder.itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//
-//                    if (commonCallBackListner != null) {
-//                        commonCallBackListner.commonEventListner(AppUtil.getCommonClickModel(position, Status.CLICK_PARENTPROFILE, mValues.get(position)));
-//                    }
-//                }
-//            });
-//        }
+
     }
 
     @Override
@@ -133,10 +122,7 @@ public class SelectParentAdapter extends RecyclerView.Adapter<SelectParentAdapte
         }
 
         public void setData(List<UserDetailResModel> mValues, int position) {
-//            if (mValues.size() - 1 == position) {
-//                binding.cardView.setVisibility(View.GONE);
-//                binding.cardViewButton.setVisibility(View.VISIBLE);
-//            } else {
+
 
 
             String userName = details.getUsername()!=null ? details.getUsername() : AuroApp.getAppContext().getResources().getString(R.string.username);
@@ -150,16 +136,15 @@ public class SelectParentAdapter extends RecyclerView.Adapter<SelectParentAdapte
             if (mValues.get(position).getProfilepic().equals("")||mValues.get(position).getProfilepic().equals("null")||mValues.get(position).getProfilepic().isEmpty()){
                 Glide.with(mContext)
                         .load(mContext.getResources().getIdentifier("my_drawable_image_name", "drawable",mContext.getPackageName()))
-                        .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                         .placeholder(R.drawable.account_circle)
-                        .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL))
+                        .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                         .into(binding.studentImage);
             }
             else {
 
 
-                  Glide.with(mContext).load(mValues.get(position).getProfilepic())
-                          .apply(new RequestOptions().circleCrop()).into(binding.studentImage);
+                  Glide.with(mContext).load(mValues.get(position).getProfilepic()).circleCrop().into(binding.studentImage);
             }
 
                 binding.tvStudentGrade.setVisibility(View.GONE);
@@ -179,13 +164,10 @@ public class SelectParentAdapter extends RecyclerView.Adapter<SelectParentAdapte
 
 
 
-//                        Intent i = new Intent(mContext, ParentProfileActivity.class);
-//                        i.putExtra(AppConstant.COMING_FROM, AppConstant.FROM_SET_PASSWORD);
-//                        mContext.startActivity(i);
+
                     }
                 });
-             //   binding.tvStudentGrade.setText(grade+": " + mValues.get(position).getGrade());
-          //  }
+
 
         }
     }

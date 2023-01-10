@@ -109,7 +109,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnFocusCha
     private static final int PERMISSION_REQUEST_CODE = 200;
 
     public UserProfileActivity() {
-        // Required empty public constructor
+
     }
 
     List<String> genderLines;
@@ -185,15 +185,12 @@ public class UserProfileActivity extends BaseActivity implements View.OnFocusCha
 
     }
 
-
     @Override
     protected void init() {
         setCurrentFlag(AppConstant.CurrentFlagStatus.SET_PROFILE_SCREEN);
         PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
         binding.etPhoneNumber.setText(prefModel.getStudentData().getUserMobile());
-//        viewModel.getStateListData();
-//        viewModel.getDistrictListData();
-       // addDropDownGender();
+
         AppStringDynamic.setUserProfilePageStrings(binding);
 
     }
@@ -208,8 +205,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnFocusCha
         binding.etGender.setOnFocusChangeListener(this);
         binding.etGender.setOnTouchListener(this);
 
-//        binding.etState.setOnFocusChangeListener(this);
-//        binding.etState.setOnTouchListener(this);
+
 
 
         binding.etDistict.setOnFocusChangeListener(this);
@@ -247,9 +243,8 @@ public class UserProfileActivity extends BaseActivity implements View.OnFocusCha
     {
         GenderSpinnerAdapter adapter = new GenderSpinnerAdapter(this, android.R.layout.simple_dropdown_item_1line, genderList, this);
 
-        List<String> genederlist = Arrays.asList(getResources().getStringArray(R.array.genderlist_profile));
-//        Log.d(TAG, "genderlist: "+genederlist);
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,genederlist);
+
+
         binding.etGender.setAdapter(adapter);//setting the adapter data into the AutoCompleteTextView
         binding.etGender.setThreshold(1);
         binding.etDistict.setTextColor(Color.BLACK);//will start working from first character
@@ -432,11 +427,8 @@ public class UserProfileActivity extends BaseActivity implements View.OnFocusCha
             if (v.getId() == R.id.etGender) {
                 binding.etGender.showDropDown();
             }
-            /*else if (v.getId() == R.id.etState) {
-                binding.etState.showDropDown();
 
-                AppLogger.v("UpdatePradeep","onFocusChange state ");
-            }*/ else if (v.getId() == R.id.etDistict) {
+            else if (v.getId() == R.id.etDistict) {
                 binding.etDistict.showDropDown();
                 AppLogger.v("UpdatePradeep","onFocusChange distict ");
             }
@@ -445,15 +437,11 @@ public class UserProfileActivity extends BaseActivity implements View.OnFocusCha
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        // binding.etGender.showDropDown();
+
 
         if (v.getId() == R.id.etGender) {
             binding.etGender.showDropDown();
-        }/* else if (v.getId() == R.id.etState) {
-            binding.etState.showDropDown();
-            getAllStateList();
-            Log.d(TAG, "onTouch: Ankesh");
-        }*/ else if (v.getId() == R.id.etDistict) {
+        }else if (v.getId() == R.id.etDistict) {
             binding.etDistict.showDropDown();
         }
 
@@ -490,7 +478,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnFocusCha
         studentProfileModel.setBuildVersion(AppUtil.getAppVersionName());
         studentProfileModel.setIpAddress(AppUtil.getIpAdress());
         studentProfileModel.setLanguage(ViewUtil.getLanguageId());
-        /*End of Device Detail*/
+
         if (TextUtil.isEmpty(name)) {
             showSnackbarError(prefModel.getLanguageMasterDynamic().getDetails().getPlease_enetr_the_name());//"Please enter the name"
             return;
@@ -526,17 +514,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnFocusCha
                     handleProgress(2, (String) responseApi.data);
                     break;
 
-//                case STATE_LIST_ARRAY:
-//                    stateDataModelList = (List<StateDataModelNew>) responseApi.data;
-//                    AppLogger.v("StatePradeep", stateDataModelList.size() + "   -----> ListState");
-//                    break;
-//
-//                case DISTRICT_LIST_DATA:
-//                    districtDataModels = (List<DistrictDataModel>) responseApi.data;
-//                    AppLogger.v("StatePradeep", districtDataModels.size() + "   -----> ListDistrict");
-//                    binding.etDistict.setText(districtDataModels.get(0).getDistrict_name());
-//                    addDropDownDistict();
-//                    break;
+
 
                 default:
                     handleProgress(2, (String) responseApi.data);
@@ -568,47 +546,32 @@ public class UserProfileActivity extends BaseActivity implements View.OnFocusCha
 
     @Override
     public void onClick(View v) {
-        int id = v.getId();
-        if (id == R.id.editImage || id == R.id.profile_image) {// askPermission();
-            if (checkPermission()) {
-                //main logic or main code
+        switch (v.getId()) {
+            case R.id.editImage:
+            case R.id.profile_image:
 
-                // . write your main code to execute, It will execute if the permission is already given.
+                if (checkPermission()) {
 
-            } else {
-                requestPermission();
-            }
-        } else if (id == R.id.skip_for_now) {
-            startDashboardActivity();
-        } else if (id == R.id.nextButton) {
-            callingStudentUpdateProfile();
+
+
+                } else {
+                    requestPermission();
+                }
+                break;
+
+            case R.id.skip_for_now:
+                startDashboardActivity();
+                break;
+
+            case R.id.nextButton:
+                callingStudentUpdateProfile();
+                break;
         }
 
     }
 
 
-    private void askPermission() {
-        String rationale = "For Upload Profile Picture. Camera and Storage Permission is Must.";
-        Permissions.Options options = new Permissions.Options()
-                .setRationaleDialogTitle("Info")
-                .setSettingsDialogTitle("Warning");
-        Permissions.check(this, PermissionUtil.mCameraPermissions, rationale, options, new PermissionHandler() {
-            @Override
-            public void onGranted() {
-                ImagePicker.with(UserProfileActivity.this)
-                        .crop()                    //Crop image(Optional), Check Customization for more option
-                        .compress(1024)            //Final image size will be less than 1 MB(Optional)
-                        .maxResultSize(1080, 1080)    //Final image resolution will be less than 1080 x 1080(Optional)
-                        .start();
-            }
 
-            @Override
-            public void onDenied(Context context, ArrayList<String> deniedPermissions) {
-                // permission denied, block the feature.
-                ViewUtil.showSnackBar(binding.getRoot(), rationale);
-            }
-        });
-    }
 
 
     private void requestPermission() {
@@ -621,7 +584,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnFocusCha
     private boolean checkPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted
+
             return false;
         }
         return true;
@@ -672,7 +635,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnFocusCha
         AppLogger.e("StudentProfile", "fragment requestCode=" + requestCode);
 
         if (requestCode == 2404) {
-            // CropImages.ActivityResult result = CropImages.getActivityResult(data);
+
             if (resultCode == RESULT_OK) {
                 try {
                     Uri uri = data.getData();
@@ -701,7 +664,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnFocusCha
             } else if (resultCode == ImagePicker.RESULT_ERROR) {
                 showSnackbarError(ImagePicker.getError(data));
             } else {
-                // Toast.makeText(getActivity(), "Task Cancelled", Toast.LENGTH_SHORT).show();
+
             }
         }
     }
@@ -730,27 +693,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnFocusCha
 
     @Override
     public void commonEventListner(CommonDataModel commonDataModel) {
-//        switch (commonDataModel.getClickType()) {
-//            case STATE_WISE:
-//
-//                StateDataModelNew stateDataModel = (StateDataModelNew) commonDataModel.getObject();
-//                binding.etState.setText(stateDataModel.getStateName());
-//                stateCode = stateDataModel.getStateId();
-//                AppLogger.v("StatePradeep", "addDropDownState  called " + stateDataModel.getStateId());
-//                viewModel.getStateDistrictData(stateDataModel.getStateId());
-//                binding.tlDistict.setVisibility(View.VISIBLE);
-//
-//                AppLogger.v("StatePradeep", "addDropDownState  " + stateDataModel.getStateId());
-//                break;
-//            case DISTRICT:
-//                DistrictDataModel districtDataModel = (DistrictDataModel) commonDataModel.getObject();
-//                AppLogger.v("StatePradeep", "addDropDownDistict    " + districtDataModel.getDistrict_code());
-//                binding.etDistict.setText(districtDataModel.getDistrict_name());
-//                districtCode = districtDataModel.getDistrict_code();
-//                AppLogger.v("StatePradeep", "addDropDownDistict    " + districtDataModel.getDistrict_code());
-//                //viewModel.getStateDistrictData(stateDataModel.getState_code());
-//                break;
-//        }
+
         if (commonDataModel.getClickType()==STATE)
         {
             StateData stateDataModel = (StateData) commonDataModel.getObject();

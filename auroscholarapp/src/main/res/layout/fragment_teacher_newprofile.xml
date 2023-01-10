@@ -6,6 +6,7 @@
     <data>
 
         <variable
+
             name="studentProfileViewModel"
             type="com.auro.application.home.presentation.viewmodel.StudentProfileViewModel" />
     </data>
@@ -186,6 +187,7 @@
                             style="@style/TextInputLayoutStyle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:longClickable="false"
                             android:hint="@string/teacher_full_name">
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -194,6 +196,9 @@
                                 android:layout_height="wrap_content"
                                 android:drawableLeft="@drawable/ic_user_new_profile"
                                 android:gravity="left"
+                                android:longClickable="false"
+
+                                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
                                 android:inputType="textPersonName"
                                 android:maxLines="1"
                                 android:drawablePadding="@dimen/_10sdp"
@@ -206,6 +211,7 @@
                             android:id="@+id/tlPhoneNumber"
                             style="@style/TextInputLayoutStyle"
                             android:layout_width="match_parent"
+                            android:longClickable="false"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/_15sdp"
                             android:hint="@string/teacher_phone_number">
@@ -219,6 +225,7 @@
                                 android:gravity="left"
                                 android:focusable="false"
                                 android:editable="false"
+                                android:longClickable="false"
                                 android:paddingLeft="@dimen/_10sdp"
                                 android:inputType="number"
                                 android:maxLines="1"
@@ -233,6 +240,7 @@
                             style="@style/TextInputLayoutStyle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:longClickable="false"
                             android:layout_marginTop="@dimen/_15sdp"
                             android:hint="@string/email_id">
 
@@ -242,7 +250,9 @@
                                 android:layout_height="wrap_content"
                                 android:drawableLeft="@drawable/ic_email"
                                 android:drawablePadding="@dimen/_10sdp"
+                                android:longClickable="false"
                                 android:gravity="left"
+                                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@#$!0123456789_-."
                                 android:paddingLeft="@dimen/_10sdp"
                                 android:inputType="text"
                                 android:maxLines="1"
@@ -324,34 +334,7 @@
                             app:layout_constraintTop_toBottomOf="@+id/recycleViewsubject" />
 
 
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/tlSchool"
 
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/_15sdp"
-                            android:hint="@string/school_name"
-                            app:endIconMode="none"
-                            style="@style/TextInputLayoutExposeStyle"
-                            android:textColorHint="@color/auro_border_blue">
-
-                            <AutoCompleteTextView
-                                android:id="@+id/etSchoolName"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:inputType="number"
-                                android:drawablePadding="@dimen/_20sdp"
-                                android:paddingRight="@dimen/_20sdp"
-                                android:focusable="false"
-                                android:gravity="left"
-                                android:maxLines="1"
-                                android:paddingLeft="@dimen/_10sdp"
-                                android:paddingTop="@dimen/_10sdp"
-                                android:paddingBottom="@dimen/_10sdp"
-
-                                android:drawableRight="@drawable/ic_user_drop_down"
-                                android:textColor="@color/black" />
-                        </com.google.android.material.textfield.TextInputLayout>
 
 
 
@@ -362,6 +345,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/_15sdp"
                             android:hint="@string/student_gender"
+                            android:longClickable="false"
                             android:textColorHint="@color/auro_border_blue"
                             app:endIconMode="none"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -378,6 +362,7 @@
                                 android:drawablePadding="@dimen/_10sdp"
                                 android:focusable="false"
                                 android:gravity="left"
+                                android:longClickable="false"
                                 android:maxLines="1"
                                 android:paddingEnd="@dimen/_20sdp"
                                 android:textColor="@color/black"
@@ -395,6 +380,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/_15sdp"
                             android:hint="@string/state"
+                            android:longClickable="false"
                             android:textColorHint="@color/auro_border_blue"
                             app:endIconMode="none"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -411,6 +397,7 @@
                                 android:focusable="false"
                                 android:gravity="left"
                                 android:maxLines="1"
+                                android:longClickable="false"
                                 android:paddingEnd="@dimen/_20sdp"
                                 android:textColor="@color/black"
 
@@ -427,6 +414,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/_15sdp"
                             android:hint="@string/district"
+                            android:longClickable="false"
                             android:textColorHint="@color/auro_border_blue"
                             app:endIconMode="none"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -442,6 +430,7 @@
                                 android:drawablePadding="@dimen/_10sdp"
                                 android:focusable="false"
                                 android:gravity="left"
+                                android:longClickable="false"
                                 android:maxLines="1"
                                 android:paddingEnd="@dimen/_20sdp"
                                 android:textColor="@color/black"
@@ -450,7 +439,135 @@
 
 
                         </com.google.android.material.textfield.TextInputLayout>
+                        <RelativeLayout
+                            android:id="@+id/rel_school"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/tldistrict"
+                            android:layout_margin="@dimen/_5sdp"
+                            >
 
+                            <AutoCompleteTextView
+                                android:id="@+id/autoCompleteTextView1"
+                                style="@style/Widget.AppCompat.AutoCompleteTextView"
+                                android:layout_marginTop="@dimen/_4sdp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:drawableRight="@drawable/places_ic_search"
+                                android:drawableTint="@color/grey"
+                                android:hint="Search School"
+                                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
+                                android:popupBackground="#ffffff"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/grey"
+                                android:textSize="@dimen/_14ssp" />
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/addnewschool"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Add School +"
+                                android:layout_marginTop="@dimen/_8sdp"
+                                android:textColor="@color/blue_color"
+                                android:textSize="@dimen/_14sdp"
+                                android:layout_below="@+id/autoCompleteTextView1"
+                                android:layout_alignParentRight="true"
+                                ></androidx.appcompat.widget.AppCompatTextView>
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:visibility="gone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/rel_school1"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:layout_below="@+id/tlDistict">
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/txtsearch"
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/_40ssp"
+                                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
+                                android:focusable="false"
+                                android:textColorHint="@color/black"
+                                android:textSize="@dimen/_6ssp"
+                                android:hint="Search school here.."
+                                android:theme="@style/MyEditTextSchol">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/editsearch"
+                                    android:layout_width="220dp"
+                                    android:layout_height="@dimen/_40ssp"
+                                    android:layout_marginLeft="10dp"
+                                    android:longClickable="false"
+                                    android:inputType="none"
+                                    android:maxLines="1"
+                                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
+                                    android:paddingRight="@dimen/_20sdp"
+                                    android:singleLine="true"
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/_10sdp" />
+
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <LinearLayout
+                                android:id="@+id/btnsearch"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_toRightOf="@+id/txtsearch"
+                                android:background="@color/blue_color">
+
+                                <androidx.appcompat.widget.AppCompatImageView
+
+                                    android:layout_width="35dp"
+                                    android:layout_height="30dp"
+                                    android:drawableTint="@color/white"
+                                    android:src="@android:drawable/ic_menu_search"></androidx.appcompat.widget.AppCompatImageView>
+                            </LinearLayout>
+                        </RelativeLayout>
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/txtaddnewschool"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/blue_color"
+                            android:layout_gravity="right"
+                            android:gravity="right"
+                            android:visibility="gone"
+                            android:layout_margin="@dimen/_5ssp"
+                            android:text="Add New School">
+                        </androidx.appcompat.widget.AppCompatTextView>
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tlSchool"
+
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_15sdp"
+                            android:hint="@string/school_name"
+                            app:endIconMode="none"
+                            android:longClickable="false"
+                            style="@style/TextInputLayoutExposeStyle"
+                            android:textColorHint="@color/auro_border_blue">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/etSchoolName"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="number"
+                                android:drawablePadding="@dimen/_20sdp"
+                                android:paddingRight="@dimen/_20sdp"
+                                android:focusable="false"
+                                android:longClickable="false"
+                                android:gravity="left"
+                                android:maxLines="1"
+                                android:paddingLeft="@dimen/_10sdp"
+                                android:paddingTop="@dimen/_10sdp"
+                                android:paddingBottom="@dimen/_10sdp"
+
+                                android:drawableRight="@drawable/ic_user_drop_down"
+                                android:textColor="@color/black" />
+                        </com.google.android.material.textfield.TextInputLayout>
 
                     </LinearLayout>
 

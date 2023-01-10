@@ -217,13 +217,9 @@ public class PrefModel implements Serializable {
         this.assignmentReqModel = assignmentReqModel;
     }
 
-    public boolean isTooltipStatus() {
-        return tooltipStatus;
-    }
 
-    public void setTooltipStatus(boolean tooltipStatus) {
-        this.tooltipStatus = tooltipStatus;
-    }
+
+
 
     public List<AssignmentReqModel> getListAzureImageList() {
         return listAzureImageList;
@@ -233,63 +229,19 @@ public class PrefModel implements Serializable {
         this.listAzureImageList = listAzureImageList;
     }
 
-    public FbGoogleUserModel getFbuserModel() {
-        return fbuserModel;
-    }
 
-    public void setFbuserModel(FbGoogleUserModel fbuserModel) {
-        this.fbuserModel = fbuserModel;
-    }
 
-    private FbGoogleUserModel fbuserModel;
 
-    public String getProfileTimestamp() {
-        return profileTimestamp;
-    }
 
-    public void setProfileTimestamp(String profileTimestamp) {
-        this.profileTimestamp = profileTimestamp;
-    }
 
-    public String getAccessToken() {
-        return accessToken;
-    }
 
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
 
-    public String getTokenType() {
-        return tokenType;
-    }
 
-    public void setTokenType(String tokenType) {
-        this.tokenType = tokenType;
-    }
 
-    public String getRefreshToken() {
-        return refreshToken;
-    }
 
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
 
-    public Integer getExpiresIn() {
-        return expiresIn;
-    }
 
-    public void setExpiresIn(Integer expiresIn) {
-        this.expiresIn = expiresIn;
-    }
 
-    public String getScope() {
-        return scope;
-    }
-
-    public void setScope(String scope) {
-        this.scope = scope;
-    }
 
     public String getMessage() {
         return message;
@@ -299,9 +251,7 @@ public class PrefModel implements Serializable {
         this.message = message;
     }
 
-    public boolean isTour() {
-        return isTour;
-    }
+
 
     public void setTour(boolean tour) {
         isTour = tour;
@@ -320,13 +270,9 @@ public class PrefModel implements Serializable {
         return isLogin;
     }
 
-    public String getSignupPrefilledData() {
-        return signupPrefilledData;
-    }
 
-    public void setSignupPrefilledData(String signupPrefilledData) {
-        this.signupPrefilledData = signupPrefilledData;
-    }
+
+
 
     public boolean isDashboardaApiNeedToCall() {
         return isDashboardaApiNeedToCall;
@@ -340,54 +286,13 @@ public class PrefModel implements Serializable {
         isLogin = login;
     }
 
-    public String getUserCountry() {
-        return userCountry;
-    }
-
-    public void setUserCountry(String userCountry) {
-        this.userCountry = userCountry;
-    }
-
-    public String getCountryNameCode() {
-        return countryNameCode;
-    }
-
-    public void setCountryNameCode(String countryNameCode) {
-        this.countryNameCode = countryNameCode;
-    }
-
-    public String getCountryPhoneCode() {
-        return countryPhoneCode;
-    }
-
-    public void setCountryPhoneCode(String countryPhoneCode) {
-        this.countryPhoneCode = countryPhoneCode;
-    }
 
 
-    public String getCurrentLatitude() {
-        return currentLatitude;
-    }
 
-    public void setCurrentLatitude(String currentLatitude) {
-        this.currentLatitude = currentLatitude;
-    }
 
-    public String getCurrentLongitude() {
-        return currentLongitude;
-    }
 
-    public void setCurrentLongitude(String currentLongitude) {
-        this.currentLongitude = currentLongitude;
-    }
 
-    public String getUserLoginId() {
-        return userLoginId;
-    }
 
-    public void setUserLoginId(String userLoginId) {
-        this.userLoginId = userLoginId;
-    }
 
 
     public String getEmailId() {
@@ -398,21 +303,13 @@ public class PrefModel implements Serializable {
         this.emailId = emailId;
     }
 
-    public String getUpdateMobileNum() {
-        return updateMobileNum;
-    }
 
-    public void setUpdateMobileNum(String updateMobileNum) {
-        this.updateMobileNum = updateMobileNum;
-    }
 
     public String getUpdateEmailId() {
         return updateEmailId;
     }
 
-    public void setUpdateEmailId(String updateEmailId) {
-        this.updateEmailId = updateEmailId;
-    }
+
 
     public boolean isIntroScreen() {
         return introScreen;
@@ -439,9 +336,7 @@ public class PrefModel implements Serializable {
         return 0;
     }
 
-  /*  public void setStudentClass(int studentClass) {
-        this.studentClass = studentClass;
-    }*/
+
 
     public String getUserMobile() {
         return userMobile;
@@ -479,9 +374,7 @@ public class PrefModel implements Serializable {
         return refferalLink;
     }
 
-    public void setRefferalLink(String refferalLink) {
-        this.refferalLink = refferalLink;
-    }
+
 
     public List<String> getStudentClasses() {
         return studentClasses;
@@ -539,9 +432,7 @@ public class PrefModel implements Serializable {
         this.preKycDisclaimer = preKycDisclaimer;
     }
 
-    public String getStatusUserCode() {
-        return statusUserCode;
-    }
+
 
     public void setStatusUserCode(String statusUserCode) {
         this.statusUserCode = statusUserCode;

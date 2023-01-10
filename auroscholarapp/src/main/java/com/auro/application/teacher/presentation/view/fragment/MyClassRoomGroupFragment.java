@@ -1,5 +1,6 @@
 package com.auro.application.teacher.presentation.view.fragment;
 
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -7,7 +8,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -32,17 +32,27 @@ import com.auro.application.core.common.CommonCallBackListner;
 import com.auro.application.core.common.CommonDataModel;
 import com.auro.application.core.common.Status;
 import com.auro.application.core.database.AuroAppPref;
+import com.auro.application.core.database.PrefModel;
 import com.auro.application.databinding.FragmentClassRoomGroupBinding;
+import com.auro.application.home.data.model.response.DynamiclinkResModel;
 import com.auro.application.home.presentation.view.activity.HomeActivity;
+import com.auro.application.home.presentation.view.activity.StudentProfileActivity;
+import com.auro.application.teacher.data.model.StudentData;
+import com.auro.application.teacher.data.model.StudentListDataModel;
 import com.auro.application.teacher.data.model.request.TeacherUserIdReq;
+import com.auro.application.teacher.data.model.response.MyBuddyDataResModel;
 import com.auro.application.teacher.data.model.response.TeacherClassRoomResModel;
 import com.auro.application.teacher.data.model.response.TeacherGroupRes;
+import com.auro.application.teacher.data.model.response.TeacherInviteTeacherResModel;
 import com.auro.application.teacher.data.model.response.TotalStudentResModel;
 import com.auro.application.teacher.data.model.response.UserImageInGroupResModel;
+import com.auro.application.teacher.presentation.view.adapter.CreateGroupStudentListAdapter;
+import com.auro.application.teacher.presentation.view.adapter.MyBuddyListAdapter;
 import com.auro.application.teacher.presentation.view.adapter.StudentListAdapter;
 import com.auro.application.teacher.presentation.view.adapter.GroupAdapter;
 import com.auro.application.teacher.presentation.viewmodel.MyClassroomViewModel;
 import com.auro.application.util.AppLogger;
+import com.auro.application.util.RemoteApi;
 import com.auro.application.util.TextUtil;
 import com.auro.application.util.ViewUtil;
 import com.auro.application.util.strings.AppStringTeacherDynamic;
@@ -54,6 +64,7 @@ import org.jetbrains.annotations.NotNull;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -63,6 +74,9 @@ import me.toptas.fancyshowcase.FancyShowCaseQueue;
 import me.toptas.fancyshowcase.FancyShowCaseView;
 import me.toptas.fancyshowcase.FocusShape;
 import me.toptas.fancyshowcase.listener.OnViewInflateListener;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MyClassRoomGroupFragment extends BaseFragment implements CommonCallBackListner, View.OnClickListener {
 
@@ -76,6 +90,9 @@ public class MyClassRoomGroupFragment extends BaseFragment implements CommonCall
     boolean isStateRestore;
     UserImageInGroupResModel userImageInGroupResModel;
     StudentListAdapter studentListAdapter;
+    CreateGroupStudentListAdapter studentListAdapter2;
+    List<StudentData> listchilds = new ArrayList<>();
+    List<StudentData> list = new ArrayList<>();
 
 
     GroupAdapter newClassAdapter;
@@ -84,14 +101,14 @@ public class MyClassRoomGroupFragment extends BaseFragment implements CommonCall
     TeacherClassRoomResModel resModel;
 
     public MyClassRoomGroupFragment() {
-        // Required empty public constructor
+
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
 
         if (binding != null) {
             isStateRestore = true;
@@ -102,23 +119,18 @@ public class MyClassRoomGroupFragment extends BaseFragment implements CommonCall
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MyClassroomViewModel.class);
         binding.setLifecycleOwner(this);
         setRetainInstance(true);
+        setListener();
         return binding.getRoot();
 
-        // return inflater.inflate(R.layout.fragment_class_room_group, container, false);
+
     }
 
     @Override
     protected void init() {
-        //ViewUtil.setTeacherProfilePic(binding.imageView6);
+
         AppStringTeacherDynamic.setMyClassRoomGroupFragmentStrings(binding);
         ViewUtil.setTeacherProfilePic(binding.imageView6);
-       /* AppLogger.e("init",""+isAppInstalled(AppConstant.PACKAGE_WHATSAPP));
-        if (isAppInstalled(AppConstant.PACKAGE_WHATSAPP)) {
-            binding.txtShareWithOther.setVisibility(View.VISIBLE);
 
-        } else {
-            binding.txtShareWithOther.setVisibility(View.GONE);
-        }*/
     }
 
     @Override
@@ -144,7 +156,7 @@ public class MyClassRoomGroupFragment extends BaseFragment implements CommonCall
 
 
     private void callTeacherClassroomApi() {
-        // 652597
+
         TeacherUserIdReq teacherUserIdReq = new TeacherUserIdReq();
         teacherUserIdReq.setUserId(AuroAppPref.INSTANCE.getModelInstance().getStudentData().getUserId());
         AppLogger.v("InfoScreen", " step 1 ");
@@ -160,35 +172,108 @@ public class MyClassRoomGroupFragment extends BaseFragment implements CommonCall
     @Override
     public void onClick(View v) {
 
-        int id = v.getId();
-        if (id == R.id.bt_add_group) {
-            openCreateGroupFragment();
-        } else if (id == R.id.txtShareWithOther || id == R.id.whats_app_layout) {
-            ((HomeActivity) getActivity()).setCommonCallBackListner(this);
-           // ((HomeActivity) getActivity()).callRefferApi();
-            handleRefferProgress(0);
+        switch (v.getId()) {
+            case R.id.bt_add_group:
+                openCreateGroupFragment();
+                break;
+
+            case R.id.txtShareWithOther:
+            case R.id.whats_app_layout:
+                getTeacherList();
+
+
+                break;
+
         }
     }
+    public void callRefferApi() {
+        AppLogger.e("callRefferApi","step 1");
+        try {
+            DynamiclinkResModel dynamiclinkResModel = new DynamiclinkResModel();
+            dynamiclinkResModel.setReffeUserId(AuroAppPref.INSTANCE.getModelInstance().getStudentData().getUserId());
+            dynamiclinkResModel.setSource(AppConstant.AURO_ID);
+            dynamiclinkResModel.setNavigationTo(AppConstant.NavigateToScreen.STUDENT_DASHBOARD);
+            dynamiclinkResModel.setReffer_type("" + AppConstant.UserType.TEACHER);
+            viewModel.checkInternet(dynamiclinkResModel, Status.DYNAMIC_LINK_API);
+        }catch (Exception e)
+        {
+
+        }
+    }
+
+    private void getTeacherList()
+    {
+        handleRefferProgress(0);
+        PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
+        HashMap<String,String> map_data = new HashMap<>();
+        String userid = AuroAppPref.INSTANCE.getModelInstance().getStudentData().getUserId();
+        map_data.put("reffer_user_id",userid);
+        map_data.put("source",AppConstant.AURO_ID);
+        map_data.put("navigation_to",AppConstant.NavigateToScreen.STUDENT_DASHBOARD);
+        map_data.put("reffer_type", String.valueOf(AppConstant.UserType.TEACHER)); //"576232"
+        RemoteApi.Companion.invoke().getreffertostudent(map_data)
+                .enqueue(new Callback<DynamiclinkResModel>()
+                {
+                    @Override
+                    public void onResponse(Call<DynamiclinkResModel> call, Response<DynamiclinkResModel> response)
+                    {
+                        try {
+                            if (response.isSuccessful()) {
+                                handleRefferProgress(1);
+                                if (response.body().getStatus().equals("success")){
+                                    if (!(response.body().getLink() == null || response.body().getLink().isEmpty() || response.body().getLink().equals("") || response.body().getLink().equals("null"))) {
+
+                                       String link = response.body().getLink();
+                                        performClick(link);
+                                    }
+                                    else{
+
+                                        Toast.makeText(getActivity(), "No link found", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                            }
+                            else {
+
+                                Toast.makeText(getActivity(), response.message(), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(getActivity(), "Internet connection", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<DynamiclinkResModel> call, Throwable t)
+                    {
+                        Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+
+
+    }
+
 
     void openCreateGroupFragment() {
 
         int count = 0;
         for (TotalStudentResModel model : resModel.getTotalStudentList()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-                if (model.getGroupId().isEmpty()) {
-                    CreateGroupFragment createGroupFragment = new CreateGroupFragment();
-                 /*   Bundle bundle=new Bundle();
-                    bundle.putParcelable(AppConstant.SENDING_DATA.CLASSROOM_RESPONSE_MODEL,resModel);
-                    createGroupFragment.setArguments(bundle);*/
-                    ((HomeActivity) getActivity()).openFragment(createGroupFragment);
-                    break;
-                } else {
-                    count++;
-                }
+            if (model.getGroupId().isEmpty()) {
+                CreateGroupFragment createGroupFragment = new CreateGroupFragment();
+
+                ((HomeActivity) getActivity()).openFragment(createGroupFragment);
+                break;
+            } else {
+                count++;
             }
         }
         if (resModel.getTotalStudentList().size() == count) {
-            showSnackbarError("Please Select the student before add in the group");
+
+
+            CreateGroupFragment createGroupFragment = new CreateGroupFragment();
+            ((HomeActivity) getActivity()).openFragment(createGroupFragment);
+
         }
 
     }
@@ -197,18 +282,28 @@ public class MyClassRoomGroupFragment extends BaseFragment implements CommonCall
     public void commonEventListner(CommonDataModel commonDataModel) {
         switch (commonDataModel.getClickType()) {
             case GROUP_CLICK_CALLBACK:
-                TeacherGroupRes teacherGroupRes = (TeacherGroupRes) commonDataModel.getObject();
-                if (studentListAdapter != null) {
-                    List<TotalStudentResModel> list = updateList(teacherGroupRes);
-                    if (!list.isEmpty()) {
-                        binding.rvChooseStudent.setVisibility(View.VISIBLE);
-                        binding.studentListMessage.setVisibility(View.GONE);
-                        studentListAdapter.setData(list);
-                    } else {
-                        binding.rvChooseStudent.setVisibility(View.GONE);
-                        binding.studentListMessage.setVisibility(View.VISIBLE);
-                    }
 
+                TeacherGroupRes teacherGroupRes = (TeacherGroupRes) commonDataModel.getObject();
+                String groupid = teacherGroupRes.getGroupId().toString();
+
+                if (teacherGroupRes.getGroupId() == "0" || teacherGroupRes.getGroupId().equals(0) || teacherGroupRes.getGroupId().equals("0")){
+                    if (studentListAdapter != null) {
+                        List<TotalStudentResModel> list = updateList(teacherGroupRes);
+                        if (!list.isEmpty()) {
+                            binding.rvChooseStudent.setVisibility(View.VISIBLE);
+                            binding.rvChooseStudent2.setVisibility(View.GONE);
+                            binding.studentListMessage.setVisibility(View.GONE);
+                            studentListAdapter.setData(list);
+                        } else {
+                            binding.rvChooseStudent.setVisibility(View.GONE);
+                            binding.rvChooseStudent2.setVisibility(View.GONE);
+                            binding.studentListMessage.setVisibility(View.VISIBLE);
+                        }
+
+                    }
+                }
+             else{
+                    getStudentList(groupid);
                 }
                 break;
 
@@ -217,16 +312,14 @@ public class MyClassRoomGroupFragment extends BaseFragment implements CommonCall
                 handleRefferProgress(1);
                 if (isVisible()) {
                     AppLogger.e("performClick-", "REFFER_API_SUCCESS");
-                    ((HomeActivity) getActivity()).setCommonCallBackListner(null);
-                    performClick();
+
                 }
                 break;
 
             case REFFER_API_ERROR:
                 if (isVisible()) {
                     AppLogger.e("performClick-", "REFFER_API_ERROR");
-                    ((HomeActivity) getActivity()).setCommonCallBackListner(null);
-                    handleRefferProgress(1);
+
                 }
                 break;
         }
@@ -242,14 +335,15 @@ public class MyClassRoomGroupFragment extends BaseFragment implements CommonCall
 
     }
 
-    private void performClick() throws IllegalStateException {
+    private void performClick(String link) throws IllegalStateException {
         AppLogger.e("performClick-", "performClick calling 1");
         String completeLink = getActivity().getResources().getString(R.string.teacher_share_msg);
         if (AuroApp.getAuroScholarModel() != null && !TextUtil.isEmpty(AuroApp.getAuroScholarModel().getReferralLink())) {
-            completeLink = completeLink + AuroApp.getAuroScholarModel().getReferralLink();
+            completeLink = completeLink + link;
         }
+        completeLink = completeLink + link;
         openWhatsApp("", completeLink);
-        // shareWithFriends(completeLink);
+
 
     }
 
@@ -274,14 +368,19 @@ public class MyClassRoomGroupFragment extends BaseFragment implements CommonCall
     public void setAdapterAllListStudent(List<TotalStudentResModel> totalStudentList) {
         binding.rvChooseStudent.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, true));
         binding.rvChooseStudent.setHasFixedSize(true);
+        binding.rvChooseStudent2.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, true));
+        binding.rvChooseStudent2.setHasFixedSize(true);
         studentListAdapter = new StudentListAdapter(getActivity(), totalStudentList, this);
         binding.rvChooseStudent.setAdapter(studentListAdapter);
         if (!totalStudentList.isEmpty()) {
+
             binding.rvChooseStudent.setVisibility(View.VISIBLE);
+            binding.rvChooseStudent2.setVisibility(View.GONE);
             binding.studentListMessage.setVisibility(View.GONE);
 
         } else {
             binding.rvChooseStudent.setVisibility(View.GONE);
+            binding.rvChooseStudent2.setVisibility(View.GONE);
             binding.studentListMessage.setVisibility(View.VISIBLE);
         }
 
@@ -405,13 +504,15 @@ public class MyClassRoomGroupFragment extends BaseFragment implements CommonCall
         if (groupRes.getGroupId().equalsIgnoreCase("0")) {
             return resModel.getTotalStudentList();
         } else {
-            for (TotalStudentResModel studentResModel : resModel.getTotalStudentList()) {
-                if (studentResModel.getGroupId().equalsIgnoreCase(groupRes.getGroupId())) {
-                    newlist.add(studentResModel);
-                }
-            }
-            return newlist;
+//            for (TotalStudentResModel studentResModel : resModel.getTotalStudentList()) {
+//                if (studentResModel.getGroupId().equalsIgnoreCase(groupRes.getGroupId())) {
+//                    newlist.add(studentResModel);
+//                }
+//            }
+//            return newlist;
+            getStudentList(groupRes.getGroupId());
         }
+        return newlist;
     }
 
     private void showSnackbarError(String message) {
@@ -443,6 +544,82 @@ public class MyClassRoomGroupFragment extends BaseFragment implements CommonCall
         }
 
         return false;
+    }
+
+    private void getStudentList(String groupid)
+    {
+        ProgressDialog progress = new ProgressDialog(getActivity());
+        progress.setTitle("Processing");
+        progress.setMessage("fetching data..");
+        progress.setCancelable(true); // disable dismiss by tapping outside of the dialog
+        progress.show();
+        PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
+        String languageid = prefModel.getUserLanguageId();
+        HashMap<String,String> map_data = new HashMap<>();
+        String userid = AuroAppPref.INSTANCE.getModelInstance().getStudentData().getUserId();
+        map_data.put("Group_Id",groupid);    //"576232"
+        RemoteApi.Companion.invoke().getGroupStudentDetailsByGroupIb(map_data)
+                .enqueue(new Callback<StudentListDataModel>()
+                {
+                    @Override
+                    public void onResponse(Call<StudentListDataModel> call, Response<StudentListDataModel> response)
+                    {
+                        try {
+                            if (response.isSuccessful()) {
+                                progress.dismiss();
+                                list.clear();
+                                listchilds.clear();
+                                if (response.body().getStatus().equals("success")){
+                                    if (!(response.body().getTotal_student_list() == null || response.body().getTotal_student_list().isEmpty() || response.body().getTotal_student_list().equals("") || response.body().getTotal_student_list().equals("null"))) {
+                                        listchilds = response.body().getTotal_student_list();
+
+                                        for (int i = 0; i < listchilds.size(); i++) {
+                                            list.add(listchilds.get(i));
+                                        }
+
+                                        if (!list.isEmpty()) {
+                                            binding.rvChooseStudent.setVisibility(View.GONE);
+                                            binding.rvChooseStudent2.setVisibility(View.VISIBLE);
+                                            binding.studentListMessage.setVisibility(View.GONE);
+                                            studentListAdapter2 = new CreateGroupStudentListAdapter(getActivity(), list);
+                                            binding.rvChooseStudent2.setAdapter(studentListAdapter2);
+                                          //  studentListAdapter2.setData(list);
+                                        } else {
+                                            binding.rvChooseStudent2.setVisibility(View.GONE);
+                                            binding.rvChooseStudent.setVisibility(View.GONE);
+                                            binding.studentListMessage.setVisibility(View.VISIBLE);
+                                        }
+
+                                    }
+                                    else{
+                                        binding.rvChooseStudent.setVisibility(View.GONE);
+                                        binding.rvChooseStudent2.setVisibility(View.GONE);
+                                        binding.studentListMessage.setVisibility(View.VISIBLE);
+                                       // Toast.makeText(getActivity(), "No Student Found", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                            }
+                            else{
+                                progress.dismiss();
+                                binding.rvChooseStudent.setVisibility(View.GONE);
+                                binding.rvChooseStudent2.setVisibility(View.GONE);
+                                binding.studentListMessage.setVisibility(View.VISIBLE);
+                             //   Toast.makeText(getActivity(), "No Student Found", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e) {
+                            progress.dismiss();
+                            Toast.makeText(getActivity(), "Internet connection", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<StudentListDataModel> call, Throwable t)
+                    {  progress.dismiss();
+                        Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
     }
 
 }

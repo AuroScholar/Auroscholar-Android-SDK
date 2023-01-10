@@ -53,16 +53,26 @@ public class ExitDialog extends Dialog implements View.OnClickListener {
     @Override
     public void onClick(View v) {
 
-        int id = v.getId();
-        if (id == R.id.button) {
-            dismiss();
-        } else if (id == R.id.close_button) {
-            dismiss();
-        } else if (id == R.id.btn_yes) {
-            dismiss();
-            if (AppUtil.commonCallBackListner != null) {
-                AppUtil.commonCallBackListner.commonEventListner(AppUtil.getCommonClickModel(0, Status.EXIT_DIALOG_CLICK, ""));
-            }
+        switch (v.getId()) {
+
+            case R.id.button:
+                dismiss();
+
+                break;
+
+
+            case R.id.close_button:
+                dismiss();
+                break;
+
+            case R.id.btn_yes:
+                dismiss();
+                if (AppUtil.commonCallBackListner != null) {
+                    AppUtil.commonCallBackListner.commonEventListner(AppUtil.getCommonClickModel(0, Status.EXIT_DIALOG_CLICK,""));
+                }
+
+                break;
+
         }
     }
 

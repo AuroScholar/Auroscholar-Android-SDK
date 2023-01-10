@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="studentProfileViewModel"
             type="com.auro.application.home.presentation.viewmodel.StudentProfileViewModel" />
     </data>
     <ScrollView
         android:layout_width="fill_parent"
+        android:fillViewport="true"
         android:layout_height="fill_parent">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:windowSoftInputMode="adjustResize"
+        android:fitsSystemWindows="true"
         android:theme="@style/Theme.Material3.Dark.NoActionBar"
         tools:context=".home.presentation.view.fragment.newDesgin.UserProfileFragment">
 
@@ -192,7 +195,7 @@
                             android:layout_height="wrap_content"
                             android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
                             android:drawableLeft="@drawable/ic_user_new_profile"
-
+                            android:longClickable="false"
                             android:gravity="right"
                             android:inputType="textPersonName"
                             android:maxLines="1"
@@ -215,6 +218,7 @@
                             android:layout_height="wrap_content"
                             android:drawableLeft="@drawable/ic_email"
                             android:gravity="right"
+                            android:longClickable="false"
                             android:digits="abcdefghijklmnopqrstuvwxyz1234567890@#$_-."
                             android:inputType="textPersonName"
                             android:maxLines="1"
@@ -243,6 +247,7 @@
                             android:focusable="false"
                             android:gravity="right"
                             android:inputType="number"
+                            android:longClickable="false"
                             android:maxLines="1"
                             android:paddingEnd="@dimen/_20sdp"
                             android:textColor="@color/black"
@@ -276,6 +281,7 @@
                             android:dropDownHeight="wrap_content"
                             android:focusable="false"
                             android:gravity="right"
+                            android:longClickable="false"
                             android:maxLines="1"
                             android:paddingEnd="@dimen/_20sdp"
                             android:textColor="@color/black" />
@@ -306,6 +312,7 @@
                             android:drawableLeft="@drawable/ic_state_update"
                             android:drawableRight="@drawable/ic_user_drop_down"
                             android:drawablePadding="@dimen/_18sdp"
+                            android:longClickable="false"
                             android:dropDownHeight="wrap_content"
                             android:focusable="false"
 
@@ -345,7 +352,9 @@
                             android:drawableRight="@drawable/ic_user_drop_down"
                             android:drawablePadding="@dimen/_18sdp"
                             android:dropDownHeight="wrap_content"
+                            android:longClickable="false"
                             android:focusable="false"
+                            android:textIsSelectable="false"
                             android:gravity="right"
                             android:maxLines="1"
                             android:paddingEnd="@dimen/_20sdp"
@@ -360,13 +369,15 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/rel_school"
-                        android:layout_marginTop="8dp"
+                        android:id="@+id/rel_school1"
+                        android:visibility="gone"
+                        android:layout_marginTop="10dp"
                         android:layout_below="@+id/tlDistict">
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/txtsearch"
-                            android:layout_width="260dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+
                             android:layout_marginRight="@dimen/_10sdp"
                             android:layout_weight="3.5"
                             android:hint="Search school here.."
@@ -374,12 +385,13 @@
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/editsearch"
-                                android:layout_width="match_parent"
-                                android:layout_height="40dp"
+                                android:layout_width="200dp"
+                                android:layout_height="wrap_content"
                                 android:layout_marginLeft="10dp"
-
+                                android:longClickable="false"
                                 android:inputType="none"
                                 android:maxLines="1"
+                                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
                                 android:paddingRight="@dimen/_20sdp"
                                 android:singleLine="true"
                                 android:textColor="@color/black"
@@ -388,28 +400,73 @@
 
                         </com.google.android.material.textfield.TextInputLayout>
 
-                        <androidx.appcompat.widget.AppCompatButton
+                        <LinearLayout
                             android:id="@+id/btnsearch"
-                            android:layout_width="35dp"
-                            android:layout_height="30dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:layout_marginRight="10dp"
                             android:layout_toRightOf="@+id/txtsearch"
-                            android:background="@android:drawable/ic_menu_search"
-                            android:drawableTint="@color/auro_blue"></androidx.appcompat.widget.AppCompatButton>
+                            android:background="@color/blue_color">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+
+                                android:layout_width="35dp"
+                                android:layout_height="30dp"
+                                android:drawableTint="@color/white"
+                                android:src="@android:drawable/ic_menu_search"></androidx.appcompat.widget.AppCompatImageView>
+                        </LinearLayout>
                     </RelativeLayout>
 
+                    <RelativeLayout
+                        android:id="@+id/rel_school"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tldistrict"
+                        android:layout_margin="@dimen/_5sdp"
+                        >
 
+                        <AutoCompleteTextView
+                            android:id="@+id/autoCompleteTextView1"
+                            style="@style/Widget.AppCompat.AutoCompleteTextView"
+                            android:layout_marginTop="@dimen/_4sdp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:dropDownHeight="wrap_content"
+                            android:longClickable="false"
+                            android:drawableRight="@drawable/places_ic_search"
+                            android:drawableTint="@color/grey"
+                            android:hint="Search School"
+                            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
+                            android:popupBackground="#ffffff"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/grey"
+                            android:textSize="@dimen/_14ssp" />
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/addnewschool"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Add School +"
+                            android:layout_marginTop="@dimen/_8sdp"
+                            android:textColor="@color/blue_color"
+                            android:textSize="@dimen/_14sdp"
+                            android:layout_below="@+id/autoCompleteTextView1"
+                            android:layout_alignParentRight="true"
+                            ></androidx.appcompat.widget.AppCompatTextView>
+                    </RelativeLayout>
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tlSchool"
                         style="@style/TextInputLayoutExposeStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="-8dp"
+
                         android:background="@color/white"
                         android:hint="@string/school"
                         android:textColorHint="@color/auro_border_blue"
                         app:endIconMode="none"
+                        android:focusable="false"
+                        android:longClickable="false"
+
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -423,9 +480,10 @@
                             android:drawableRight="@drawable/ic_user_drop_down"
                             android:drawablePadding="@dimen/_18sdp"
                             android:dropDownHeight="wrap_content"
-                            android:focusable="true"
+                            android:focusable="false"
                             android:gravity="right"
                             android:maxLines="1"
+                            android:longClickable="false"
                             android:paddingEnd="@dimen/_20sdp"
                             android:textColor="@color/black" />
 

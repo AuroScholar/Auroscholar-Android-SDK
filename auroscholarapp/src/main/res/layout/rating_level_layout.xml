@@ -12,7 +12,6 @@
        <RatingBar
            android:id="@+id/rating"
            android:layout_width="wrap_content"
-           android:numStars="4"
            android:progressTint="#EDBD31"
            android:layout_marginBottom="@dimen/_2sdp"
            android:layout_gravity="center_horizontal"

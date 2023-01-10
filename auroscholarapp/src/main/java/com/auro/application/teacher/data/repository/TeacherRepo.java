@@ -4,6 +4,7 @@ import com.auro.application.home.data.model.AuroScholarDataModel;
 import com.auro.application.home.data.model.FetchStudentPrefReqModel;
 import com.auro.application.home.data.model.KYCDocumentDatamodel;
 
+import com.auro.application.home.data.model.RefferalReqModel;
 import com.auro.application.home.data.model.response.DynamiclinkResModel;
 import com.auro.application.teacher.data.model.common.DistrictDataModel;
 import com.auro.application.teacher.data.model.common.StateDataModel;
@@ -45,7 +46,7 @@ public interface TeacherRepo {
         Single<Response<JsonObject>> sendInviteNotificationApi(SendInviteNotificationReqModel reqModel);
 
         Single<Response<JsonObject>> getZohoAppointments();
-
+        Single<Response<JsonObject>> sendRefferalDataApi(RefferalReqModel model);
         Single<Response<JsonObject>> bookZohoAppointments(String from_time, String name, String email, String phone_number);
 
         Single<Response<JsonObject>> availableWebinarSlots(AvailableSlotsReqModel reqModel);

@@ -149,7 +149,7 @@ public class PrivacyPolicyFragment extends BaseFragment {
     private void loadWeb(String webUrl) {
         webView = binding.webView;
         webSettings = webView.getSettings();
-        webSettings.setAppCacheEnabled(true);
+      //  webSettings.setAppCacheEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setLoadWithOverviewMode(true);

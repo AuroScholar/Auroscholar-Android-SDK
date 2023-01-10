@@ -38,10 +38,7 @@ public class StateSpinnerUserAdapter extends ArrayAdapter {
 
     }
 
-/*    public StateSpinnerUserAdapter(List<StateDataModel> list) {
-        super(c);
 
-    }*/
 
     @Override
     public int getCount() {
@@ -70,8 +67,7 @@ public class StateSpinnerUserAdapter extends ArrayAdapter {
                 if (onItemClickState != null) {
                     onItemClickState.commonEventListner(AppUtil.getCommonClickModel(position, Status.STATE_WISE, list.get(position)));
                 }
-               // onItemClickState.onItemClick(list.get(position ).getState_name());
-                // onItemClickState.onItemClick(list.get(position ).getState_name());
+
             }
         });
         return binding.getRoot();

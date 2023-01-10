@@ -46,6 +46,7 @@ import com.auro.application.teacher.domain.TeacherDbUseCase;
 import com.auro.application.teacher.domain.TeacherRemoteUseCase;
 import com.auro.application.teacher.domain.TeacherUseCase;
 import com.auro.application.teacher.presentation.viewmodel.CreateGroupViewModel;
+import com.auro.application.teacher.presentation.viewmodel.InviteTeacherViewModel;
 import com.auro.application.teacher.presentation.viewmodel.MyClassroomViewModel;
 import com.auro.application.teacher.presentation.viewmodel.SelectYourAppointmentDialogModel;
 import com.auro.application.teacher.presentation.viewmodel.SelectYourMessageDialogModel;
@@ -55,28 +56,29 @@ import com.auro.application.teacher.presentation.viewmodel.TeacherKycViewModel;
 import com.auro.application.teacher.presentation.viewmodel.TeacherProfileViewModel;
 import com.auro.application.teacher.presentation.viewmodel.TeacherSaveDetailViewModel;
 
+
 public class ViewModelFactory implements ViewModelProvider.Factory {
 
 
-    /*Home Module*/
+
     private HomeUseCase homeUseCase;
     private HomeDbUseCase homeDbUseCase;
     private HomeRemoteUseCase homeRemoteUseCase;
 
-    /*Payment Module*/
+
     private PaymentUseCase paymentUseCase;
     private PaymentRemoteUseCase paymentRemoteUseCase;
 
-    /*Teacher Module*/
+
     TeacherUseCase teacherUseCase;
     TeacherRemoteUseCase teacherRemoteUseCase;
     TeacherDbUseCase teacherDbUseCase;
 
-    /*Quiz  Module*/
+
     QuizNativeUseCase quizNativeUseCase;
     QuizNativeRemoteUseCase quizNativeRemoteUseCase;
 
-    /*Kyc Module*/
+
     KycUseCase kycUseCase;
     KycRemoteUseCase kycRemoteUseCase;
 
@@ -181,7 +183,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         } else if (modelClass.isAssignableFrom(TransactionsViewModel.class)) {
 
             return (T) new TransactionsViewModel(homeUseCase, homeDbUseCase, homeRemoteUseCase);
-        } else if (modelClass.isAssignableFrom(MyClassroomViewModel.class)) {
+        }
+        else if (modelClass.isAssignableFrom(MyClassroomViewModel.class)) {
 
             return (T) new MyClassroomViewModel(teacherUseCase, teacherDbUseCase, teacherRemoteUseCase);
 
@@ -265,6 +268,12 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         else if(modelClass.isAssignableFrom(SetPinViewModel.class)){
 
             return (T) new SetPinViewModel(homeUseCase, homeDbUseCase, homeRemoteUseCase);
+
+        }
+
+        else if(modelClass.isAssignableFrom(InviteTeacherViewModel.class)){
+
+            return (T) new InviteTeacherViewModel(teacherUseCase,teacherDbUseCase,teacherRemoteUseCase, homeRemoteUseCase);
 
         }
 

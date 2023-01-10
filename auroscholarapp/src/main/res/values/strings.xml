@@ -313,7 +313,7 @@
     <string name="enter_otp_below_number">We Have Sent OTP To The Below Number </string>
     <string name="resend">Resend</string>
     <string name="my_profile">Profile</string>
-    <string name="my_profile_parent">Parent Profile</string>
+    <string name="my_profile_parent" translatable="false">Parent Profile</string>
     <string name="learn_with_our_partner_app">Learn with our partner app</string>
     <string name="sub_partner_title">Looking for some fun lessons? Check out and sharpen your knowledge with these apps.</string>
     <string name="student_passport">Student Passport</string>
@@ -351,7 +351,8 @@
     <string name="save_amp_next"><![CDATA[Save & Next]]></string>
     <string name="not_showing_face">Your face is not visible. Please make sure you are in proper lighting.</string>
     <string name="continue_exit">Continue</string>
-    <string name="parent_profile">Continue With Parent Profile</string>
+    <string name="continue_addstudent" translatable="false">Add New Child</string>
+    <string name="parent_profile" translatable="false">Continue With Parent Profile</string>
     <string name="quiz_internet">No internet connection. Please try again.</string>
     <string name="finish_your_text">Finishing Your Test...</string>
     <string name="want_to_quit_quiz">Please confirm if you want to end the quiz.</string>

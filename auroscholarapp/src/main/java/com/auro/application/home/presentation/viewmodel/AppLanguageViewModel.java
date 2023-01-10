@@ -14,7 +14,6 @@ import com.auro.application.home.domain.usecase.HomeRemoteUseCase;
 import com.auro.application.home.domain.usecase.HomeUseCase;
 import com.auro.application.util.AppLogger;
 
-import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -67,9 +66,6 @@ public class AppLanguageViewModel extends ViewModel {
     }
 
 
-
-
-
     private void languageDynamicCall(LanguageMasterReqModel language) {
         AppLogger.v("Language_pradeep","Dynamic language Step 3");
         getCompositeDisposable()
@@ -77,6 +73,7 @@ public class AppLanguageViewModel extends ViewModel {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
+
                                 new Consumer<ResponseApi>() {
                                     @Override
                                     public void accept(ResponseApi responseApi) throws Exception {

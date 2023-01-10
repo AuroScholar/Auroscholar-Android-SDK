@@ -168,6 +168,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="@dimen/_5sdp"
                                     android:background="@null"
+                                    android:longClickable="false"
+                                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_@!#$"
                                     android:hint="@string/mobile_number_username"
                                     android:inputType="text"
                                     android:maxLength="40"
@@ -186,6 +188,7 @@
                                 android:layout_marginTop="@dimen/_10sdp"
                                 android:background="@drawable/auro_white_strip_box"
                                 android:orientation="horizontal"
+                                android:longClickable="false"
                                 android:padding="@dimen/_10sdp"
                                 android:visibility="gone">
 
@@ -196,11 +199,13 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_vertical"
                                     android:layout_weight="8"
+
                                     android:background="@null"
                                     android:hint="@string/password"
                                     android:enabled="true"
                                     android:inputType="textPassword"
                                     android:singleLine="true"
+                                    android:longClickable="false"
                                     android:password="true"
                                     android:digits="abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#"
                                     android:textColor="@color/text_color_103"

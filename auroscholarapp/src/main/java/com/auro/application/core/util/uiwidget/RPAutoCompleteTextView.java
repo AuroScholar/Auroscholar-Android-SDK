@@ -8,9 +8,6 @@ import android.util.AttributeSet;
 import com.auro.application.R;
 
 
-/**
- * Created by ashutosh on 4/5/18.
- */
 
 public class RPAutoCompleteTextView extends androidx.appcompat.widget.AppCompatAutoCompleteTextView {
     public RPAutoCompleteTextView(Context context) {

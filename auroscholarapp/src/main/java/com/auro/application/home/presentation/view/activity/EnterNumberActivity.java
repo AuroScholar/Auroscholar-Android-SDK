@@ -64,7 +64,7 @@ public class EnterNumberActivity extends BaseActivity implements View.OnClickLis
     protected void init() {
         binding = DataBindingUtil.setContentView(this, getLayout());
         ((AuroApp) this.getApplication()).getAppComponent().doInjection(this);
-        //view model and handler setup
+
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(LoginScreenViewModel.class);
         binding.setLifecycleOwner(this);
 
@@ -98,18 +98,21 @@ public class EnterNumberActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onClick(View view) {
-        int id = view.getId();
-        if (id == R.id.RPButtonSendOtp) {
-            PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
-            int userType = prefModel.getUserType();
-            AppLogger.e("enter Number Activity --", "" + userType);
-            if (userType == AppConstant.UserType.TEACHER) {
-                oldSendOtpApi();
-            } else {
-                sendOtpApiReqPass();
-            }
-        } else if (id == R.id.back_button) {
-            finish();
+        switch (view.getId()) {
+            case R.id.RPButtonSendOtp:
+                PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
+                int userType = prefModel.getUserType();
+                AppLogger.e("enter Number Activity --", "" + userType);
+                if (userType == AppConstant.UserType.TEACHER) {
+                    oldSendOtpApi();
+                } else {
+                    sendOtpApiReqPass();
+                }
+                break;
+
+            case R.id.back_button:
+                finish();
+                break;
         }
     }
 
@@ -243,8 +246,7 @@ public class EnterNumberActivity extends BaseActivity implements View.OnClickLis
                     break;
 
                 case NO_INTERNET:
-                    // closeDialog();
-                    //   showSnackbarError((String) responseApi.data);
+
                     ViewUtil.showSnackBar(binding.getRoot(), (String) responseApi.data);
                     binding.progressbar.pgbar.setVisibility(View.GONE);
                     break;
@@ -253,16 +255,13 @@ public class EnterNumberActivity extends BaseActivity implements View.OnClickLis
                     binding.progressbar.pgbar.setVisibility(View.GONE);
                     break;
                 case FAIL_400:
-// When Authrization is fail
-                    // closeDialog();
-                    // showSnackbarError((String) responseApi.data);
+
                     binding.progressbar.pgbar.setVisibility(View.GONE);
                     ViewUtil.showSnackBar(binding.getRoot(), (String) responseApi.data);
                     break;
 
                 default:
-                    //closeDialog();
-                    //showSnackbarError((String) responseApi.data);
+
                     binding.progressbar.pgbar.setVisibility(View.GONE);
                     ViewUtil.showSnackBar(binding.getRoot(), (String) responseApi.data);
                     break;
@@ -306,13 +305,7 @@ public class EnterNumberActivity extends BaseActivity implements View.OnClickLis
     private void handleResponseCode(CheckUserResModel checkUserResModel) {
         AppLogger.e(TAG, "--" + checkUserResModel.getCode());
         AppLogger.e(TAG, "--" + checkUserResModel.getStudentName());
-      /*  PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
-        prefModel.setUserMobile(checkUserResModel.getUserMobile());
-        prefModel.setStatusUserCode(checkUserResModel.getCode());
-        prefModel.setStudentClasses(checkUserResModel.getClasses());
-        prefModel.setStudentName(checkUserResModel.getStudentName());
-        prefModel.setStudentClass(ConversionUtil.INSTANCE.convertStringToInteger(checkUserResModel.getGrade()));
-        AuroAppPref.INSTANCE.setPref(prefModel);*/
+
         checkUserForOldUser();
 
         switch (checkUserResModel.getCode()) {
@@ -354,13 +347,11 @@ public class EnterNumberActivity extends BaseActivity implements View.OnClickLis
         if (resModel.getIsMaster().equalsIgnoreCase(AppConstant.UserType.USER_TYPE_STUDENT)) {
             PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
             prefModel.setStudentData(resModel);
-            //prefModel.setStudentClass(ConversionUtil.INSTANCE.convertStringToInteger(resModel.getGrade()));
             prefModel.setStudentClasses(checkUserResModel.getClasses());
             AuroAppPref.INSTANCE.setPref(prefModel);
         } else {
             PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
             prefModel.setParentData(resModel);
-            // prefModel.setStudentClass(ConversionUtil.INSTANCE.convertStringToInteger(resModel.getGrade()));
             prefModel.setStudentClasses(checkUserResModel.getClasses());
             AuroAppPref.INSTANCE.setPref(prefModel);
         }

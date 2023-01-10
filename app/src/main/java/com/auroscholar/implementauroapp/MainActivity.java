@@ -82,7 +82,7 @@ EditText language;
       //  auroScholarDataModel.setFragmentContainerUiId(R.id.home_cont);
         auroScholarDataModel.setReferralLink("");
         auroScholarDataModel.setDevicetoken("");
-            auroScholarDataModel.setPartnerSource("");
+        auroScholarDataModel.setPartnerSource("");
 
         AuroApp.setAuroModel(auroScholarDataModel);
         Intent intent = new Intent(MainActivity.this, DashBoardMainActivity.class);

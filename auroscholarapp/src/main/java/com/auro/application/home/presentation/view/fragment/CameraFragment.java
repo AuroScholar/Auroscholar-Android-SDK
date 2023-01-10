@@ -85,7 +85,7 @@ public class CameraFragment extends BaseFragment implements CommonCallBackListne
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, getLayout(), container, false);
         binding.setLifecycleOwner(this);
-        // HomeActivity.setListingActiveFragment(HomeActivity.DEMOGRAPHIC_FRAGMENT);
+
         if (hasFrontCamera()) {
             cameraID = Camera.CameraInfo.CAMERA_FACING_FRONT;
 
@@ -141,7 +141,7 @@ public class CameraFragment extends BaseFragment implements CommonCallBackListne
 
             @Override
             public void onDenied(Context context, ArrayList<String> deniedPermissions) {
-                // permission denied, block the feature.
+
             }
         });
     }
@@ -270,7 +270,7 @@ public class CameraFragment extends BaseFragment implements CommonCallBackListne
             @Override
             public void onPictureTaken(byte[] bytes) {
                 try {
-                    // convert byte array into bitmap
+
                     Bitmap loadedImage = null;
                     loadedImage = BitmapFactory.decodeByteArray(bytes, 0,
                             bytes.length);
@@ -290,9 +290,9 @@ public class CameraFragment extends BaseFragment implements CommonCallBackListne
 
     private String saveToInternalStorage(Bitmap bitmapImage) {
         ContextWrapper cw = new ContextWrapper(AuroApp.getAppContext().getApplicationContext());
-        // path to /data/data/yourapp/app_data/imageDir
+
         File directory = cw.getDir("auroImageDir", Context.MODE_PRIVATE);
-        // Create imageDir
+
         File mypath = new File(directory, "profile.jpg");
 
         FileOutputStream fos = null;

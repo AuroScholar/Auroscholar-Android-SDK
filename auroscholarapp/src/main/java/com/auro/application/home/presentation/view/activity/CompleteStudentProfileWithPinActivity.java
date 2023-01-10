@@ -113,6 +113,7 @@ import com.auro.application.home.presentation.view.adapter.StateSpinnerAdapter;
 import com.auro.application.home.presentation.view.adapter.SubjectPrefProfileAdapter;
 import com.auro.application.home.presentation.view.adapter.TutionTypeSpinnerAdapter;
 import com.auro.application.home.presentation.view.fragment.BottomSheetAddUserDialog;
+import com.auro.application.home.presentation.view.fragment.BottomSheetUsersDialog;
 import com.auro.application.home.presentation.view.fragment.GradeChangeFragment;
 import com.auro.application.home.presentation.view.fragment.StudentProfileFragment;
 import com.auro.application.home.presentation.view.fragment.SubjectPreferencesActivity;
@@ -121,6 +122,7 @@ import com.auro.application.home.presentation.viewmodel.CompleteStudentProfileWi
 import com.auro.application.home.presentation.viewmodel.StudentProfileViewModel;
 import com.auro.application.teacher.data.model.common.DistrictDataModel;
 import com.auro.application.teacher.data.model.common.StateDataModel;
+import com.auro.application.teacher.data.model.response.AddNewSchoolResModel;
 import com.auro.application.util.AppLogger;
 import com.auro.application.util.AppUtil;
 import com.auro.application.util.ConversionUtil;
@@ -182,8 +184,10 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
     List<String> boardLines;
     List<String> languageLines;
     List<String> privateTutionList;
+    String getschool_id;
     List<String> privateTutionTypeList;
     DashboardResModel dashboardResModel;
+    List<String> genderListString = new ArrayList<>();
     FragmentStudentUpdateProfileBinding binding;
     boolean isVisible = true;
     private String comingFrom;
@@ -208,6 +212,7 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
     String districtCode = "";
     String Schoolsearch = "";
     String GenderName = "";
+    String schoolnamesearch;
     String fbnewToken = "";
     String image_path = "";
     String filename = "";
@@ -235,7 +240,7 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-      //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
       binding = DataBindingUtil.setContentView(this, getLayout());
         ((AuroApp) this.getApplication()).getAppComponent().doInjection(this);
       viewModel = ViewModelProviders.of(CompleteStudentProfileWithPinActivity.this, viewModelFactory).get(CompleteStudentProfileWithPinViewModel.class);
@@ -328,16 +333,16 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
             @Override
             public void onClick(View v) {
                 if (binding.editsearch.getText().toString().isEmpty()||binding.editsearch.getText().toString().equals("")){
-                    binding.editsearch.setHint("Search school here..");
+
                 }
                 else{
                     getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
-                    //  ((InputMethodManager)getContext().getSystemService(Activity.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(getView().getWindowToken(), 0);
                     String search = binding.editsearch.getText().toString();
-                    getSchool(stateCode,districtCode,search);
-                    binding.etschool.showDropDown();
-//            addDropDownSchool(districtList);
+                    binding.etschool.setText("");
+                    String search2 = binding.editsearch.getText().toString();
+                    getSchoolsearch(stateCode,districtCode,search2);
+
+
                 }
 
             }
@@ -357,7 +362,7 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
             @Override
             public void afterTextChanged(Editable s) {
                 if (binding.editsearch.getText().toString().isEmpty()||binding.editsearch.getText().toString().equals("")){
-                    binding.editsearch.setHint("Search school here..");
+
                     Schoolsearch="";
                     binding.etschool.dismissDropDown();
                     getSchool(stateCode,districtCode,Schoolsearch);
@@ -370,11 +375,41 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
                     else{
                         Schoolsearch = s.toString();
                         getSchool(stateCode,districtCode,s.toString());
-                        //   binding.etSchoolname.showDropDown();
+
                     }
                 }
             }
         });
+
+        binding.addnewschool.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Details details = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
+                if (binding.autoCompleteTextView1.getText().toString().isEmpty()){
+                    Toast.makeText(CompleteStudentProfileWithPinActivity.this, "Please enter school name", Toast.LENGTH_SHORT).show();
+                }
+                else if (binding.autoCompleteTextView1.getText().toString().startsWith(" ")){
+                    Toast.makeText(CompleteStudentProfileWithPinActivity.this, details.getEnter_space_schoolname(), Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    String search = binding.autoCompleteTextView1.getText().toString();
+                    binding.etschool.setText(search);
+                    addNewSchool(stateCode,districtCode,search);
+                }
+            }
+        });
+        binding.autoCompleteTextView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String selectedItem=binding.autoCompleteTextView1.getAdapter().getItem(position).toString();
+                String schoolname = binding.autoCompleteTextView1.getText().toString();
+                binding.etschool.setText(schoolname);
+            }
+        });
+        binding.autoCompleteTextView1.setAdapter(getEmailAddressAdapter(CompleteStudentProfileWithPinActivity.this));
+        binding.autoCompleteTextView1.setThreshold(1);
+        binding.autoCompleteTextView1.setTextColor(Color.BLACK);
+        binding.autoCompleteTextView1.setDropDownBackgroundResource(R.color.white);
 
     }
     @Override
@@ -385,11 +420,9 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
       AppUtil.commonCallBackListner = this;
       AppUtil.loadAppLogo(binding.auroScholarLogo, this);
       UserDetailResModel userDetailResModel = AuroAppPref.INSTANCE.getModelInstance().getStudentData();
-       // String userName = userDetailResModel.getUserName() == null ? userDetailResModel.getUserName() : userDetailResModel.getUserMobile();
       String parentmobileno = prefModel.getCheckUserResModel().getUserDetails().get(0).getUserName();
         binding.editUsername.setText(parentmobileno);
         binding.editPhone.setText(parentmobileno);
-        // binding.editUserid.setText(AuroAppPref.INSTANCE.getModelInstance().getStudentData().getUserId());
         AppStringDynamic.setStudentUpdateProfilePageStrings(binding);
     }
     @Override
@@ -426,10 +459,7 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
         binding.etdistrict.setOnTouchListener(this);
         binding.etgrade.setOnFocusChangeListener(this);
         binding.etgrade.setOnTouchListener(this);
-//        binding.etschool.setOnFocusChangeListener(this);
-//        binding.etschool.setOnTouchListener(this);
-//        binding.etSchoolname.setOnFocusChangeListener(this);
-//        binding.etSchoolname.setOnTouchListener(this);
+
         binding.ettution.setOnFocusChangeListener(this);
         binding.ettution.setOnTouchListener(this);
         binding.ettutiontype.setOnFocusChangeListener(this);
@@ -481,14 +511,12 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
                         }
                         else if (response.isSuccessful())
                         {
-                            binding.btdonenew.setVisibility(View.GONE);
-                         //   String message = response.body().getMessage();
+
                              newuseridforaddchild = response.body().getUserId();
                             SharedPreferences.Editor editor = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
                             editor.putString("newuseridforaddchild", newuseridforaddchild);
                             editor.apply();
                              setparentpin(newuseridforaddchild);
-                          //  ViewUtil.showSnackBar(binding.getRoot(),details1.getSuccess_fully_save());
 
 
 
@@ -508,6 +536,71 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
                         Toast.makeText(CompleteStudentProfileWithPinActivity.this, details1.getInternetCheck(), Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+    private void addNewSchool(String state_id, String district_id, String search)
+    {
+        Details details = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
+
+        ProgressDialog progress = new ProgressDialog(CompleteStudentProfileWithPinActivity.this);
+        progress.setTitle(details.getProcessing());
+        progress.setMessage(details.getProcessing());
+        progress.setCancelable(true); // disable dismiss by tapping outside of the dialog
+        progress.show();
+
+        HashMap<String,String> map_data = new HashMap<>();
+        map_data.put("school_name", search);
+        map_data.put("state_id",state_id);
+        map_data.put("district_id",district_id);
+
+        RemoteApi.Companion.invoke().addNewSchool(map_data)
+                .enqueue(new Callback<AddNewSchoolResModel>() {
+                    @Override
+                    public void onResponse(Call<AddNewSchoolResModel> call, Response<AddNewSchoolResModel> response) {
+                        if (response.code()==400){
+                            progress.dismiss();
+                            JSONObject jsonObject = null;
+                            try {
+                                jsonObject = new JSONObject(response.errorBody().string());
+                                String message = jsonObject.getString("message");
+                                Toast.makeText(CompleteStudentProfileWithPinActivity.this,message, Toast.LENGTH_SHORT).show();
+
+                            } catch (JSONException | IOException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                        else if (response.isSuccessful()) {
+
+                            progress.dismiss();
+                             getschool_id = String.valueOf(response.body().getSchoolID());
+
+                            Toast.makeText(CompleteStudentProfileWithPinActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+
+
+
+                        }
+                        else{
+                            progress.dismiss();
+                            Toast.makeText(CompleteStudentProfileWithPinActivity.this, response.message(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<AddNewSchoolResModel> call, Throwable t)
+                    {
+                        progress.dismiss();
+                        Log.d(TAG, "onDistrictFailure: "+t.getMessage());
+                    }
+                });
+    }
+    private ArrayAdapter<String> getEmailAddressAdapter(Context context) {
+        for (int i = 0; i < genderListString.size(); i++) {
+            genderListString.set(i, genderListString.get(i));
+        }
+        String newschool = binding.autoCompleteTextView1.getText().toString();
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,android.R.layout.select_dialog_item,genderListString);
+        return adapter;
     }
     private void setparentpin(String userid)
     {
@@ -551,7 +644,7 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
                             binding.layoutSetusernamepin.setVisibility(View.GONE);
                             SharedPreferences prefs2 = getSharedPreferences("My_Pref", MODE_PRIVATE);
                             String parentemailaddress = prefs2.getString("parentupdateparentemailid", "");
-                         //   binding.editemail.setText(parentemailaddress);
+
                             SharedPreferences prefs = getSharedPreferences("My_Pref", MODE_PRIVATE);
                             String childid = prefs.getString("newuseridforaddchild", "");
                             binding.editUserid.setText(childid);
@@ -602,17 +695,11 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
                        }
                        else if (response.isSuccessful())
                         {
-//                            String successmsg = response.body().getStatus().toString();
-//                            if (successmsg.equals("success")){
+
 
                                 String mobile = prefModel.getCheckUserResModel().getUserDetails().get(0).getUserName();
                                 setUserRegistered(mobile);
-                           // }
-//                            for ( int i=0 ;i < response.body().getStatus().size();i++)
-//                            {
-//                                String mobileno = response.body().getResult().get(i).getMobile_no();
-//
-//                            }
+
 
 
 
@@ -637,304 +724,135 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
     @Override
     public void onClick(View v) {
 
-        int id = v.getId();//            case R.id.language_layout:
-//                ((DashBoardMainActivity) getApplicationContext()).openChangeLanguageDialog();
-//                break;
-//            case R.id.back_arrow:
-//                onBackPressed();
-//                break;
-        if (id == R.id.editImage) {
-            if (Build.VERSION.SDK_INT > 26) {
-                askPermission();
-            } else {
-                askPermission();
-            }
-        } else if (id == R.id.btdonenew) {
-            String pin = binding.pinView.getText().toString();
-            String confirmpin = binding.confirmPin.getText().toString();
+        switch (v.getId()) {
 
 
-            Details details = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
-            if (binding.etUsername.getText().toString().isEmpty() || binding.etUsername.getText().toString().equals("")) {
+
+
+            case R.id.editImage:
+                if (Build.VERSION.SDK_INT > 26) {
+                    askPermission();
+                }
+                else{
+                    askPermission();
+                }
+                break;
+            case R.id.btdonenew:
+                String pin = binding.pinView.getText().toString();
+                String confirmpin = binding.confirmPin.getText().toString();
+
+
+                Details details = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
+  if (binding.etUsername.getText().toString().isEmpty()||binding.etUsername.getText().toString().equals("")){
                 Toast.makeText(this, details.getEnter_user_name(), Toast.LENGTH_SHORT).show();
-            } else if (binding.etUsername.getText().toString().length() < 5) {
-                Toast.makeText(this, details.getEnter_min_char(), Toast.LENGTH_SHORT).show();
+            }
+  else if (binding.etUsername.getText().toString().length() < 5){
+      Toast.makeText(this, details.getEnter_min_char(), Toast.LENGTH_SHORT).show();
 
-            } else if (binding.etUsername.getText().toString().startsWith(" ")) {
-                Toast.makeText(this, details.getEnter_space_username(), Toast.LENGTH_SHORT).show();
-            } else if (binding.pinView.getText().toString().isEmpty() || binding.pinView.getText().toString().equals("")) {
+  }
+  else if (binding.etUsername.getText().toString().startsWith(" ")){
+      Toast.makeText(this, details.getEnter_space_username(), Toast.LENGTH_SHORT).show();
+  }
+                  else if (binding.pinView.getText().toString().isEmpty()||binding.pinView.getText().toString().equals("")){
                 Toast.makeText(this, details.getEnter_the_pin(), Toast.LENGTH_SHORT).show();
-            } else if (pin.length() < 4) {
-                Toast.makeText(this, details.getEnter_pin_digit(), Toast.LENGTH_SHORT).show();
-            } else if (binding.confirmPin.getText().toString().isEmpty() || binding.confirmPin.getText().toString().equals("")) {
-                Toast.makeText(this, details.getEnter_the_confirm_pin(), Toast.LENGTH_SHORT).show();
-            } else if (confirmpin.length() < 4) {
-                Toast.makeText(this, details.getEnter_confirmpin_digit(), Toast.LENGTH_SHORT).show();
-            } else if (pin.startsWith(" ")) {
-                Toast.makeText(this, details.getEnter_space_pin(), Toast.LENGTH_SHORT).show();
-
-            } else if (confirmpin.startsWith(" ")) {
-                Toast.makeText(this, details.getEnter_space_confirmpin(), Toast.LENGTH_SHORT).show();
-
-            } else if (pin == confirmpin || pin.equals(confirmpin)) {
-                //   binding.btdonenew.setVisibility(View.GONE);
-                //  String mobile = prefModel.getCheckUserResModel().getUserDetails().get(0).getUserName();
-                alreadyExist();
-//                    binding.mainParentLayout.setVisibility(View.VISIBLE);
-//                    binding.layoutSetusernamepin.setVisibility(View.GONE);
-            } else {
-                Toast.makeText(this, details.getPin_and_confirm_not_match(), Toast.LENGTH_SHORT).show();
             }
+  else  if (pin.length() < 4){
+      Toast.makeText(this, details.getEnter_pin_digit(), Toast.LENGTH_SHORT).show();
+  }
+  else if (binding.confirmPin.getText().toString().isEmpty()||binding.confirmPin.getText().toString().equals("")){
+      Toast.makeText(this, details.getEnter_the_confirm_pin(), Toast.LENGTH_SHORT).show();
+  }
 
 
-            String email = binding.editemail.getText().toString().trim();
-            String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-            Details details1 = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
+                else if (confirmpin.length()<4){
+                    Toast.makeText(this, details.getEnter_confirmpin_digit(), Toast.LENGTH_SHORT).show();
+                }
+                else if (pin.startsWith(" ")){
+      Toast.makeText(this, details.getEnter_space_pin(), Toast.LENGTH_SHORT).show();
 
-            if (binding.mainParentLayout.getVisibility() == View.VISIBLE) {
+  }
+                else if (confirmpin.startsWith(" ")){
+      Toast.makeText(this, details.getEnter_space_confirmpin(), Toast.LENGTH_SHORT).show();
 
-                if (binding.edtusername.getText().toString().equals("") || binding.edtusername.getText().toString().isEmpty()) {
-                    Toast.makeText(this, details1.getPlease_enetr_the_name(), Toast.LENGTH_SHORT).show();
-                } else if (binding.etStudentGender.getText().toString().equals("Student Gender") || binding.etStudentGender.getText().toString().equals("Select Gender") || binding.etStudentGender.getText().toString().equals("") || binding.etStudentGender.getText().toString().isEmpty() || genderList.get(0).getTranslatedName().equals(binding.etStudentGender.getText().toString())) {
-                    Toast.makeText(this, details1.getPlease_select_gender(), Toast.LENGTH_SHORT).show();
+  }
+                else if (pin==confirmpin||pin.equals(confirmpin)){
 
-                } else if (binding.etstate.getText().toString().equals("State") || binding.etstate.getText().toString().equals("") || binding.etstate.getText().toString().isEmpty()) {
-                    Toast.makeText(this, details1.getPlease_enter_select_state(), Toast.LENGTH_SHORT).show();
+      alreadyExist();
 
-                } else if (binding.etdistrict.getText().toString().equals("District") || binding.etdistrict.getText().toString().equals("City") || binding.etdistrict.getText().toString().equals("") || binding.etdistrict.getText().toString().isEmpty()) {
-                    Toast.makeText(this, details1.getPlease_select_district(), Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(this, details.getPin_and_confirm_not_match(), Toast.LENGTH_SHORT).show();
+                }
 
-                } else if (binding.etschool.getText().toString().equals("Select School") || binding.etschool.getText().toString().equals("School Name") || binding.etschool.getText().toString().equals("School Your School") || binding.etschool.getText().toString().isEmpty() || binding.etschool.getText().toString().equals("")) {
-                    Toast.makeText(this, details1.getPlease_select_school(), Toast.LENGTH_SHORT).show();
 
-                } else if (binding.etschool.getText().toString().startsWith(" ") || binding.etschool.getText().toString().endsWith(" ")) {
-                    Toast.makeText(CompleteStudentProfileWithPinActivity.this, details1.getEnter_space_schoolname(), Toast.LENGTH_SHORT).show();
+            case R.id.submitbutton:
+                String email = binding.editemail.getText().toString().trim();
+                String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+                Details details1 = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
 
-                } else if (binding.etgrade.getText().toString().equals("Select Your Grade") || binding.etgrade.getText().toString().equals("") || binding.etgrade.getText().toString().isEmpty()) {
-                    Toast.makeText(this, details1.getSelectYourGrade(), Toast.LENGTH_SHORT).show();
+                if (binding.mainParentLayout.getVisibility() ==  View.VISIBLE){
 
-                } else if (image_path == null || image_path.equals("null") || image_path.equals("") || image_path.isEmpty()) {
-                    Toast.makeText(this, details1.getUploadProfilePic(), Toast.LENGTH_SHORT).show();
+                    if (binding.edtusername.getText().toString().equals("")||binding.edtusername.getText().toString().isEmpty()){
+                        Toast.makeText(this, details1.getPlease_enetr_the_name(), Toast.LENGTH_SHORT).show();
+                    }
 
-                } else if (!binding.editemail.getText().toString().isEmpty() && !binding.editemail.getText().toString().equals("") && !email.matches(emailPattern)) {
+                    else if (binding.etStudentGender.getText().toString().equals("Student Gender")||binding.etStudentGender.getText().toString().equals("Select Gender")||binding.etStudentGender.getText().toString().equals("")||binding.etStudentGender.getText().toString().isEmpty()||genderList.get(0).getTranslatedName().equals(binding.etStudentGender.getText().toString())){
+                        Toast.makeText(this, details1.getPlease_select_gender(), Toast.LENGTH_SHORT).show();
 
-                    Toast.makeText(CompleteStudentProfileWithPinActivity.this, details1.getPlease_enter_valid_email(), Toast.LENGTH_SHORT).show();
+                    }
 
-                } else if (binding.edtusername.getText().toString().startsWith(" ")) {
-                    Toast.makeText(this, details1.getEnter_space_name(), Toast.LENGTH_SHORT).show();
-                } else if (binding.editemail.getText().toString().startsWith(" ") || binding.editemail.getText().toString().endsWith(" ")) {
-                    Toast.makeText(this, details1.getEnter_space_email(), Toast.LENGTH_SHORT).show();
-                } else if (binding.etschool.getText().toString().startsWith(" ")) {
-                    Toast.makeText(this, details1.getEnter_space_schoolname(), Toast.LENGTH_SHORT).show();
+                    else if (binding.etstate.getText().toString().equals("State")||binding.etstate.getText().toString().equals("")||binding.etstate.getText().toString().isEmpty()){
+                        Toast.makeText(this, details1.getPlease_enter_select_state(), Toast.LENGTH_SHORT).show();
 
-                } else {
-                    //  binding.submitbutton.setVisibility(View.GONE);
-                    updateChild();
+                    }
+                    else if (binding.etdistrict.getText().toString().equals("District")||binding.etdistrict.getText().toString().equals("City")||binding.etdistrict.getText().toString().equals("")||binding.etdistrict.getText().toString().isEmpty()){
+                        Toast.makeText(this, details1.getPlease_select_district(), Toast.LENGTH_SHORT).show();
+
+                    }
+                    else if (binding.etschool.getText().toString().equals("Select School")||binding.etschool.getText().toString().equals("School Name")||binding.etschool.getText().toString().equals("School Your School")||binding.etschool.getText().toString().isEmpty()||binding.etschool.getText().toString().equals("")){
+                        Toast.makeText(this, details1.getPlease_select_school(), Toast.LENGTH_SHORT).show();
+
+                    }
+
+                    else if (binding.etgrade.getText().toString().equals("Select Your Grade")||binding.etgrade.getText().toString().equals("")||binding.etgrade.getText().toString().isEmpty()){
+                        Toast.makeText(this, details1.getSelectYourGrade(), Toast.LENGTH_SHORT).show();
+
+                    }
+
+                    else if (image_path == null || image_path.equals("null") || image_path.equals("") || image_path.isEmpty()) {
+                        Toast.makeText(this, details1.getUploadProfilePic(), Toast.LENGTH_SHORT).show();
+
+                    }
+
+
+                    else if (!binding.editemail.getText().toString().isEmpty()&&!binding.editemail.getText().toString().equals("") && !email.matches(emailPattern)){
+
+                            Toast.makeText(CompleteStudentProfileWithPinActivity.this, details1.getPlease_enter_valid_email(), Toast.LENGTH_SHORT).show();
+
+                    }
+                    else if (binding.edtusername.getText().toString().startsWith(" ")){
+                        Toast.makeText(this, details1.getEnter_space_name(), Toast.LENGTH_SHORT).show();
+                    }
+                    else if (binding.editemail.getText().toString().startsWith(" ")||binding.editemail.getText().toString().endsWith(" ")){
+                        Toast.makeText(this, details1.getEnter_space_email(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    else{
+
+                        updateChild();
+
+                    }
+
+                }
+                else{
 
                 }
 
-            } else {
-                //  Toast.makeText(this, "Added Successfully", Toast.LENGTH_SHORT).show();
-            }
+                break;
 
-            //            case R.id.editUserNameIcon:
-//                AppLogger.v("TextEdit", "   UserName");
-//
-//                binding.edtusername.setVisibility(View.GONE);
-//                binding.editUserNameIcon.setVisibility(View.GONE);
-//                binding.editProfileName.setVisibility(View.VISIBLE);
-//                binding.cancelUserNameIcon.setImageResource(R.drawable.ic_cancel_icon);
-//                binding.editProfile.setText(binding.edtusername.getText().toString());
-//                binding.editProfile.requestFocus();
-//                InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-//                imm.showSoftInput(binding.editProfile, InputMethodManager.SHOW_IMPLICIT);
-//                binding.cancelUserNameIcon.setVisibility(View.VISIBLE);
-//
-//                break;
-
-//            case R.id.cancelUserNameIcon:
-//                AppLogger.v("TextEdit", "   cancelUserNameIcon");
-//                if (!TextUtil.isEmpty(binding.editProfile.getText().toString())) {
-//                    binding.edtusername.setVisibility(View.VISIBLE);
-//                    binding.editUserNameIcon.setVisibility(View.VISIBLE);
-//                    binding.editUserNameIcon.setImageResource(R.drawable.ic_edit_profile);
-//                    binding.editProfileName.setVisibility(View.GONE);
-//                    binding.cancelUserNameIcon.setVisibility(View.GONE);
-//                    binding.edtusername.setText(binding.editProfile.getText().toString());
-//                } else {
-//                    binding.editProfileName.setError("Enter Student Name");
-//                }
-//                break;
-        } else if (id == R.id.submitbutton) {
-            String email = binding.editemail.getText().toString().trim();
-            String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-            Details details1 = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
-
-            if (binding.mainParentLayout.getVisibility() == View.VISIBLE) {
-
-                if (binding.edtusername.getText().toString().equals("") || binding.edtusername.getText().toString().isEmpty()) {
-                    Toast.makeText(this, details1.getPlease_enetr_the_name(), Toast.LENGTH_SHORT).show();
-                } else if (binding.etStudentGender.getText().toString().equals("Student Gender") || binding.etStudentGender.getText().toString().equals("Select Gender") || binding.etStudentGender.getText().toString().equals("") || binding.etStudentGender.getText().toString().isEmpty() || genderList.get(0).getTranslatedName().equals(binding.etStudentGender.getText().toString())) {
-                    Toast.makeText(this, details1.getPlease_select_gender(), Toast.LENGTH_SHORT).show();
-
-                } else if (binding.etstate.getText().toString().equals("State") || binding.etstate.getText().toString().equals("") || binding.etstate.getText().toString().isEmpty()) {
-                    Toast.makeText(this, details1.getPlease_enter_select_state(), Toast.LENGTH_SHORT).show();
-
-                } else if (binding.etdistrict.getText().toString().equals("District") || binding.etdistrict.getText().toString().equals("City") || binding.etdistrict.getText().toString().equals("") || binding.etdistrict.getText().toString().isEmpty()) {
-                    Toast.makeText(this, details1.getPlease_select_district(), Toast.LENGTH_SHORT).show();
-
-                } else if (binding.etschool.getText().toString().equals("Select School") || binding.etschool.getText().toString().equals("School Name") || binding.etschool.getText().toString().equals("School Your School") || binding.etschool.getText().toString().isEmpty() || binding.etschool.getText().toString().equals("")) {
-                    Toast.makeText(this, details1.getPlease_select_school(), Toast.LENGTH_SHORT).show();
-
-                } else if (binding.etschool.getText().toString().startsWith(" ") || binding.etschool.getText().toString().endsWith(" ")) {
-                    Toast.makeText(CompleteStudentProfileWithPinActivity.this, details1.getEnter_space_schoolname(), Toast.LENGTH_SHORT).show();
-
-                } else if (binding.etgrade.getText().toString().equals("Select Your Grade") || binding.etgrade.getText().toString().equals("") || binding.etgrade.getText().toString().isEmpty()) {
-                    Toast.makeText(this, details1.getSelectYourGrade(), Toast.LENGTH_SHORT).show();
-
-                } else if (image_path == null || image_path.equals("null") || image_path.equals("") || image_path.isEmpty()) {
-                    Toast.makeText(this, details1.getUploadProfilePic(), Toast.LENGTH_SHORT).show();
-
-                } else if (!binding.editemail.getText().toString().isEmpty() && !binding.editemail.getText().toString().equals("") && !email.matches(emailPattern)) {
-
-                    Toast.makeText(CompleteStudentProfileWithPinActivity.this, details1.getPlease_enter_valid_email(), Toast.LENGTH_SHORT).show();
-
-                } else if (binding.edtusername.getText().toString().startsWith(" ")) {
-                    Toast.makeText(this, details1.getEnter_space_name(), Toast.LENGTH_SHORT).show();
-                } else if (binding.editemail.getText().toString().startsWith(" ") || binding.editemail.getText().toString().endsWith(" ")) {
-                    Toast.makeText(this, details1.getEnter_space_email(), Toast.LENGTH_SHORT).show();
-                } else if (binding.etschool.getText().toString().startsWith(" ")) {
-                    Toast.makeText(this, details1.getEnter_space_schoolname(), Toast.LENGTH_SHORT).show();
-
-                } else {
-                    //  binding.submitbutton.setVisibility(View.GONE);
-                    updateChild();
-
-                }
-
-            } else {
-                //  Toast.makeText(this, "Added Successfully", Toast.LENGTH_SHORT).show();
-            }
-
-            //            case R.id.editUserNameIcon:
-//                AppLogger.v("TextEdit", "   UserName");
-//
-//                binding.edtusername.setVisibility(View.GONE);
-//                binding.editUserNameIcon.setVisibility(View.GONE);
-//                binding.editProfileName.setVisibility(View.VISIBLE);
-//                binding.cancelUserNameIcon.setImageResource(R.drawable.ic_cancel_icon);
-//                binding.editProfile.setText(binding.edtusername.getText().toString());
-//                binding.editProfile.requestFocus();
-//                InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-//                imm.showSoftInput(binding.editProfile, InputMethodManager.SHOW_IMPLICIT);
-//                binding.cancelUserNameIcon.setVisibility(View.VISIBLE);
-//
-//                break;
-
-//            case R.id.cancelUserNameIcon:
-//                AppLogger.v("TextEdit", "   cancelUserNameIcon");
-//                if (!TextUtil.isEmpty(binding.editProfile.getText().toString())) {
-//                    binding.edtusername.setVisibility(View.VISIBLE);
-//                    binding.editUserNameIcon.setVisibility(View.VISIBLE);
-//                    binding.editUserNameIcon.setImageResource(R.drawable.ic_edit_profile);
-//                    binding.editProfileName.setVisibility(View.GONE);
-//                    binding.cancelUserNameIcon.setVisibility(View.GONE);
-//                    binding.edtusername.setText(binding.editProfile.getText().toString());
-//                } else {
-//                    binding.editProfileName.setError("Enter Student Name");
-//                }
-//                break;
         }
     }
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        AppLogger.e("StudentProfile", "fragment requestCode=" + requestCode);
-//
-//        if (requestCode == 2404) {
-//            // CropImages.ActivityResult result = CropImages.getActivityResult(data);
-//            if (resultCode == RESULT_OK) {
-//                try {
-//                    Uri uri = data.getData();
-//                    AppLogger.e("StudentProfile", "image path=" + uri.getPath());
-//                    image_path = uri.getPath();
-//                    Bitmap picBitmap = BitmapFactory.decodeFile(uri.getPath());
-//                    byte[] bytes = AppUtil.encodeToBase64(picBitmap, 100);
-//                    long mb = AppUtil.bytesIntoHumanReadable(bytes.length);
-//                    int file_size = Integer.parseInt(String.valueOf(bytes.length / 1024));
-//
-//                    AppLogger.e("StudentProfile", "image size=" + uri.getPath());
-//                    if (file_size >= 500) {
-//                        studentProfileModel.setImageBytes(AppUtil.encodeToBase64(picBitmap, 50));
-//                    } else {
-//                        studentProfileModel.setImageBytes(bytes);
-//                    }
-//
-//                    loadimage(picBitmap);
-//                } catch (Exception e) {
-//                    AppLogger.e("StudentProfile", "fragment exception=" + e.getMessage());
-//                }
-//
-//            }
-//
-////            else if (resultCode == ImagePicker.RESULT_ERROR) {
-////                showSnackbarError(ImagePicker.getError(data));
-////            }
-//
-//            else {
-//                // Toast.makeText(getActivity(), "Task Cancelled", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//        else if (requestCode == CAMERA_REQUEST) {
-//
-//            if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
-//            {
-//                Bitmap photo = (Bitmap) data.getExtras().get("data");
-//                image_path = String.valueOf(data.getExtras().get("data"));
-//                byte[] bytes = AppUtil.encodeToBase64(photo, 100);
-//                long mb = AppUtil.bytesIntoHumanReadable(bytes.length);
-//                int file_size = Integer.parseInt(String.valueOf(bytes.length / 1024));
-//              //  Toast.makeText(this, image_path.toString(), Toast.LENGTH_SHORT).show();
-//
-//                if (file_size >= 500) {
-//                    studentProfileModel.setImageBytes(AppUtil.encodeToBase64(photo, 50));
-//                } else {
-//                    studentProfileModel.setImageBytes(bytes);
-//                }
-//                loadimage(photo);
-//            }
-//
-//
-////            CropImages.ActivityResult result = CropImages.getActivityResult(data);
-////            if (resultCode == RESULT_OK) {
-////                AppLogger.v("BigDes", "Sdk step 4");
-////                try {
-////                    Uri resultUri = result.getUri();
-////                    image_path =  resultUri.getPath();
-////                    Bitmap picBitmap = BitmapFactory.decodeFile(resultUri.getPath());
-////                    byte[] bytes = AppUtil.encodeToBase64(picBitmap, 100);
-////                    long mb = AppUtil.bytesIntoHumanReadable(bytes.length);
-////                    int file_size = Integer.parseInt(String.valueOf(bytes.length / 1024));
-////
-////                    AppLogger.e("StudentProfile", "image size=" + resultUri.getPath());
-////                    if (file_size >= 500) {
-////                        studentProfileModel.setImageBytes(AppUtil.encodeToBase64(picBitmap, 50));
-////                    } else {
-////                        studentProfileModel.setImageBytes(bytes);
-////                    }
-////
-////                    loadimage(picBitmap);
-////                } catch (Exception e) {
-////
-////                }
-////
-////            }
-////            else if (resultCode == CropImages.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-////                Exception error = result.getError();
-////                AppLogger.e("chhonker", "Exception error=" + error.getMessage());
-////            }
-//        }
-//    }
+
     private void loadimage(Bitmap picBitmap) {
         RoundedBitmapDrawable circularBitmapDrawable =
                 RoundedBitmapDrawableFactory.create(binding.profileimage.getContext().getResources(), picBitmap);
@@ -946,9 +864,7 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
     private void showSnackbarError(String message) {
         ViewUtil.showSnackBar(((DashBoardMainActivity) getApplicationContext()).binding.naviagtionContent.homeView, message);
     }
-
-
-
+    
     private void updateChild()
     {
         Details details1 = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
@@ -964,34 +880,23 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
         String childid = prefs.getString("newuseridforaddchild", "");
         String childuserid = childid;
         String gendertype = binding.etStudentGender.getText().toString();
-        String schooltype = binding.etSchooltype.getText().toString();
-        String boardtype = binding.etSchoolboard.getText().toString();
+//        String schooltype = binding.etSchooltype.getText().toString();
+//        String boardtype = binding.etSchoolboard.getText().toString();
         String tution = binding.ettution.getText().toString();
         String tutiontype = binding.ettutiontype.getText().toString();
         String parentemail = binding.editemail.getText().toString();
-        String schoolname = binding.etschool.getText().toString();
-        String userlangid = prefModel.getUserLanguageId();
-//        if (binding.etSchooltype.getText().toString().equals("")||binding.etSchooltype.getText().toString().isEmpty()){
-//            schooltype = "NULL";
-//        }
-//        if (binding.etSchoolboard.getText().toString().equals("")||binding.etSchoolboard.getText().toString().isEmpty()){
-//            boardtype = "NULL";
-//        }
-//        if (binding.etSchoolmedium.getText().toString().equals("")||binding.etSchoolmedium.getText().toString().isEmpty()){
-//            Schoolmedium = "NULL";
-//        }
-//        if (binding.ettution.getText().toString().equals("")||binding.ettution.getText().toString().isEmpty()){
-//            Tution = "NULL";
-//        }
-//        if (binding.ettutiontype.getText().toString().equals("")||binding.ettutiontype.getText().toString().isEmpty()){
-//            Tutiontype = "NULL";
-//        }
-//        if (binding.etSchoolname.getText().toString().isEmpty()||binding.etSchoolname.getText().toString().equals(""))
-//        {
-//            schoolname  = RequestBody.create(MediaType.parse("text/plain"), "NULL");
-//        }
 
-        RequestBody schoolname_c  = RequestBody.create(MediaType.parse("text/plain"), schoolname);
+        if (districtList!=null||!districtList.isEmpty()){
+            schoolnamesearch = binding.etschool.getText().toString();
+        }
+        else{
+            schoolnamesearch = binding.autoCompleteTextView1.getText().toString();
+        }
+
+        String userlangid = prefModel.getUserLanguageId();
+
+
+        RequestBody schoolname_c  = RequestBody.create(MediaType.parse("text/plain"), schoolnamesearch);
         RequestBody gender_c  = RequestBody.create(MediaType.parse("text/plain"), gendertype);
         RequestBody schooltype_c  = RequestBody.create(MediaType.parse("text/plain"), schooltype);
         RequestBody schoolboard_c  = RequestBody.create(MediaType.parse("text/plain"), boardtype);
@@ -1013,10 +918,7 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
         RequestBody regsource = RequestBody.create(okhttp3.MultipartBody.FORM, "AuroScholr");//model.getPartnerSource()
         RequestBody sharetype = RequestBody.create(okhttp3.MultipartBody.FORM, "telecaller");//model.getPartnerSource()
         RequestBody devicetoken  = RequestBody.create(MediaType.parse("text/plain"), fbnewToken);
-
         RequestBody  studentname  = RequestBody.create(MediaType.parse("text/plain"), child_name);
-
-
         RequestBody language_veriosn  = RequestBody.create(MediaType.parse("text/plain"), "0.0.1");
         RequestBody api_veriosn  = RequestBody.create(MediaType.parse("text/plain"), "0.0.1");
         RequestBody grade_c  = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(gradeid));
@@ -1067,10 +969,22 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
                                     String msg = response.body().getMessage();
                                     if (status.equalsIgnoreCase("success")) {
                                         binding.submitbutton.setVisibility(View.GONE);
-                                        Toast.makeText(CompleteStudentProfileWithPinActivity.this, msg, Toast.LENGTH_SHORT).show();
-                                        // showSnackbarError(msg);
-                                        Intent intent = new Intent(CompleteStudentProfileWithPinActivity.this, ParentProfileActivity.class);
-                                        startActivity(intent);
+                                        Toast.
+
+                                                makeText(CompleteStudentProfileWithPinActivity.this, msg, Toast.LENGTH_SHORT).show();
+
+
+                                        SharedPreferences prefs = getSharedPreferences("My_Pref", MODE_PRIVATE);
+                                        String statusparentprofile = prefs.getString("statusparentprofile", "");
+                                         if (statusparentprofile.equals("true")) {
+                                             Intent intent = new Intent(CompleteStudentProfileWithPinActivity.this, ParentProfileActivity.class);
+                                             startActivity(intent);
+                                        }
+                                         else{
+                                             Intent intent = new Intent(CompleteStudentProfileWithPinActivity.this, LoginActivity.class);
+                                             startActivity(intent);
+                                         }
+
                                     }
                                 } else {
 
@@ -1096,15 +1010,17 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
 
 
     }
+
+    public void openBottomSheetDialog() {
+        BottomSheetUsersDialog bottomSheet = new BottomSheetUsersDialog();
+        bottomSheet.show(getSupportFragmentManager(),
+                "ModalBottomSheet");
+    }
     private void getSchool(String state_id, String district_id, String search)
     {
         Details details = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
 
-//        ProgressDialog progress = new ProgressDialog(CompleteStudentProfileWithPinActivity.this);
-//        progress.setTitle(details.getProcessing());
-//        progress.setMessage(details.getProcessing());
-//        progress.setCancelable(true); // disable dismiss by tapping outside of the dialog
-//        progress.show();
+
         districtList.clear();
         HashMap<String,String> map_data = new HashMap<>();
         map_data.put("state_id",stateCode);
@@ -1121,6 +1037,7 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
                     {
                         if (response.isSuccessful())
                         {
+                            genderListString.clear();
                             Log.d(TAG, "onDistrictResponse: "+response.message());
                             for ( int i=0 ;i < response.body().getSchools().size();i++)
                             {
@@ -1130,18 +1047,10 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
                                 Log.d(TAG, "onDistrictResponse: "+school_name);
                                 SchoolData districtData = new  SchoolData(school_name,school_id);
                                 districtList.add(districtData);
+                                genderListString.add(school_name);
 
                             }
-//                            if (districtList!=null&&!districtList.isEmpty()&&!binding.etschool.getText().toString().isEmpty()){
-//                                //    progress.dismiss();
-//                                addDropDownSchool(districtList);
-//                                binding.etschool.showDropDown();
-//
-//                            }
-//                            else{
-//                                //  progress.dismiss();
-//                            }
-                           // progress.dismiss();
+
                         }
                         else
                         {
@@ -1156,6 +1065,91 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
                     }
                 });
     }
+
+    private void getSchoolsearch(String state_id, String district_id, String search)
+    {
+        Details details = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
+
+        ProgressDialog progress = new ProgressDialog(CompleteStudentProfileWithPinActivity.this);
+        progress.setTitle(details.getProcessing());
+        progress.setMessage(details.getProcessing());
+        progress.setCancelable(true); // disable dismiss by tapping outside of the dialog
+        progress.show();
+
+        HashMap<String,String> map_data = new HashMap<>();
+        map_data.put("state_id",state_id);
+        map_data.put("district_id",district_id);
+        map_data.put("search",search);
+
+
+        RemoteApi.Companion.invoke().getSchool(map_data)
+                .enqueue(new Callback<com.auro.application.home.data.model.SchoolDataModel>() {
+                    @Override
+                    public void onResponse(Call<com.auro.application.home.data.model.SchoolDataModel> call, Response<com.auro.application.home.data.model.SchoolDataModel> response)
+                    {
+                        if (response.isSuccessful())
+                        {
+                            districtList.clear();
+                            progress.dismiss();
+                            Log.d(TAG, "onDistrictResponse: "+response.message());
+                            if (response.body().getSchools()!=null||!response.body().getSchools().isEmpty()) {
+                                for (int i = 0; i < response.body().getSchools().size(); i++) {
+                                    int school_id = response.body().getSchools().get(i).getID();
+                                    String school_name = response.body().getSchools().get(i).getSCHOOL_NAME();
+
+                                    Log.d(TAG, "onDistrictResponse: " + school_name);
+                                    SchoolData districtData = new SchoolData(school_name, school_id);
+                                    districtList.add(districtData);
+
+
+                                }
+                                if (districtList != null || !districtList.isEmpty()) {
+                                    progress.dismiss();
+                                    if (districtList != null && districtList.size()!=0) {
+                                        binding.etSchoolname.showDropDown();
+                                        addDropDownSchool(districtList);
+                                    } else {
+                                        progress.dismiss();
+                                        String schoolsearch = binding.editsearch.getText().toString();
+                                        binding.etschool.setText(schoolsearch);
+                                        Toast.makeText(CompleteStudentProfileWithPinActivity.this, details.getNo_data_found(), Toast.LENGTH_SHORT).show();                                    }
+
+                                }
+                                else {
+                                    progress.dismiss();
+                                    Toast.makeText(CompleteStudentProfileWithPinActivity.this, details.getNo_data_found(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                            else{
+                                progress.dismiss();
+                                String searchname = binding.editsearch.getText().toString();
+                                binding.etschool.setText(searchname);
+                                Toast.makeText(CompleteStudentProfileWithPinActivity.this, details.getNo_data_found(), Toast.LENGTH_SHORT).show();
+                            }
+
+
+                        }
+                        else {
+                            if (districtList == null || districtList.isEmpty()) {
+                                progress.dismiss();
+                                String schoolsearch = binding.editsearch.getText().toString();
+                                binding.etschool.setText(schoolsearch);
+                                Toast.makeText(CompleteStudentProfileWithPinActivity.this, details.getNo_data_found(), Toast.LENGTH_SHORT).show();
+
+
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<com.auro.application.home.data.model.SchoolDataModel> call, Throwable t)
+                    {
+                        progress.dismiss();
+                        Log.d(TAG, "onDistrictFailure: "+t.getMessage());
+                    }
+                });
+    }
+
     private void getAllStateList()
     {
 
@@ -1433,6 +1427,7 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
                                 PrivateTutionData districtData = new  PrivateTutionData(gender_id,translated_name,gender_name);
                                 privatetutionList.add(districtData);
                                 binding.ettution.setText(privatetutionList.get(0).getTranslatedName());
+                                binding.tltutiontype.setVisibility(View.GONE);
 
                             }
                             addDropDownPrivateTution();
@@ -1603,26 +1598,13 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
         binding.etstate.setTextColor(Color.BLACK);
     }
     private void askPermission() {
-//        String rationale = "For Upload Profile Picture. Camera and Storage Permission is Must.";
-//        Permissions.Options options = new Permissions.Options()
-//                .setRationaleDialogTitle("Info")
-//                .setSettingsDialogTitle("Warning");
-//        Permissions.check(getActivity(), PermissionUtil.mCameraPermissions, rationale, options, new PermissionHandler() {
-//            @Override
-//            public void onGranted() {
+
         ImagePicker.with(CompleteStudentProfileWithPinActivity.this)
                 .crop()                    //Crop image(Optional), Check Customization for more option
                 .compress(1024)            //Final image size will be less than 1 MB(Optional)
                 .maxResultSize(1080, 1080)    //Final image resolution will be less than 1080 x 1080(Optional)
                 .start();
-//            }
-//
-//            @Override
-//            public void onDenied(Context context, ArrayList<String> deniedPermissions) {
-//                // permission denied, block the feature.
-//                ViewUtil.showSnackBar(binding.getRoot(), rationale);
-//            }
-//        });
+
     }
     private void selectImage() {
         final CharSequence[] options = { "Take Photo", "Choose from Gallery","Cancel" };
@@ -1655,174 +1637,7 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
         });
         builder.show();
     }
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        AppLogger.e("StudentProfile", "fragment requestCode=" + requestCode);
-//        if (Build.VERSION.SDK_INT > 26) {
-//            if (requestCode == 2) {
-//
-//
-//                if (resultCode == RESULT_OK) {
-//                    try {
-//
-//
-//                        Uri uri = data.getData();
-//                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-//                        AppLogger.e("StudentProfile", "image path=" + uri.getPath());
-//                        image_path = uri.getPath();
-//
-//                        Uri selectedImage = data.getData();
-//                        String[] filePath = { MediaStore.Images.Media.DATA };
-//                        Cursor c = getContentResolver().query(selectedImage,filePath, null, null, null);
-//                        c.moveToFirst();
-//                        int columnIndex = c.getColumnIndex(filePath[0]);
-//                        String picturePath = c.getString(columnIndex);
-//                        c.close();
-//                        Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
-//                        loadimage(bitmap);
-//                        byte[] bytes = AppUtil.encodeToBase64(bitmap, 100);
-//                        long mb = AppUtil.bytesIntoHumanReadable(bytes.length);
-//                        int file_size = Integer.parseInt(String.valueOf(bytes.length / 1024));
-//                        if (file_size >= 500) {
-//                            Toast.makeText(this, "Image size is too large", Toast.LENGTH_SHORT).show();
-//
-//                            studentProfileModel.setImageBytes(AppUtil.encodeToBase64(bitmap, 50));
-//
-//                        } else {
-//
-//                            studentProfileModel.setImageBytes(bytes);
-//                        }
-//
-//
-//
-//
-//
-//                    } catch (Exception e) {
-//                        AppLogger.e("StudentProfile", "fragment exception=" + e.getMessage());
-//                    }
-//
-//                }
-//
-//            }
-//            else if (requestCode == 1 ) {
-//                if (Build.VERSION.SDK_INT > 26) {
-//                    Bitmap photo = (Bitmap) data.getExtras().get("data");
-//                    image_path = String.valueOf(data.getExtras().get("data"));
-//                    byte[] bytes = AppUtil.encodeToBase64(photo, 100);
-//                    long mb = AppUtil.bytesIntoHumanReadable(bytes.length);
-//                    int file_size = Integer.parseInt(String.valueOf(bytes.length / 1024));
-//
-//
-//                    if (file_size >= 500) {
-//                        Toast.makeText(this, "Image size is too large", Toast.LENGTH_SHORT).show();
-//
-//                        studentProfileModel.setImageBytes(AppUtil.encodeToBase64(photo, 50));
-//                    } else {
-//
-//                        studentProfileModel.setImageBytes(bytes);
-//                    }
-//                    loadimage(photo);
-//                }
-//                else{
-//                    if (resultCode == RESULT_OK) {
-//                        AppLogger.v("BigDes", "Sdk step 4");
-//                        try {
-//                            CropImages.ActivityResult result = CropImages.getActivityResult(data);
-//                            Uri resultUri = result.getUri();
-//                            image_path =  resultUri.getPath();
-//                            Bitmap picBitmap = BitmapFactory.decodeFile(resultUri.getPath());
-//                            byte[] bytes = AppUtil.encodeToBase64(picBitmap, 100);
-//                            long mb = AppUtil.bytesIntoHumanReadable(bytes.length);
-//                            int file_size = Integer.parseInt(String.valueOf(bytes.length / 1024));
-//
-//                            AppLogger.e("StudentProfile", "image size=" + resultUri.getPath());
-//                            if (file_size >= 500) {
-//                                Toast.makeText(this, "Image size is too large", Toast.LENGTH_SHORT).show();
-//
-//                                studentProfileModel.setImageBytes(AppUtil.encodeToBase64(picBitmap, 50));
-//                            } else {
-//                                studentProfileModel.setImageBytes(bytes);
-//                            }
-//
-//                            loadimage(picBitmap);
-//                        } catch (Exception e) {
-//
-//                        }
-//
-//                    }
-//                }
-//            }
-//        }
-//        else{
-//            if (requestCode == 2) {  //2404
-//
-//                if (resultCode == RESULT_OK) {
-//                    try {
-//
-//
-//                        Uri uri = data.getData();
-//                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-//                        AppLogger.e("StudentProfile", "image path=" + uri.getPath());
-//                        image_path = uri.getPath();
-//                        Bitmap picBitmap = BitmapFactory.decodeFile(uri.getPath());
-//                        byte[] bytes = AppUtil.encodeToBase64(bitmap, 100);
-//                        long mb = AppUtil.bytesIntoHumanReadable(bytes.length);
-//                        int file_size = Integer.parseInt(String.valueOf(bytes.length / 1024));
-//
-//                        AppLogger.e("StudentProfile", "image size=" + uri.getPath());
-//                        if (file_size >= 500) {
-//                            Toast.makeText(this, "Image size is too large", Toast.LENGTH_SHORT).show();
-//
-//                            studentProfileModel.setImageBytes(AppUtil.encodeToBase64(bitmap, 50));
-//                        } else {
-//
-//                            studentProfileModel.setImageBytes(bytes);
-//                        }
-//                        loadimage(bitmap);
-//                    } catch (Exception e) {
-//                        AppLogger.e("StudentProfile", "fragment exception=" + e.getMessage());
-//                    }
-//
-//                }
-//
-//
-//
-//
-//            }
-//            else if (requestCode == 1 ) {
-//
-//                if (requestCode == 1 && resultCode == Activity.RESULT_OK)
-//                {
-//                    Bitmap photo = (Bitmap) data.getExtras().get("data");
-//                    image_path = String.valueOf(data.getExtras().get("data"));
-//                    byte[] bytes = AppUtil.encodeToBase64(photo, 100);
-//                    long mb = AppUtil.bytesIntoHumanReadable(bytes.length);
-//                    int file_size = Integer.parseInt(String.valueOf(bytes.length / 1024));
-//                    // Toast.makeText(this, image_path.toString(), Toast.LENGTH_SHORT).show();
-//
-//                    if (file_size >= 500) {
-//                        Toast.makeText(this, "Image size is too large", Toast.LENGTH_SHORT).show();
-//
-//                        studentProfileModel.setImageBytes(AppUtil.encodeToBase64(photo, 50));
-//                    } else {
-//
-//                        studentProfileModel.setImageBytes(bytes);
-//                    }
-//                    loadimage(photo);
-//                }
-//
-//            }
-//        }
-//
-//
-//
-//
-//
-//
-//
-//
-//    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -1830,7 +1645,7 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
         AppLogger.e("StudentProfile", "fragment requestCode=" + requestCode);
 
         if (requestCode == 2404) {
-            // CropImages.ActivityResult result = CropImages.getActivityResult(data);
+
             if (resultCode == RESULT_OK) {
                 try {
                     Uri uri = data.getData();
@@ -1850,34 +1665,16 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
                         studentProfileModel.setImageBytes(bytes);
                     }
 
-                    //     new_file_size = Integer.parseInt(String.valueOf(studentProfileModel.getImageBytes().length / 1024));
-//                    AppLogger.d(TAG, "Image Path  new Size kb- " + mb + "-bytes-" + new_file_size);
 
-//                    Uri selectedImage = data.getData();
-//                    String[] filePath = { MediaStore.Images.Media.DATA };
-//                    Cursor c = getContentResolver().query(selectedImage,filePath, null, null, null);
-//                    c.moveToFirst();
-//                    int columnIndex = c.getColumnIndex(filePath[0]);
-//                    image_path = c.getString(columnIndex);
-//                    c.close();
-//                    Bitmap thumbnail = (BitmapFactory.decodeFile(image_path));
-//                    byte[] bytes = AppUtil.encodeToBase64(thumbnail, 100);
-//                    long mb = AppUtil.bytesIntoHumanReadable(bytes.length);
-//                    int file_size = Integer.parseInt(String.valueOf(bytes.length / 1024));
-//                    if (file_size >= 500) {
-//                        studentProfileModel.setImageBytes(AppUtil.encodeToBase64(thumbnail, 50));
-//                    } else {
-//                        studentProfileModel.setImageBytes(bytes);
-//                    }
                     loadimage(picBitmap);
                 } catch (Exception e) {
                     AppLogger.e("StudentProfile", "fragment exception=" + e.getMessage());
                 }
 
             } else if (resultCode == ImagePicker.RESULT_ERROR) {
-               // showSnackbarError(ImagePicker.getError(data));
+
             } else {
-                // Toast.makeText(getActivity(), "Task Cancelled", Toast.LENGTH_SHORT).show();
+
             }
         }
         else if (requestCode == CAMERA_REQUEST ) {
@@ -1889,7 +1686,6 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
                 byte[] bytes = AppUtil.encodeToBase64(photo, 100);
                 long mb = AppUtil.bytesIntoHumanReadable(bytes.length);
                 int file_size = Integer.parseInt(String.valueOf(bytes.length / 1024));
-                //   Toast.makeText(ParentProfileActivity.this, image_path.toString(), Toast.LENGTH_SHORT).show();
 
                 if (file_size >= 500) {
                     studentProfileModel.setImageBytes(AppUtil.encodeToBase64(photo, 50));
@@ -1900,34 +1696,7 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
             }
 
 
-//            CropImages.ActivityResult result = CropImages.getActivityResult(data);
-//            if (resultCode == RESULT_OK) {
-//                AppLogger.v("BigDes", "Sdk step 4");
-//                try {
-//                    Uri resultUri = result.getUri();
-//                    image_path =  resultUri.getPath();
-//                    Bitmap picBitmap = BitmapFactory.decodeFile(resultUri.getPath());
-//                    byte[] bytes = AppUtil.encodeToBase64(picBitmap, 100);
-//                    long mb = AppUtil.bytesIntoHumanReadable(bytes.length);
-//                    int file_size = Integer.parseInt(String.valueOf(bytes.length / 1024));
-//
-//                    AppLogger.e("StudentProfile", "image size=" + resultUri.getPath());
-//                    if (file_size >= 500) {
-//                        studentProfileModel.setImageBytes(AppUtil.encodeToBase64(picBitmap, 50));
-//                    } else {
-//                        studentProfileModel.setImageBytes(bytes);
-//                    }
-//
-//                    loadimage(picBitmap);
-//                } catch (Exception e) {
-//
-//                }
-//
-//            }
-//            else if (resultCode == CropImages.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-//                Exception error = result.getError();
-//                AppLogger.e("chhonker", "Exception error=" + error.getMessage());
-//            }
+
         }
     }
     @Override
@@ -1950,7 +1719,7 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
             binding.etdistrict.setText(districtData.getDistrict_name());
             districtCode = districtData.getDistrict_id();
             binding.etschool.setText("");
-            getSchool(stateCode,districtData.getDistrict_id(),Schoolsearch);
+            getSchool(stateCode,districtCode,Schoolsearch);
 
         }
         else if (commonDataModel.getClickType()==SCHOOL)

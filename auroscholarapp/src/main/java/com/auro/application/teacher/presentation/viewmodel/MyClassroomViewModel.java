@@ -1,5 +1,7 @@
 package com.auro.application.teacher.presentation.viewmodel;
 
+import static com.auro.application.core.common.Status.SEND_REFERRAL_API;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -11,7 +13,16 @@ import com.auro.application.core.common.ResponseApi;
 import com.auro.application.core.common.Status;
 import com.auro.application.core.database.AuroAppPref;
 import com.auro.application.home.data.model.AuroScholarDataModel;
+import com.auro.application.home.data.model.AuroScholarInputModel;
+import com.auro.application.home.data.model.FetchStudentPrefReqModel;
+import com.auro.application.home.data.model.OtpOverCallReqModel;
+import com.auro.application.home.data.model.PendingKycDocsModel;
+import com.auro.application.home.data.model.RefferalReqModel;
+import com.auro.application.home.data.model.SendOtpReqModel;
+import com.auro.application.home.data.model.VerifyOtpReqModel;
 import com.auro.application.home.data.model.response.DynamiclinkResModel;
+import com.auro.application.home.data.model.signupmodel.InstructionModel;
+import com.auro.application.home.data.model.signupmodel.UserSlabsRequest;
 import com.auro.application.teacher.data.model.request.TeacherAddStudentInGroupReqModel;
 import com.auro.application.teacher.data.model.request.TeacherCreateGroupReqModel;
 import com.auro.application.teacher.data.model.request.TeacherDasboardSummaryResModel;
@@ -42,6 +53,8 @@ public class MyClassroomViewModel extends ViewModel {
         this.teacherDbUseCase = teacherDbUseCase;
         this.teacherUseCase = teacherUseCase;
         this.teacherRemoteUseCase = teacherRemoteUseCase;
+
+
     }
 
     public void checkInternet(Object object, Status status) {
@@ -70,6 +83,10 @@ public class MyClassroomViewModel extends ViewModel {
                         AppLogger.e("callRefferApi","step 2");
                         getDynamicDataApi((DynamiclinkResModel) object);
                         break;
+                    case SEND_REFERRAL_API:
+                        AppLogger.e("SEND_REFERRAL_API", "step 1");
+                        sendRefferalDataApi((RefferalReqModel) object);
+                        break;
 
                 }
             } else {
@@ -81,6 +98,29 @@ public class MyClassroomViewModel extends ViewModel {
         getCompositeDisposable().add(disposable);
 
     }
+    private void sendRefferalDataApi(RefferalReqModel model) {
+        AppLogger.e("SEND_REFERRAL_API", "step 1.2");
+        getCompositeDisposable()
+                .add(teacherRemoteUseCase.sendRefferalDataApi(model)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Consumer<ResponseApi>() {
+                                       @Override
+                                       public void accept(ResponseApi responseApi) throws Exception {
+                                           AppLogger.e("SEND_REFERRAL_API", "step 2");
+                                           serviceLiveData.setValue(responseApi);
+                                       }
+                                   },
+                                new Consumer<Throwable>() {
+                                    @Override
+                                    public void accept(Throwable throwable) throws Exception {
+                                        AppLogger.e("SEND_REFERRAL_API", "step 3" + throwable.getMessage());
+                                        defaultError();
+                                    }
+                                }));
+
+    }
+
     private void getDynamicDataApi(DynamiclinkResModel model) {
         AppLogger.e("callRefferApi","step 3");
         getCompositeDisposable()
@@ -122,7 +162,6 @@ public class MyClassroomViewModel extends ViewModel {
                                        public void accept(ResponseApi responseApi) throws Exception {
                                            AppLogger.v("GetProfiler","step 0.1-");
                                            serviceLiveData.setValue(responseApi);
-                                           AppLogger.v("GetProfiler","step 0.2-" +((MyProfileResModel)responseApi.data).getCreatedAt());
                                        }
                                    },
 

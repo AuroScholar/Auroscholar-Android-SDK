@@ -155,7 +155,6 @@ public class HomeRemoteUseCase extends NetworkUseCase {
         this.dashboardRemoteData = dashboardRemoteData;
     }
 
-
     public Single<ResponseApi> getWalletStatusApi(SetPasswordReqModel reqModel) {
         return dashboardRemoteData.getWalletStatusApi(reqModel).map(new Function<Response<JsonObject>, ResponseApi>() {
             @Override
@@ -181,13 +180,8 @@ public class HomeRemoteUseCase extends NetworkUseCase {
             public ResponseApi apply(Response<JsonObject> response) throws Exception {
 
                 if (response != null) {
-
-
                     return handleResponse(response, SEND_OTP);
-
-
                 } else {
-
                     return responseFail(SEND_OTP);
                 }
             }
@@ -200,9 +194,7 @@ public class HomeRemoteUseCase extends NetworkUseCase {
             @Override
             public ResponseApi apply(Response<JsonObject> response) throws Exception {
                 if (response != null) {
-
                     return handleResponse(response, CHECKVALIDUSER);
-
                 } else {
                     return responseFail(CHECKVALIDUSER);
                 }
@@ -483,7 +475,7 @@ public class HomeRemoteUseCase extends NetworkUseCase {
 
         }
 
-        model.setUserId(prefModel.getUserId());
+        model.setUserId(prefModel.getStudentData().getUserId());
         return dashboardRemoteData.getDashboardData(model).map(new Function<Response<JsonObject>, ResponseApi>() {
             @Override
             public ResponseApi apply(Response<JsonObject> response) throws Exception {
@@ -563,11 +555,7 @@ public class HomeRemoteUseCase extends NetworkUseCase {
             public ResponseApi apply(Response<JsonObject> response) throws Exception {
 
                 if (response != null) {
-
-
                     return handleResponse(response, LOGIN_API);
-
-
                 } else {
 
                     return responseFail(null);
@@ -648,6 +636,24 @@ public class HomeRemoteUseCase extends NetworkUseCase {
     public Single<ResponseApi> uploadProfileImage(List<KYCDocumentDatamodel> list, KYCInputModel kycInputModel) {
         AppLogger.e("chhonker uploadAllDocApi", "step 6");
         return dashboardRemoteData.uploadProfileImage(list, kycInputModel).map(new Function<Response<JsonObject>, ResponseApi>() {
+            @Override
+            public ResponseApi apply(Response<JsonObject> response) throws Exception {
+
+                if (response != null) {
+                    AppLogger.e("chhonker uploadAllDocApi", "step 7");
+                    return handleResponse(response, Status.UPLOAD_PROFILE_IMAGE);
+
+                } else {
+                    AppLogger.e("chhonker uploadAllDocApi", "step 8");
+                    return responseFail(Status.UPLOAD_PROFILE_IMAGE);
+                }
+            }
+        });
+    }
+
+    public Single<ResponseApi> teacheruploadProfileImage(List<KYCDocumentDatamodel> list, KYCInputModel kycInputModel) {
+        AppLogger.e("chhonker uploadAllDocApi", "step 6");
+        return dashboardRemoteData.teacheruploadProfileImage(list, kycInputModel).map(new Function<Response<JsonObject>, ResponseApi>() {
             @Override
             public ResponseApi apply(Response<JsonObject> response) throws Exception {
 
@@ -1227,8 +1233,6 @@ public class HomeRemoteUseCase extends NetworkUseCase {
             JSONObject jsonObject = new JSONObject(response.errorBody().string());
             String error = jsonObject.getString("message");
             AppLogger.v("responseFail400--", "responseFail400 step 4" + error);
-            // ErrorResponseModel errorResponseModel=gson.fromJson(response.errorBody().toString(), ErrorResponseModel.class);
-            // AppLogger.v("responseFail400--","responseFail400 step 5" +errorResponseModel);
             return ResponseApi.fail400(error, status);
         } catch (Exception e) {
             AppLogger.v("responseFail400--", "exception step 6");

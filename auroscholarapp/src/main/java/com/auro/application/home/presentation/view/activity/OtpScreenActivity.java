@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProviders;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -84,7 +85,7 @@ public class OtpScreenActivity extends BaseActivity implements OTPListener, View
     protected void init() {
         binding = DataBindingUtil.setContentView(this, getLayout());
         ((AuroApp) this.getApplication()).getAppComponent().doInjection(this);
-        //view model and handler setup
+
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(OtpScreenViewModel.class);
         binding.setViewModel(viewModel);
         binding.setLifecycleOwner(this);
@@ -92,9 +93,6 @@ public class OtpScreenActivity extends BaseActivity implements OTPListener, View
 
 
         if (getIntent().hasExtra(getResources().getString(R.string.intent_phone_number))) {
-          /*  trueProfile = getIntent().getParcelableExtra("profile");
-            userType = getIntent().getStringExtra("userType");*/
-            //otptext = String.valueOf(getIntent().getIntExtra(getResources().getString(R.string.userOtp), 0));
             phoneNumber = getIntent().getStringExtra(getResources().getString(R.string.intent_phone_number));
             binding.textOtpShow.setText(this.getString(R.string.opt_sent_number_txt) + " " + phoneNumber);
 
@@ -136,29 +134,33 @@ public class OtpScreenActivity extends BaseActivity implements OTPListener, View
     @Override
     public void onOTPComplete(String otp) {
         otptext = otp;
-        //Toast.makeText(this, "he OTP is" + otp, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onClick(View view) {
-        int id = view.getId();
-        if (id == R.id.RPButtonConfirm) {
-            if (!otptext.isEmpty() && otptext.length() == 6) {
-                binding.otpView.showSuccess();
-                ViewUtil.hideKeyboard(this);
-                verifyOtpRxApi();
-                // startActivityToOtpScreen();
-            } else {
-                otptext = "";
-                binding.otpView.showError();
-                showSnackbarError(this.getString(R.string.enter_otp_txt));
+        switch (view.getId()) {
+            case R.id.RPButtonConfirm:
+                if (!otptext.isEmpty() && otptext.length() == 6) {
+                    binding.otpView.showSuccess();
+                    ViewUtil.hideKeyboard(this);
+                    verifyOtpRxApi();
 
-            }
-        } else if (id == R.id.resendText) {
-            startSMSListener();
-            sendOtpApiReqPass();
-        } else if (id == R.id.code_editMobileno) {
-            onBackPressed();
+                } else {
+                    otptext = "";
+                    binding.otpView.showError();
+                    showSnackbarError(this.getString(R.string.enter_otp_txt));
+
+                }
+                break;
+
+            case R.id.resendText:
+                startSMSListener();
+                sendOtpApiReqPass();
+                break;
+
+            case R.id.code_editMobileno:
+                onBackPressed();
+                break;
         }
 
     }
@@ -192,9 +194,7 @@ public class OtpScreenActivity extends BaseActivity implements OTPListener, View
             switch (responseApi.status) {
 
                 case LOADING:
-                    //For ProgressBar
-                    //  openProgressDialog();
-                    //Toast.makeText(activity, "Loading...", Toast.LENGTH_SHORT).show();
+
 
 
                     break;
@@ -229,8 +229,7 @@ public class OtpScreenActivity extends BaseActivity implements OTPListener, View
                     break;
 
                 case NO_INTERNET:
-                    // closeDialog();
-                    //   showSnackbarError((String) responseApi.data);
+
                     binding.progressbar.pgbar.setVisibility(View.GONE);
                     ViewUtil.showSnackBar(binding.getRoot(), (String) responseApi.data);
                     break;
@@ -239,16 +238,13 @@ public class OtpScreenActivity extends BaseActivity implements OTPListener, View
                     binding.progressbar.pgbar.setVisibility(View.GONE);
                     break;
                 case FAIL_400:
-// When Authrization is fail
-                    // closeDialog();
-                    // showSnackbarError((String) responseApi.data);
+
                     binding.progressbar.pgbar.setVisibility(View.GONE);
                     ViewUtil.showSnackBar(binding.getRoot(), (String) responseApi.data);
                     break;
 
                 default:
-                    //closeDialog();
-                    //showSnackbarError((String) responseApi.data);
+
                     binding.progressbar.pgbar.setVisibility(View.GONE);
                     ViewUtil.showSnackBar(binding.getRoot(), (String) responseApi.data);
                     break;
@@ -260,8 +256,11 @@ public class OtpScreenActivity extends BaseActivity implements OTPListener, View
         PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
         prefModel.setUserMobile(phoneNumber);
         prefModel.setLogin(true);
+        SharedPreferences.Editor editor = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
+
+        editor.putString("statuslogin", "true");
+        editor.apply();
         if (!userValidResModel.getError()) {
-          //  prefModel.setStudentClass(ConversionUtil.INSTANCE.convertStringToInteger(userValidResModel.getStudentClass()));
             if (!TextUtil.isEmpty(userValidResModel.getEmailId())) {
                 prefModel.setEmailId(userValidResModel.getEmailId());
             }
@@ -273,8 +272,11 @@ public class OtpScreenActivity extends BaseActivity implements OTPListener, View
             DynamiclinkResModel dynamiclinkResModel = prefModel.getDynamiclinkResModel();
             if (dynamiclinkResModel != null && !TextUtil.isEmpty(dynamiclinkResModel.getStudentClass())) {
                 int studentClass = ConversionUtil.INSTANCE.convertStringToInteger(dynamiclinkResModel.getStudentClass());
-               // prefModel.setStudentClass(studentClass);
                 prefModel.setLogin(true);
+                SharedPreferences.Editor editor3 = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
+
+                editor3.putString("statuslogin", "true");
+                editor3.apply();
             }
         }
         AppLogger.v("SAVE_PREF","set log true");
@@ -348,7 +350,7 @@ public class OtpScreenActivity extends BaseActivity implements OTPListener, View
 
 
     private String parseOneTimeCode(String message) {
-        //simple number extractor
+
         String otpmessage = message.replaceAll("[^0-9]", "");
         return otpmessage.substring(0, 6);
     }
@@ -387,14 +389,14 @@ public class OtpScreenActivity extends BaseActivity implements OTPListener, View
 
     @Override
     public void onOTPReceived(String otp) {
-       // showToast("OTP Received: " + otp);
+
         String oneTimeCode = parseOneTimeCode(otp); // define this function
         otptext= oneTimeCode;
         verifyOtpRxApi();
-       // showToast(oneTimeCode);
+
         binding.otpView.setOTP(oneTimeCode);
         AppLogger.v("autoPhone",oneTimeCode);
-       // Toast.makeText(activity, "AutoPhone"+oneTimeCode, Toast.LENGTH_SHORT).show();
+
 
         if (smsReceiver != null) {
             unregisterReceiver(smsReceiver);
@@ -404,7 +406,7 @@ public class OtpScreenActivity extends BaseActivity implements OTPListener, View
 
     @Override
     public void onOTPTimeOut() {
-       // showToast("OTP Time out");
+
     }
 
     @Override

@@ -9,9 +9,6 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.auro.application.R;
 
 
-/**
- * Created by ashutosh on 2/5/18.
- */
 
 public class RPTextInputLayout extends TextInputLayout {
     public RPTextInputLayout(Context context) {

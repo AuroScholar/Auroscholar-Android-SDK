@@ -13,6 +13,8 @@ import com.auro.application.home.data.model.AuroScholarDataModel;
 import com.auro.application.home.data.model.FetchStudentPrefReqModel;
 import com.auro.application.home.data.model.KYCDocumentDatamodel;
 import com.auro.application.home.data.model.KYCResListModel;
+import com.auro.application.home.data.model.RefferalReqModel;
+import com.auro.application.home.data.model.passportmodels.PassportReqModel;
 import com.auro.application.home.data.model.response.DynamiclinkResModel;
 import com.auro.application.teacher.data.model.common.CommonDataResModel;
 import com.auro.application.teacher.data.model.request.AddGroupReqModel;
@@ -57,6 +59,8 @@ import static com.auro.application.core.common.AppConstant.ResponseConstatnt.RES
 import static com.auro.application.core.common.AppConstant.ResponseConstatnt.RES_FAIL;
 import static com.auro.application.core.common.Status.CANCEL_WEBINAR_SLOT;
 import static com.auro.application.core.common.Status.DYNAMIC_LINK_API;
+import static com.auro.application.core.common.Status.PASSPORT_API;
+import static com.auro.application.core.common.Status.SEND_REFERRAL_API;
 
 import androidx.annotation.NonNull;
 
@@ -88,6 +92,24 @@ public class TeacherRemoteUseCase extends NetworkUseCase {
         });
     }
 
+
+    public Single<ResponseApi> sendRefferalDataApi(RefferalReqModel model) {
+        AppLogger.e("SEND_REFERRAL_API", "step 4");
+        return teacherRemoteData.sendRefferalDataApi(model).map(new Function<Response<JsonObject>, ResponseApi>() {
+            @Override
+            public ResponseApi apply(Response<JsonObject> response) throws Exception {
+
+                if (response != null) {
+                    AppLogger.e("SEND_REFERRAL_API", "step 5");
+                    return handleResponse(response, SEND_REFERRAL_API);
+                } else {
+                    AppLogger.e("SEND_REFERRAL_API", "step 6");
+                    return responseFail(SEND_REFERRAL_API);
+                }
+            }
+        });
+    }
+
     public Single<ResponseApi> updateTeacherProfileApi(TeacherReqModel reqModel) {
         AppLogger.v("InfoScreen", "Step 4 update teacherremoteusecase");
         return teacherRemoteData.updateTeacherProfileApi(reqModel).map(new Function<Response<JsonObject>, ResponseApi>() {
@@ -99,7 +121,6 @@ public class TeacherRemoteUseCase extends NetworkUseCase {
                     return handleResponse(response, Status.UPDATE_TEACHER_PROFILE_API);
 
                 } else {
-
                     return responseFail(Status.UPDATE_TEACHER_PROFILE_API);
                 }
             }

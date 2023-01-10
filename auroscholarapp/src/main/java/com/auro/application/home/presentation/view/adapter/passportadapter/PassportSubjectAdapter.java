@@ -90,14 +90,7 @@ public class PassportSubjectAdapter extends RecyclerView.Adapter<PassportSubject
         binding.parentLayout.setBackground(mContext.getResources().getDrawable(R.drawable.button_bg_grey));
         setQuizAdapter(position);
 
-       /* Vholder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listner != null) {
-                    listner.commonEventListner(AppUtil.getCommonClickModel(1, Status.ITEM_CLICK, mValues.get(position)));
-                }
-            }
-        });*/
+
     }
 
     @Override
@@ -105,9 +98,7 @@ public class PassportSubjectAdapter extends RecyclerView.Adapter<PassportSubject
         return mValues.size();
     }
 
-    private void updateData() {
 
-    }
 
 
 

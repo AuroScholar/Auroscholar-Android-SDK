@@ -108,8 +108,8 @@ public class GradeChnageCongDialogBox extends Dialog {
 
 
     void setData() {
-        int leadWidth = activity.getResources().getDimensionPixelOffset(R.dimen._10sdp);
-        int gapWidth = activity.getResources().getDimensionPixelOffset(R.dimen._20sdp);
+        int leadWidth = activity.getResources().getDimensionPixelOffset(R.dimen.space_medium);
+        int gapWidth = activity.getResources().getDimensionPixelOffset(R.dimen.space_xlarge);
         leadWidth = 0;
        /* binding.tvMessage.setText(new Truss()
                 .appendln(activity.getResources().getString(R.string.check_discalimer_first_text), new Snippety().bullet(leadWidth, gapWidth))

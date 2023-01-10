@@ -1,5 +1,6 @@
 package com.auro.application.home.presentation.view.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,7 +53,7 @@ public class QuizWonDetailAdapter extends RecyclerView.Adapter<QuizWonDetailAdap
         }
 
         public void setData(SlabDetailResModel resModel, int position) {
-            binding.subjectName.setText(resModel.getSubject());
+            binding.subjectName.setText(resModel.getTranslatedSubject());
             binding.quizName.setText(resModel.getQuizName());
             binding.amount.setText(resModel.getQuizName());
             binding.amount.setText(AuroApp.getAppContext().getResources().getString(R.string.rs) + slabModel.getPrice());
@@ -70,7 +71,7 @@ public class QuizWonDetailAdapter extends RecyclerView.Adapter<QuizWonDetailAdap
 
 
     @Override
-    public void onBindViewHolder(ViewHolder Vholder, int position) {
+    public void onBindViewHolder(ViewHolder Vholder, @SuppressLint("RecyclerView") int position) {
         Vholder.setData(mValues.get(position), position);
         Vholder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

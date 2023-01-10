@@ -90,8 +90,7 @@ public class CertificateFragment extends BaseFragment implements View.OnClickLis
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        // return inflater.inflate(R.layout.fragment_transactions, container, false);
+
 
         binding = DataBindingUtil.inflate(inflater, getLayout(), container, false);
         ((AuroApp) getActivity().getApplication()).getAppComponent().doInjection(this);
@@ -124,20 +123,13 @@ public class CertificateFragment extends BaseFragment implements View.OnClickLis
         ViewUtil.setLanguageonUi(getActivity());
         callCertificateApi();
 
-       /* if (comingFrom != null && comingFrom.equalsIgnoreCase(AppConstant.SENDING_DATA.DYNAMIC_LINK)) {
-            handleNavigationProgress(0, "");
-            AppLogger.i(TAG, "Log DynamicLink");
-            ((DashBoardMainActivity) getActivity()).setListner(this);
-            ((DashBoardMainActivity) getActivity()).callDashboardApi();
-        } else {
-            callCertificateApi();
-        }*/
+
         setListener();
         ViewUtil.setProfilePic(binding.imageView6);
         AppUtil.loadAppLogo(binding.auroScholarLogo,getActivity());
         details = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
         AppStringDynamic.setCertificatesPageStrings(binding);
-        //setAdapter();
+
     }
 
     @Override
@@ -167,26 +159,26 @@ public class CertificateFragment extends BaseFragment implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        int id = v.getId();
-        if (id == R.id.back_arrow) {
-            getActivity().onBackPressed();
-        } else if (id == R.id.download_icon) {
-            askPermission();
-        } else if (id == R.id.language_layout) {
-            ((DashBoardMainActivity) getActivity()).openChangeLanguageDialog();
-        } else if (id == R.id.cardView2) {
-            ((DashBoardMainActivity) getActivity()).openProfileFragment();
+        switch (v.getId()) {
+            case R.id.back_arrow:
+                getActivity().onBackPressed();
+                break;
+            case R.id.download_icon:
+                askPermission();
+                break;
+            case R.id.language_layout:
+                ((DashBoardMainActivity) getActivity()).openChangeLanguageDialog();
+                break;
+
+            case R.id.cardView2:
+                ((DashBoardMainActivity) getActivity()).openProfileFragment();
+                break;
+
         }
     }
 
     private void askPermission() {
-//        String rationale = "Please provide storage permission for download the certificate.";
-//        Permissions.Options options = new Permissions.Options()
-//                .setRationaleDialogTitle("Info")
-//                .setSettingsDialogTitle("Warning");
-//        Permissions.check(getActivity(), PermissionUtil.mStorage, rationale, options, new PermissionHandler() {
-//            @Override
-//            public void onGranted() {
+
                 if (certificateResModel != null && !TextUtil.checkListIsEmpty(certificateResModel.getAPIcertificate())) {
                     if (hashMap.size() > 0) {
                         for (Map.Entry<Integer, String> map : hashMap.entrySet()) {
@@ -199,14 +191,7 @@ public class CertificateFragment extends BaseFragment implements View.OnClickLis
                     ViewUtil.showSnackBar(binding.getRoot(), details.getNo_certificate_for_download()!= null ? details.getNo_certificate_for_download() : AuroApp.getAppContext().getResources().getString(R.string.please_select_certificate));
 
                 }
-//            }
-//
-//            @Override
-//            public void onDenied(Context context, ArrayList<String> deniedPermissions) {
-//                // permission denied, block the feature.
-//
-//            }
-//        });
+
     }
 
     private void downloadFile(String url) {
@@ -255,7 +240,6 @@ public class CertificateFragment extends BaseFragment implements View.OnClickLis
 
 
     public void setAdapter() {
-        // List<CertificateResModel> list = viewModel.homeUseCase.makeCertificateList();
         binding.certificateRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         binding.certificateRecyclerView.setHasFixedSize(true);
         CertificateAdapter kyCuploadAdapter = new CertificateAdapter(getActivity(), certificateResModel.getAPIcertificate(), this);
@@ -265,20 +249,7 @@ public class CertificateFragment extends BaseFragment implements View.OnClickLis
     private void openCertificateDialog(APIcertificate object) {
         CertificateDialog yesNoAlert = CertificateDialog.newInstance(object);
         yesNoAlert.show(getParentFragmentManager(), null);
-        //  new CertificateDialog().show(getParentFragmentManager(), null);
-       /* CustomDialogModel customDialogModel = new CustomDialogModel();
-        customDialogModel.setContext(getActivity());
-        CertificateDialog certificateDialog = new CertificateDialog(getActivity(), customDialogModel);
-        certificateDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        *//*WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-       // lp.copyFrom(certificateDialog.getWindow().getAttributes());
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        certificateDialog.getWindow().setAttributes(lp);*//*
-        Objects.requireNonNull(certificateDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        certificateDialog.setCancelable(true);
-        certificateDialog.show();*/
     }
 
 
@@ -334,7 +305,7 @@ public class CertificateFragment extends BaseFragment implements View.OnClickLis
             switch (responseApi.status) {
 
                 case LOADING:
-                    /*do coding here*/
+
                     break;
 
                 case SUCCESS:
@@ -420,8 +391,6 @@ public class CertificateFragment extends BaseFragment implements View.OnClickLis
             CertificateResModel certificateResModel = new CertificateResModel();
             certificateResModel.setRegistrationId(AuroAppPref.INSTANCE.getModelInstance().getStudentData().getUserId());
             certificateResModel.setStudentName(AuroAppPref.INSTANCE.getModelInstance().getStudentData().getStudentName());
-         /*   certificateResModel.setMobileNumber("9654234507");
-            certificateResModel.setRegistrationId("14");*/
             viewModel.getCertificate(certificateResModel);
         }
     }

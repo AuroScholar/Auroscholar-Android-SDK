@@ -75,7 +75,6 @@ public class TeacherProfileViewModel extends ViewModel {
                                        public void accept(ResponseApi responseApi) throws Exception {
                                            AppLogger.v("GetProfiler","step 0.1-");
                                            serviceLiveData.setValue(responseApi);
-                                           AppLogger.v("GetProfiler","step 0.2-" +((MyProfileResModel)responseApi.data).getCreatedAt());
                                        }
                                    },
 
@@ -118,6 +117,7 @@ public class TeacherProfileViewModel extends ViewModel {
                         .doOnSubscribe(new Consumer<Disposable>() {
                             @Override
                             public void accept(Disposable __) throws Exception {
+
                                 /*Do code here*/
                                //serviceLiveData.setValue(ResponseApi.loading(Status.UPDATE_TEACHER_PROFILE_API));
                             }

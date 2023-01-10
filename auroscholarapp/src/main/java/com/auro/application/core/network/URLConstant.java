@@ -3,12 +3,9 @@ package com.auro.application.core.network;
 import com.auro.application.BuildConfig;
 
 public interface URLConstant {
-    //  String BASE_URL = BuildConfig.BASE_URL; // live
-  // String BASE_URL = "https://app.auroscholar.org/api/";
- String BASE_URL = "https://auroscholar.com/api/";
-  // String BASE_URL = "https://auroscholar.org/api/";
-  //String BASE_URL = "https://staging.auroscholar.com/api/";
-   // String BASE_URL = "192.168.0.2/auroscholar-product/api/"
+    String BASE_URL = "https://auroscholar.com/api/";  //live
+  //String BASE_URL = "https://auroscholar.org/api/"; //org
+ //  String BASE_URL = "https://staging.auroscholar.com/api/";  //staging
     String OTP_SEND_API = BASE_URL + "send_otp";
     String OTP_VERIFY = BASE_URL + "verify_otp_new";
     String VERSION_API = BASE_URL + "check_api_version.php";
@@ -21,11 +18,12 @@ public interface URLConstant {
     String GET_ASSIGNMENT_ID = BASE_URL + "start_quiz";
     String GET_STATE = BASE_URL + "states";
     String GET_DISTRICT = BASE_URL + "districts";
-
     String TEST_URL = "https://assessment.eklavvya.com/exam/StartExam?";
-    String PRIVACY_POLICY = "https://auroscholar.com/privacy_policy.php";
+  //  String PRIVACY_POLICY = "https://auroscholar.com/privacy_policy.php";
+    String PRIVACY_POLICY = "https://auroscholar.com/privacy_policy";
     String STUDENT_SUBJECT_PREFERENCE_API = BASE_URL + "fetch_subject_list";
     String FETCH_STUDENT_PREFERENCE_API = BASE_URL + "fetch_student_preference";
+
     String UPDATE_USER_PREFERENCE = BASE_URL + "update_student_preference";
     String SET_USERNAME_PIN_API = BASE_URL + "set_username_pin";
     String LOGIN_USING_PIN_API = BASE_URL + "student_pin_login";
@@ -35,7 +33,7 @@ public interface URLConstant {
 
     String GET_PROFILE_UPDATE_API = BASE_URL + "students_score_data_api.php ";
 
-    String GET_PROFILE_TEACHER_API = BASE_URL + "teacher_profile";
+    String GET_PROFILE_TEACHER_API = BASE_URL + "get_teacher_profile";
 
     String GET_TEACHER_PROGRESS_API = BASE_URL + "teacher_progress.php ";
 
@@ -65,12 +63,13 @@ public interface URLConstant {
 
     String FRIEND_ACCEPT_API = BASE_URL + "friend_accepted.php";
 
-    String TERM_CONDITION = "https://auroscholar.com/terms-of-use.php";
+   // String TERM_CONDITION = "https://auroscholar.com/terms-of-use.php";
+    String TERM_CONDITION = "https://auroscholar.com/terms_of_use";
 
 
     String REFFER_API = BASE_URL + "reffer";
 
-    String SEND_REFERRAL_API = BASE_URL + "refferal";
+    String SEND_REFERRAL_API = BASE_URL + "refferal"; //refferal_new
 
     //  String CERTIFICATE_API  = BASE_URL + "certificate_data_api.php";
 
@@ -81,11 +80,11 @@ public interface URLConstant {
     String EXAM_IMAGE_API = BASE_URL + "exam_img_l";
 
     String UPDATE_STUDENT_PROFILE = BASE_URL + "update_user_details";
- String UPDATE_PARENT_PROFILE = BASE_URL + "update_parent";
+    String UPDATE_PARENT_PROFILE = BASE_URL + "update_parent";
 
     String GET_USER_PROFILE = BASE_URL + "get_user_details";
 
-    String PASSPORT_API = BASE_URL +  "passport";    //"passport"; //student_passport_details
+    String PASSPORT_API = BASE_URL +  "passport";     //student_passport_details
 
     String PARTNERS_API = BASE_URL + "guest_partner_list";
 
@@ -110,11 +109,9 @@ public interface URLConstant {
 
     String CANCEL_WEBINAR_AVAILABLE = BASETEACHERURL + "teacher_webinar_delete";
 
-
-
     String TEACHER_CREATE_GROUP_API = BASETEACHERURL + "teacher_group_add";
-    String TEACHER_ADD_STUDENT_IN_GROUP_API = BASETEACHERURL + "teacher_group_student_add";
 
+    String TEACHER_ADD_STUDENT_IN_GROUP_API = BASETEACHERURL + "teacher_group_student_add";
 
     String FETCH_QUIZ_DATA = BASE_URL + "fetch_quiz_question";
 
@@ -123,7 +120,7 @@ public interface URLConstant {
 
     //String FINISH_QUIZ_DATA  = BASE_URL + "submit_final_quiz_test.php";
 
-    String FINISH_QUIZ_DATA = BASE_URL + "submit_final_quiz";//  //submit_final_quiz_test
+    String FINISH_QUIZ_DATA = BASE_URL + "submit_final_quiz";  //submit_final_quiz_test
 
 
     String REGISTER_USER_API = BASE_URL + "register_user";
@@ -152,5 +149,8 @@ public interface URLConstant {
     String GET_MSG_POPUP =  "get_msg_popup";
 
     String GET_SLABS_API = BASE_URL + "get_user_slab";
+
+    // NEW SDK API's
+    String PARTNER_AUTO_LOGIN_API = BASE_URL + "replace_original_url";
 
 }

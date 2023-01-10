@@ -1,7 +1,5 @@
 package com.auro.application.home.presentation.viewmodel;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -51,20 +49,7 @@ public class HomeViewModel extends ViewModel {
         return serviceLiveData;
 
     }
-    public void getDynamicData(DynamiclinkResModel reqmodel) {
-        Log.i("Dynamiclink","Working");
-        Disposable disposable = homeRemoteUseCase.isAvailInternet().subscribe(hasInternet -> {
-            if (hasInternet) {
-                getDynamicDataApi(reqmodel);
-            } else {
-                // please check your internet
-                serviceLiveData.setValue(new ResponseApi(Status.NO_INTERNET, AuroApp.getAppContext().getResources().getString(R.string.internet_check), Status.NO_INTERNET));
-            }
 
-        });
-        getCompositeDisposable().add(disposable);
-
-    }
     public void checkInternetForApi(Status status, Object reqmodel) {
         Disposable disposable = homeRemoteUseCase.isAvailInternet().subscribe(hasInternet -> {
             if (hasInternet) {

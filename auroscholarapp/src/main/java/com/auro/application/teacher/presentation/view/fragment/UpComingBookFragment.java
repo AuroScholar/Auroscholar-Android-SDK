@@ -56,7 +56,6 @@ public class UpComingBookFragment extends BaseFragment implements CommonCallBack
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override

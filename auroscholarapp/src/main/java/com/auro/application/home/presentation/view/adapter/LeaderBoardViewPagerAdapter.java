@@ -26,20 +26,16 @@ public class LeaderBoardViewPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-              //  PaytmFragment paytmFragment = new PaytmFragment();
+
 
                 Bundle bundle = new Bundle();
                 FriendsLeaderBoardListFragment friendsLeaderBoardListFragment = new FriendsLeaderBoardListFragment();
-               // bundle.putParcelable(AppConstant.DASHBOARD_RES_MODEL, mdashboard);
-                //friendsLeaderBoardListFragment.setArguments(bundle);
+
                 return friendsLeaderBoardListFragment;
             case 1:
-               // UPIFragment upiFragment = new UPIFragment();
 
-               // Bundle bundleupi = new Bundle();
                 FriendsLeaderBoardAddFragment friendsLeaderBoardAddFragment = new FriendsLeaderBoardAddFragment();
-              //  bundleupi.putParcelable(AppConstant.DASHBOARD_RES_MODEL, mdashboard);
-              //  upiFragment.setArguments(bundleupi);
+
                 return friendsLeaderBoardAddFragment;
 
             default:

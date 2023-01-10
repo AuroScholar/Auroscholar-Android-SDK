@@ -58,13 +58,13 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
         binding = DataBindingUtil.setContentView(this, getLayout());
         ((AuroApp) this.getApplication()).getAppComponent().doInjection(this);
-        //view model and handler setup
+
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(LoginScreenViewModel.class);
         binding.setLifecycleOwner(this);
         if (getIntent() != null) {
             comingFrom = getIntent().getStringExtra(AppConstant.COMING_FROM);
         }
-        // setCustomDialerAdapter();
+
         prefModel = AuroAppPref.INSTANCE.getModelInstance();
         setListener();
         ViewUtil.customTextView(binding.termsCondition, this);
@@ -111,7 +111,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             switch (responseApi.status) {
 
                 case LOADING:
-                    /*Loading code here*/
+
                     break;
 
                 case SUCCESS:
@@ -145,15 +145,24 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        int id = v.getId();
-        if (id == R.id.back_button) {
-            finish();
-        } else if (id == R.id.RPAccept) {
-            setPasswordApi();
-        } else if (id == R.id.passwordIcon) {
-            handleIconClickPassword(binding.etPassword, binding.passwordIcon);
-        } else if (id == R.id.confirmpasswordIcon) {
-            handleIconClickPassword(binding.etconfirmPassword, binding.confirmpasswordIcon);
+        switch (v.getId()) {
+
+            case R.id.back_button:
+                finish();
+                break;
+
+            case R.id.RPAccept:
+                setPasswordApi();
+                break;
+
+            case R.id.passwordIcon:
+                handleIconClickPassword(binding.etPassword, binding.passwordIcon);
+                break;
+
+            case R.id.confirmpasswordIcon:
+                handleIconClickPassword(binding.etconfirmPassword, binding.confirmpasswordIcon);
+                break;
+
         }
     }
 

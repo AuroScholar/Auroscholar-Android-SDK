@@ -13,7 +13,6 @@ import com.auro.application.R;
 import com.auro.application.core.application.AuroApp;
 import com.auro.application.core.common.AppConstant;
 import com.auro.application.util.AppLogger;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,7 +56,7 @@ public class FirebaseAnalyticsEvent {
 
             mObjFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
 
-          //  mObjFirebaseAnalytics.setMinimumSessionDuration(20000);
+            mObjFirebaseAnalytics.setMinimumSessionDuration(20000);
 
             mObjFirebaseAnalytics.setSessionTimeoutDuration(500);
 

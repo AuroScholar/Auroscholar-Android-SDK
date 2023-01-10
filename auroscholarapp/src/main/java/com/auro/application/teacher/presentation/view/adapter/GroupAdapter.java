@@ -1,5 +1,6 @@
 package com.auro.application.teacher.presentation.view.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -60,7 +61,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ClassHolder>
     }
 
     @Override
-    public void onBindViewHolder(@NonNull @NotNull GroupAdapter.ClassHolder Vholder, int position) {
+    public void onBindViewHolder(@NonNull @NotNull GroupAdapter.ClassHolder Vholder, @SuppressLint("RecyclerView") int position) {
         Vholder.setData(mValues, position);
         Vholder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

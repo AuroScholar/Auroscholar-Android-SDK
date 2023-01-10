@@ -42,7 +42,6 @@ import com.auro.application.util.RemoteApi;
 import com.auro.application.util.TextUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 
 import org.jetbrains.annotations.NotNull;
@@ -86,12 +85,7 @@ public class SelectYourChildAdapter extends RecyclerView.Adapter<SelectYourChild
             @Override
             public void onClick(View v) {
 
-              //  if (mValues.get(0).getPin().isEmpty() || mValues.get(0).getPin().equals("")){
-//                    Intent intent = new Intent(mContext, DashBoardMainActivity.class);
-//                    mContext.startActivity(intent);
-                 //   binding.cardView.setVisibility(View.GONE);
-              //  }
-//                else{
+
                 String userid = mValues.get(position).getUserId();
                 String gradeid = mValues.get(position).getGrade();
                 SharedPreferences.Editor editor = mContext.getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
@@ -102,23 +96,11 @@ public class SelectYourChildAdapter extends RecyclerView.Adapter<SelectYourChild
                     checkUserResModel = AuroAppPref.INSTANCE.getModelInstance().getCheckUserResModel();
                  int newposition = position+1;
                     checkUserForOldStudentUser(checkUserResModel, newposition);
-//                    Intent intent = new Intent(mContext, EnterStudentPinActivity.class);
-//                    intent.putExtra(AppConstant.USER_PROFILE_DATA_MODEL, resModel);
-//                    mContext.startActivity(intent);
-           //  }
+
 
             }
         });
-//        if(!AuroAppPref.INSTANCE.getModelInstance().isLogin()) {
-//            Vholder.itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    if (commonCallBackListner != null) {
-//                        commonCallBackListner.commonEventListner(AppUtil.getCommonClickModel(position, Status.CLICK_BACK, mValues.get(position)));
-//                    }
-//                }
-//            });
-//        }
+
     }
 
     @Override
@@ -140,10 +122,7 @@ public class SelectYourChildAdapter extends RecyclerView.Adapter<SelectYourChild
         }
 
         public void setData(List<UserDetailResModel> mValues, int position) {
-//            if (mValues.size() - 1 == position) {
-//                binding.cardView.setVisibility(View.GONE);
-//                binding.cardViewButton.setVisibility(View.VISIBLE);
-//            } else {
+
 
 
             String userName = details.getUsername()!=null ? details.getUsername() : AuroApp.getAppContext().getResources().getString(R.string.username);
@@ -152,15 +131,14 @@ public class SelectYourChildAdapter extends RecyclerView.Adapter<SelectYourChild
             if (mValues.get(position).getProfilepic()==null||mValues.get(position).getProfilepic().equals(null)||mValues.get(position).getProfilepic().equals("")||mValues.get(position).getProfilepic().equals("null")||mValues.get(position).getProfilepic().isEmpty()){
                 Glide.with(mContext)
                         .load(mContext.getResources().getIdentifier("my_drawable_image_name", "drawable",mContext.getPackageName()))
-                        .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                         .placeholder(R.drawable.account_circle)
-                        .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL))
+                        .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                         .into(binding.studentImage);
             }
             else {
 
-                Glide.with(mContext).load(mValues.get(position).getProfilepic())
-                        .apply(new RequestOptions().circleCrop()).into(binding.studentImage);
+                Glide.with(mContext).load(mValues.get(position).getProfilepic()).circleCrop().into(binding.studentImage);
             }
             binding.txtchangepin.setVisibility(View.GONE);
             binding.cardView.setVisibility(View.VISIBLE);
@@ -168,7 +146,7 @@ public class SelectYourChildAdapter extends RecyclerView.Adapter<SelectYourChild
                 binding.tvStudentUserName.setText(userName+": " + mValues.get(position).getUserName());
                 binding.tvStudentName.setText(name+": " + mValues.get(position).getStudentName());
                 binding.tvStudentGrade.setText(grade+": " + mValues.get(position).getGrade());
-          //  }
+
 
 
         }
@@ -182,9 +160,7 @@ public class SelectYourChildAdapter extends RecyclerView.Adapter<SelectYourChild
                    if (checkUserResModel.getUserDetails().size() == 2){
 
                        getProfile();
-//                       Intent i = new Intent(mContext, DashBoardMainActivity.class);
-//                       i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                       mContext.startActivity(i);
+
                    }
                    else{
                        openEnterPinActivity(resModel);
@@ -204,7 +180,7 @@ public class SelectYourChildAdapter extends RecyclerView.Adapter<SelectYourChild
         String suserid = AuroAppPref.INSTANCE.getModelInstance().getStudentData().getUserId();
         HashMap<String,String> map_data = new HashMap<>();
         map_data.put("user_id",suserid);
-        //0000898904,123456
+
 
         RemoteApi.Companion.invoke().getStudentData(map_data)
                 .enqueue(new Callback<GetStudentUpdateProfile>()
@@ -249,7 +225,7 @@ public class SelectYourChildAdapter extends RecyclerView.Adapter<SelectYourChild
         if (resModel.getIsMaster().equalsIgnoreCase(AppConstant.UserType.USER_TYPE_STUDENT)) {
             PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
             prefModel.setStudentData(resModel);
-       //   prefModel.setStudentClasses(checkUserResModel.getClasses());
+
             AuroAppPref.INSTANCE.setPref(prefModel);
         } else {
             PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();

@@ -1,5 +1,6 @@
 package com.auro.application.home.presentation.view.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,7 +59,6 @@ public class CertificateAdapter extends RecyclerView.Adapter<CertificateAdapter.
             } else {
                 binding.selectImg.setImageDrawable(AuroApp.getAppContext().getResources().getDrawable(R.drawable.ic_uncheck));
             }
-            //resModel.setCertificateImage("https://image.slidesharecdn.com/b1c107f5-eaf4-4dd9-8acc-df180578c33c-160501092731/95/ismail-british-council-certificate-1-638.jpg?cb=1462094874");
             ImageUtil.loadNormalImage(binding.certificateImg, resModel.getCertificateImage());
 
         }
@@ -74,7 +74,7 @@ public class CertificateAdapter extends RecyclerView.Adapter<CertificateAdapter.
 
 
     @Override
-    public void onBindViewHolder(ViewHolder Vholder, int position) {
+    public void onBindViewHolder(ViewHolder Vholder, @SuppressLint("RecyclerView") int position) {
         Vholder.setData(mValues.get(position), position);
         Vholder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,8 +105,6 @@ public class CertificateAdapter extends RecyclerView.Adapter<CertificateAdapter.
         return mValues.size();
     }
 
-    private void updateData() {
 
-    }
 
 }

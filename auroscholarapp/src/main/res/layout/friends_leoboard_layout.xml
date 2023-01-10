@@ -87,6 +87,7 @@
                                         android:id="@+id/header_top_parent"
                                         layout="@layout/quiz_header_layout"
                                         android:layout_width="match_parent"
+                                        android:visibility="gone"
                                         android:layout_height="wrap_content"
                                         android:layout_marginStart="@dimen/_8sdp"
                                         android:layout_marginTop="@dimen/_10sdp"

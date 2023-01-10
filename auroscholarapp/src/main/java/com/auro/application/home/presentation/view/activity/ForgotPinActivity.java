@@ -47,14 +47,14 @@ public class ForgotPinActivity extends BaseActivity implements View.OnClickListe
 
         init();
         setListener();
-        //setContentView(R.layout.activity_set_pin);
+
     }
 
     @Override
     protected void init() {
         binding = DataBindingUtil.setContentView(this, getLayout());
         ((AuroApp) this.getApplication()).getAppComponent().doInjection(this);
-        //view model and handler setup
+
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(SetPinViewModel.class);
         binding.setLifecycleOwner(this);
         if (getIntent() != null) {
@@ -82,12 +82,17 @@ public class ForgotPinActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        int id = v.getId();
-        if (id == R.id.back_button) {
-            onBackPressed();
-        } else if (id == R.id.bt_done_new) {
-            AppLogger.e("onClick--", "step 1");
-            callSetPinApi();
+        switch (v.getId()) {
+            case R.id.back_button:
+                onBackPressed();
+                break;
+
+            case R.id.bt_done_new:
+                AppLogger.e("onClick--", "step 1");
+                callSetPinApi();
+                break;
+
+
         }
     }
 

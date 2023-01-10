@@ -1,9 +1,13 @@
 package com.auro.application.teacher.presentation.view.fragment;
 
+import static com.auro.application.core.common.Status.SEND_REFERRAL_API;
+import static com.auro.application.util.AppUtil.commonCallBackListner;
+
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 
@@ -11,15 +15,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.auro.application.ChatActivity;
 import com.auro.application.R;
 import com.auro.application.core.application.AuroApp;
 import com.auro.application.core.application.base_component.BaseFragment;
 import com.auro.application.core.application.di.component.ViewModelFactory;
+import com.auro.application.core.common.AppConstant;
 import com.auro.application.core.common.CommonCallBackListner;
 import com.auro.application.core.common.CommonDataModel;
+import com.auro.application.core.common.FragmentUtil;
 import com.auro.application.core.common.Status;
 import com.auro.application.core.database.AuroAppPref;
+import com.auro.application.core.database.PrefModel;
 import com.auro.application.databinding.FragmentInformationDashboardBinding;
+import com.auro.application.home.data.model.Details;
+import com.auro.application.home.data.model.RefferalReqModel;
+import com.auro.application.home.data.model.response.DynamiclinkResModel;
 import com.auro.application.home.presentation.view.activity.HomeActivity;
 import com.auro.application.teacher.data.model.request.TeacherDasboardSummaryResModel;
 import com.auro.application.teacher.data.model.request.TeacherUserIdReq;
@@ -28,6 +39,7 @@ import com.auro.application.teacher.presentation.view.adapter.AutoScrollPagerAda
 import com.auro.application.teacher.presentation.view.adapter.StudentWalletInfoAdapter;
 import com.auro.application.teacher.presentation.viewmodel.MyClassroomViewModel;
 import com.auro.application.util.AppLogger;
+import com.auro.application.util.AppUtil;
 import com.auro.application.util.ViewUtil;
 import com.auro.application.util.strings.AppStringTeacherDynamic;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -81,8 +93,8 @@ public class InformationDashboardFragment extends BaseFragment implements Common
        floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent(getActivity(), MainActivity.class);
-//                startActivity(intent);
+                Intent intent = new Intent(getActivity(), ChatActivity.class);
+                startActivity(intent);
             }
         });
         return binding.getRoot();
@@ -94,7 +106,7 @@ public class InformationDashboardFragment extends BaseFragment implements Common
         HomeActivity.setListingActiveFragment(HomeActivity.TEACHER_DASHBOARD_FRAGMENT);
         ViewUtil.setTeacherProfilePic(binding.imageView6);
         addViewPager();
-
+       // checkRefferedData();
     }
 
 
@@ -116,16 +128,30 @@ public class InformationDashboardFragment extends BaseFragment implements Common
         }
         callGetDashbaordSummaryData();
 
-    }
+        binding.imageView6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFragment(new TeacherUserProfileFragment());//TeacherProfileFragment
+            }
+        });
+        binding.txtviewprofile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFragment(new TeacherUserProfileFragment());//TeacherProfileFragment
+            }
+        });
 
+    }
+    public void openFragment(Fragment fragment) {
+        FragmentUtil.replaceFragment(getActivity(), fragment, R.id.home_container, false, AppConstant.NEITHER_LEFT_NOR_RIGHT);
+    }
     void callGetDashbaordSummaryData()
     {
         handleProgress(0, "");
         TeacherUserIdReq teacherUserIdReq = new TeacherUserIdReq();
-       // teacherUserIdReq.setUserId(AuroAppPref.INSTANCE.getModelInstance().getStudentData().getUserId());
-        teacherUserIdReq.setUserId("398667");
+        teacherUserIdReq.setUserId(AuroAppPref.INSTANCE.getModelInstance().getStudentData().getUserId());
+        // teacherUserIdReq.setUserId("538709");
         viewModel.getTeacherDashboardSummaryData(teacherUserIdReq);
-
     }
 
     @Override
@@ -148,28 +174,30 @@ public class InformationDashboardFragment extends BaseFragment implements Common
     }
 
     public List<StudentWalletTeacherResModel> listUpload(TeacherDasboardSummaryResModel teacherDasboardl) {
+        Details details = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
+
         listUploadData = new ArrayList<>();
         StudentWalletTeacherResModel studentModel = new StudentWalletTeacherResModel();
-        studentModel.setNameOfDocument("KYC Uploaded");
+        studentModel.setNameOfDocument(details.getKyc_uploaded());
         studentModel.setTotalValue(teacherDasboardl.getKycUpload().toString());
         studentModel.setDrawable(getActivity().getResources().getDrawable(R.drawable.kyc_teacher_uploaded));
         listUploadData.add(studentModel);
 
         StudentWalletTeacherResModel studentModel1 = new StudentWalletTeacherResModel();
-        studentModel1.setNameOfDocument("KYC Approved");
+        studentModel1.setNameOfDocument(details.getKyc_approved());
         studentModel1.setTotalValue(teacherDasboardl.getKycApproved().toString());
         studentModel1.setDrawable(getActivity().getResources().getDrawable(R.drawable.upload_card_background));
         listUploadData.add(studentModel1);
 
 
         StudentWalletTeacherResModel studentModel2 = new StudentWalletTeacherResModel();
-        studentModel2.setNameOfDocument("Approved Scholarship");
+        studentModel2.setNameOfDocument(details.getApproved_scholarship());
         studentModel2.setTotalValue(teacherDasboardl.getWinningStudent().toString());
         studentModel2.setDrawable(getActivity().getResources().getDrawable(R.drawable.approved_scholarschip));
         listUploadData.add(studentModel2);
 
         StudentWalletTeacherResModel studentModel3 = new StudentWalletTeacherResModel();
-        studentModel3.setNameOfDocument("Disbursed Scholarship");
+        studentModel3.setNameOfDocument(details.getDisbursed_scholarship());
         studentModel3.setDrawable(getActivity().getResources().getDrawable(R.drawable.disbursed_scholarship));
         studentModel3.setTotalValue(teacherDasboardl.getDisbursedScholarship().toString());
         listUploadData.add(studentModel3);
@@ -216,20 +244,77 @@ public class InformationDashboardFragment extends BaseFragment implements Common
                         AppLogger.v("InfoScreen", " step 3.1  " + resModel.getMessage());
                         setDataOnInitializeView(resModel);
                     }
+                    else if (responseApi.apiTypeStatus == SEND_REFERRAL_API) {
+                        DynamiclinkResModel dynamiclinkResModel = (DynamiclinkResModel) responseApi.data;
+                        AppLogger.v("SEND_REFERRAL_API", " response Step 1");
+                        if (!dynamiclinkResModel.getError()) {
+                            AppLogger.v("SEND_REFERRAL_API", "response Step 2");
+                            AppUtil.setEmptyToDynamicResponseModel();
+                        }
+                    }
+                    else if (responseApi.apiTypeStatus == Status.DYNAMIC_LINK_API) {
+                        AppLogger.v("observeServiceResponse", " response Step 2");
+                        DynamiclinkResModel dynamiclinkResModel = (DynamiclinkResModel) responseApi.data;
+                        AppLogger.v("observeServiceResponse", " response Step 3");
+                        PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
+                        prefModel.setDynamiclinkResModel(dynamiclinkResModel);
+                        AuroAppPref.INSTANCE.setPref(prefModel);
+                        AppLogger.v("observeServiceResponse", " response Step 4");
+                        if (dynamiclinkResModel.getError()) {
+                            AppLogger.v("observeServiceResponse", " response Step 5");
+                            sendRefferCallback(dynamiclinkResModel, 1);
+                        } else {
+                            AppLogger.v("observeServiceResponse", " response Step 6");
+                            sendRefferCallback(dynamiclinkResModel, 0);
+                        }
+                    }
                     break;
 
                 case FAIL:
+                    callGetDashbaordSummaryData();
+                    break;
                 case NO_INTERNET:
+                    callGetDashbaordSummaryData();
+                    break;
                 default:
                     if (isVisible()) {
-                        handleProgress(2, (String) responseApi.data);
+                        callGetDashbaordSummaryData();
+                       // handleProgress(2, (String) responseApi.data);
                     }
                     break;
             }
 
         });
     }
-
+    public void sendRefferCallback(DynamiclinkResModel dynamiclinkResModel, int status) {
+        AppLogger.v("observeServiceResponse", " response Step 8");
+        if (commonCallBackListner != null) {
+            if (status == 1) {
+                AppLogger.v("observeServiceResponse", " response 9 ");
+                commonCallBackListner.commonEventListner(AppUtil.getCommonClickModel(status, Status.REFFER_API_SUCCESS, dynamiclinkResModel));
+            } else {
+                AppLogger.v("observeServiceResponse", " response Step 10");
+                commonCallBackListner.commonEventListner(AppUtil.getCommonClickModel(status, Status.REFFER_API_ERROR, dynamiclinkResModel));
+            }
+        }
+    }
+    private void checkRefferedData() {
+        AppLogger.e("SEND_REFERRAL_API", "dynamiclink step 1");
+        PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
+        DynamiclinkResModel dynamiclinkResModel = prefModel.getDynamiclinkResModel();
+        if (dynamiclinkResModel != null && dynamiclinkResModel.getReffeUserId() != null && !dynamiclinkResModel.getReffeUserId().isEmpty()) {
+            AppLogger.e("SEND_REFERRAL_API", "dynamiclink" + dynamiclinkResModel.getReffeUserId());
+            RefferalReqModel reqModel = new RefferalReqModel();
+            reqModel.setReferredById(dynamiclinkResModel.getReffeUserId());
+            reqModel.setReferredUserId(AuroAppPref.INSTANCE.getModelInstance().getStudentData().getUserId());
+            reqModel.setReferredByType(dynamiclinkResModel.getReffer_type());
+            reqModel.setReferredUserMobile(AuroAppPref.INSTANCE.getModelInstance().getStudentData().getUserMobile());
+            viewModel.checkInternet(reqModel,Status.SEND_REFERRAL_API);
+            AppLogger.e(TAG, dynamiclinkResModel.getRefferMobileno());
+        } else {
+            AppLogger.e(TAG, "No Link Available");
+        }
+    }
     private void handleProgress(int status, String message) {
         switch (status) {
             case 0:
@@ -247,9 +332,15 @@ public class InformationDashboardFragment extends BaseFragment implements Common
                 break;
 
             case 2:
-                binding.errorConstraint.setVisibility(View.VISIBLE);
-                binding.mainParentLayout.setVisibility(View.GONE);
-                binding.progressbar.pgbar.setVisibility(View.GONE);
+//                binding.errorConstraint.setVisibility(View.VISIBLE);
+//                binding.mainParentLayout.setVisibility(View.GONE);
+//                binding.progressbar.pgbar.setVisibility(View.GONE);
+
+                binding.mainParentLayout.setVisibility(View.VISIBLE);
+                binding.errorConstraint.setVisibility(View.GONE);
+                binding.progressbar.pgbar.setVisibility(View.VISIBLE);
+
+
                 // binding.shimmerMyClassroom.stopShimmer();
                 binding.errorLayout.textError.setText(message);
                 binding.errorLayout.btRetry.setOnClickListener(new View.OnClickListener() {
@@ -283,11 +374,16 @@ public class InformationDashboardFragment extends BaseFragment implements Common
 
     @Override
     public void onClick(View v) {
-        int id = v.getId();
-        if (id == R.id.rlBook_my_seat) {
-            ((HomeActivity) getActivity()).openFragment(new BookSlotFragment());
-        } else if (id == R.id.language_layout) {
-            ((HomeActivity) getActivity()).openChangeLanguageDialog();
+        switch (v.getId()) {
+
+            case R.id.rlBook_my_seat:
+                ((HomeActivity) getActivity()).openFragment(new BookSlotFragment());
+                break;
+
+            case R.id.language_layout:
+                ((HomeActivity)getActivity()).openChangeLanguageDialog();
+                break;
+
         }
 
     }

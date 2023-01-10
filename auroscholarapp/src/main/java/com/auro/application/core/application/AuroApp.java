@@ -5,18 +5,15 @@ import android.content.Context;
 
 import com.auro.application.BuildConfig;
 import com.auro.application.core.application.di.component.AppComponent;
-
-
 import com.auro.application.core.application.di.component.DaggerAppComponent;
 import com.auro.application.core.application.di.module.AppModule;
 import com.auro.application.core.application.di.module.UtilsModule;
 import com.auro.application.home.data.model.AuroScholarDataModel;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
+import io.branch.referral.Branch;
+import io.reactivex.plugins.RxJavaPlugins;
 
-/**
- * Created by AAK on 09-Mar-2019.
- */
 
 public class AuroApp extends Application {
 
@@ -29,11 +26,12 @@ public class AuroApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-       // RxJavaPlugins.setErrorHandler(throwable -> {}); // nothing or some logging// bY pradeep Kumar
+        RxJavaPlugins.setErrorHandler(throwable -> {});
         context = this;
         //Restring.init(context);
 
-
+        Branch.enableLogging();
+        Branch.getAutoInstance(this);
         appComponent = DaggerAppComponent
                 .builder()
                 .appModule(new AppModule(this))

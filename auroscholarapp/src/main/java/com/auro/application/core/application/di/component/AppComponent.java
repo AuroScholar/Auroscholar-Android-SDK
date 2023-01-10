@@ -69,9 +69,7 @@ import com.auro.application.quiz.presentation.view.fragment.QuizTestNativeFragme
 import com.auro.application.teacher.presentation.view.activity.TeacherProfileActivity;
 
 
-
-
-
+import com.auro.application.teacher.presentation.view.fragment.InviteTeacherBuddyFragment;
 import com.auro.application.teacher.presentation.view.fragment.TeacherKycInfoFragment;
 import com.auro.application.teacher.presentation.view.fragment.TeacherProfileFragment;
 import com.auro.application.teacher.presentation.view.fragment.TeacherSaveDetailFragment;
@@ -81,6 +79,7 @@ import com.auro.application.teacher.presentation.view.fragment.CreateGroupFragme
 import com.auro.application.teacher.presentation.view.fragment.InformationDashboardFragment;
 import com.auro.application.teacher.presentation.view.fragment.MyClassRoomGroupFragment;
 import com.auro.application.teacher.presentation.view.fragment.SlideFragment;
+import com.auro.application.teacher.presentation.view.fragment.TeacherStudentPassportDetailFragment;
 import com.auro.application.teacher.presentation.view.fragment.TeacherUserProfileFragment;
 import com.auro.application.teacher.presentation.view.fragment.UpComingBookFragment;
 import com.auro.application.util.alert_dialog.UpComingTimeSlotDialog;
@@ -113,10 +112,7 @@ public interface AppComponent {
 
     void doInjection(EnterNumberActivity activity);
 
-
     void doInjection(OtpActivity otpActivity);
-
-
 
     void doInjection(BookSlotFragment fragment);
 
@@ -137,14 +133,6 @@ public interface AppComponent {
 
     void doInjection(PaytmFragment fragment);
 
-   /* void doInjection(SplashScreenActivity splashScreenActivity);*/
-
-
-
-
-
-
-
     void doInjection(OtpScreenActivity loginScreenActivity);
 
 
@@ -152,8 +140,6 @@ public interface AppComponent {
     void doInjection(GradeChangeFragment dialog);
 
     void doInjection(PrivacyPolicyFragment privacyPolicyFragment);
-
-
 
     void doInjection(FriendsLeaderBoardFragment friendsLeaderBoardFragment);
 
@@ -166,9 +152,6 @@ public interface AppComponent {
     void doInjection(CongratulationsDialog congratulationsDialog);
 
     void doInjection(TransactionsFragment transactionsFragment);
-
-
-
 
 
     void doInjection(TeacherSaveDetailFragment fragment);
@@ -206,7 +189,7 @@ public interface AppComponent {
     void doInjection(WalletInfoDetailFragment fragment);
 
 
-    /*New  Ui Login Activity*/
+
     void doInjection(LoginActivity loginActivity);
 
     void doInjection(ChooseGradeActivity activity);
@@ -222,7 +205,7 @@ public interface AppComponent {
 
     void doInjection(SplashScreenAnimationActivity activity);
 
-    //teacher desgin
+
 
     void doInjection(InformationDashboardFragment activity);
 

@@ -58,7 +58,7 @@ public class StepsAddChildAdapter extends RecyclerView.Adapter<StepsAddChildAdap
 
     @Override
     public void onBindViewHolder(@NonNull ClassHolder Vholder, @SuppressLint("RecyclerView") int position) {
-       // Vholder.setData(mValues, position);
+
 
         binding.mainLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,20 +90,6 @@ public class StepsAddChildAdapter extends RecyclerView.Adapter<StepsAddChildAdap
         });
 
 
-//        Vholder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (commonCallBackListner != null) {
-//                    if (position==0 && !mValues.get(position).isStatus()) {
-//                        commonCallBackListner.commonEventListner(AppUtil.getCommonClickModel(position, Status.CLICK_BACK, mValues.get(position)));
-//                    }
-//
-//                    if (position==1 && !mValues.get(position).isStatus() && mValues.get(0).isStatus()) {
-//                        commonCallBackListner.commonEventListner(AppUtil.getCommonClickModel(position, Status.CLICK_BACK, mValues.get(position)));
-//                    }
-//                }
-//            }
-//        });
 
     }
 

@@ -6,14 +6,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import androidx.annotation.RequiresApi;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -111,30 +109,35 @@ public class AppLanguageActivity extends BaseActivity implements View.OnClickLis
         return R.layout.activity_app_language;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     @Override
     public void onClick(View view) {
-        int id = view.getId();
-        if (id == R.id.backButton) {
-            openFadeOutSelectionLayout();
-            setAdapterLanguage();
-            click = true;
-        } else if (id == R.id.RpTeacher) {
-            SharedPreferences.Editor editor1 = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
-            editor1.putInt("session_usertype", AppConstant.UserType.TEACHER);
+        switch (view.getId()) {
+            case R.id.backButton:
+                openFadeOutSelectionLayout();
+                setAdapterLanguage();
+                click = true;
+                break;
 
-            editor1.apply();
-            setValuesInPref(AppConstant.UserType.TEACHER);
-            funnelChoose(AppConstant.UserType.TEACHER);
-            openLoginActivity();
-        } else if (id == R.id.RpStudent) {
-            SharedPreferences.Editor editor = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
-            editor.putInt("session_usertype", AppConstant.UserType.STUDENT);
+            case R.id.RpTeacher:
+                SharedPreferences.Editor editor1 = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
+                editor1.putInt("session_usertype", AppConstant.UserType.TEACHER);
 
-            editor.apply();
-            setValuesInPref(AppConstant.UserType.STUDENT);
-            funnelChoose(AppConstant.UserType.TEACHER);
-            openLoginActivity();
+                editor1.apply();
+                setValuesInPref(AppConstant.UserType.TEACHER);
+                funnelChoose(AppConstant.UserType.TEACHER);
+                openLoginActivity();
+                break;
+
+            case R.id.RpStudent:
+                SharedPreferences.Editor editor = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
+                editor.putInt("session_usertype", AppConstant.UserType.STUDENT);
+
+                editor.apply();
+                setValuesInPref(AppConstant.UserType.STUDENT);
+                funnelChoose(AppConstant.UserType.TEACHER);
+                openLoginActivity();
+                break;
+
         }
     }
 
@@ -258,27 +261,11 @@ public class AppLanguageActivity extends BaseActivity implements View.OnClickLis
         AnalyticsRegistry.INSTANCE.getModelInstance().trackSelectTeacherOrStudent(chooseType);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         finishAffinity();
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//
-//        builder.setTitle("Save Or Not");
-//        builder.setMessage("Do you want to save this? ");
-//        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-//            public void onClick(DialogInterface dialog, int id) {
-//
-//             //   super.onBackPressed();
-//            }
-//        });
-//        builder.setNegativeButton("Discard", new DialogInterface.OnClickListener() {
-//            public void onClick(DialogInterface dialog, int id) {
-//               // super.onBackPressed();
-//            }
-//        });
-//        builder.show();
+
 
     }
 
@@ -373,7 +360,7 @@ public class AppLanguageActivity extends BaseActivity implements View.OnClickLis
                 binding.customProgressLayout.textMsg.setVisibility(View.VISIBLE);
                 binding.customProgressLayout.textMsg.setText(msg);
                 binding.customProgressLayout.btRetry.setVisibility(View.VISIBLE);
-                binding.customProgressLayout.background.setBackgroundColor(this.getResources().getColor(R.color.color_red));
+                binding.customProgressLayout.background.setBackgroundColor(this.getResources().getColor(R.color.red));
                 binding.customProgressLayout.btRetry.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

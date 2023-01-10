@@ -15,6 +15,28 @@ public class SlabDetailResModel {
     @SerializedName("quiz_name")
     @Expose
     private String quizName;
+    @SerializedName("translatedSubject")
+    @Expose
+    private String translatedSubject;
+    @SerializedName("slab_price")
+    @Expose
+    private Integer slabprice;
+
+    public Integer getSlabprice() {
+        return slabprice;
+    }
+
+    public void setSlabprice(Integer slabprice) {
+        this.slabprice = slabprice;
+    }
+
+    public String getTranslatedSubject() {
+        return translatedSubject;
+    }
+
+    public void setTranslatedSubject(String translatedSubject) {
+        this.translatedSubject = translatedSubject;
+    }
 
     public String getSubject() {
         return subject;

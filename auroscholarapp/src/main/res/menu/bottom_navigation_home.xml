@@ -18,18 +18,29 @@
         android:title="Classroom"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_profile"
-
+        android:id="@+id/action_teacherbuddy"
         android:enabled="true"
-        android:icon="@drawable/ic_profile"
-        android:title="Profile"
+        android:icon="@drawable/ic_user"
+        android:title="Buddy"
         app:showAsAction="ifRoom" />
+<!--    <item-->
+<!--        android:id="@+id/action_profile"-->
+<!--        android:enabled="true"-->
+<!--        android:icon="@drawable/ic_profile"-->
+<!--        android:title="Profile"-->
+<!--        app:showAsAction="ifRoom" />-->
     <item
-
         android:id="@+id/action_kyc"
         android:enabled="true"
         android:icon="@drawable/ic_kyc"
         android:title="Kyc"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_studentpassport"
+        android:enabled="true"
+        android:icon="@drawable/ic_passport_ds"
+        android:title="Passport"
+        app:showAsAction="ifRoom" />
+
 
 </menu>

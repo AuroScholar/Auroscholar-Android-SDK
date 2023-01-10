@@ -11,6 +11,7 @@ import com.auro.application.core.database.AuroAppPref;
 import com.auro.application.home.data.model.Details;
 import com.auro.application.home.data.model.FriendsLeaderBoardModel;
 import com.auro.application.home.data.model.KYCDocumentDatamodel;
+import com.auro.application.home.data.model.LanguageMasterDynamic;
 import com.auro.application.home.data.model.QuizResModel;
 import com.auro.application.teacher.data.model.SelectResponseModel;
 import com.auro.application.teacher.data.model.common.DistrictDataModel;
@@ -492,32 +493,38 @@ public class TeacherUseCase {
 
 
     public ValidationModel checkTeacherProfileValidation(TeacherReqModel reqModel) {
-        if (TextUtil.isEmpty(reqModel.getTeacher_name())) {
-            return new ValidationModel(false, "Please enter the Teacher name");
-        } else if (TextUtil.isEmpty(reqModel.getMobile_no())) {
-            if(!TextUtil.isValidPhoneNumber(reqModel.getMobile_no())){
-                return new ValidationModel(false, "Please enter the Valid Mobile number");
-            }
-            return new ValidationModel(false, "Please enter the Mobile number");
-        } else if (TextUtil.isEmpty(reqModel.getEmail_id()) || !TextUtil.isValidEmail(reqModel.getEmail_id())) {
-            //if(){
+        LanguageMasterDynamic model = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic();
+        Details details = model.getDetails();
+//        if (TextUtil.isEmpty(reqModel.getTeacher_name())) {
+//            return new ValidationModel(false, details.getPlease_enetr_the_name());
+//        }
+//        else if (TextUtil.isEmpty(reqModel.getMobile_no())) {
+//            if(!TextUtil.isValidPhoneNumber(reqModel.getMobile_no())){
+//                return new ValidationModel(false, details.getPlease_enter_valid_phone_number());
+//            }
+//            return new ValidationModel(false, details.getPlease_enter_the_mobile_number());
+//        }
+        // if (!TextUtil.isValidEmail(reqModel.getEmail_id())) {
+          //  if(){
                 //AppLogger.v()
-                return new ValidationModel(false, AppConstant.SpinnerType.PLEASE_ENTER_VALID_EMAIL);
-            //}/*else{
+             //   return new ValidationModel(false, details.getPlease_enter_valid_email());
+           // }/*else{
                 //return new ValidationModel(false, "Please enter the Email");
-            //}*/
+          //  }*/
 
-        } else if (TextUtil.isEmpty(reqModel.getSchool_id())) {
-            return new ValidationModel(false, "Please enter the School Name");
-        } else if (TextUtil.isEmpty(reqModel.getGender())) {
-            return new ValidationModel(false, "Please select The Gender");
-        } else if (TextUtil.isEmpty(reqModel.getState_id())) {
-            return new ValidationModel(false, "Please select The State");
-        } else if (TextUtil.isEmpty(reqModel.getDistrict_id())) {
-            return new ValidationModel(false, "Please select The District");
-        }
+      // }
+//        else if (TextUtil.isEmpty(reqModel.getGender())) {
+//            return new ValidationModel(false, details.getPlease_select_gender());
+//        } else if (TextUtil.isEmpty(reqModel.getState_id())) {
+//            return new ValidationModel(false, details.getPlease_select_state());
+//        } else if (TextUtil.isEmpty(reqModel.getDistrict_id())) {
+//            return new ValidationModel(false, details.getPlease_select_district());
+//        }
+//        else if (TextUtil.isEmpty(reqModel.getSchool_id())) {
+//            return new ValidationModel(false, details.getPlease_select_school());
+//        }
 
-        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        //String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
 
        /* if (!TextUtil.isEmpty(reqModel.getTeacher_email()) && !TextUtil.isValidEmail(reqModel.getTeacher_email())) {
             return new ValidationModel(false, AppConstant.SpinnerType.PLEASE_ENTER_VALID_EMAIL);

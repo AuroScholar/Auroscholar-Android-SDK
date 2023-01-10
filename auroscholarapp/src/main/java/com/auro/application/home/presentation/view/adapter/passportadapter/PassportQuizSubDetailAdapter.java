@@ -70,9 +70,7 @@ public class PassportQuizSubDetailAdapter extends RecyclerView.Adapter<PassportQ
 
     @Override
     public void onBindViewHolder(ViewHolder Vholder, @SuppressLint("RecyclerView") int position) {
-     //   Vholder.setData(mValues.get(position), position);
-      //  binding.topicName.setText(mValues.get(position).getTopicName());
-      //  binding.topicNumber.setText(""+position);
+
         setQuizAdapter(position);
         Vholder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,14 +87,10 @@ public class PassportQuizSubDetailAdapter extends RecyclerView.Adapter<PassportQ
         return mValues.size();
     }
 
-    private void updateData() {
-
-    }
 
 
 
     public void setQuizAdapter(int position) {
-        //AppLogger.e("TransactionsFragment","Quiz sub detail Adpater size-"+mValues.size());
         binding.gridRecycler.setLayoutManager(new GridLayoutManager(mContext,2));
         binding.gridRecycler.setHasFixedSize(true);
         binding.gridRecycler.setNestedScrollingEnabled(false);

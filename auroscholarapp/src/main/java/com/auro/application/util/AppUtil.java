@@ -66,8 +66,9 @@ public class AppUtil {
     public static int getVersionCode(Context pContext) {
         int lStrVersion = 0;
         try {
+            int versionCode = BuildConfig.VERSION_CODE;
             PackageInfo pInfo = pContext.getPackageManager().getPackageInfo(pContext.getPackageName(), 0);
-            lStrVersion = pInfo.versionCode;
+            lStrVersion = versionCode;  //pInfo.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
 
         }

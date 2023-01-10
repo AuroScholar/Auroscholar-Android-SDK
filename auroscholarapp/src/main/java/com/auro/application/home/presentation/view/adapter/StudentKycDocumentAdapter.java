@@ -1,6 +1,7 @@
 package com.auro.application.home.presentation.view.adapter;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import com.auro.application.databinding.FragmentKycInfoItemLayoutBinding;
 import com.auro.application.home.data.model.KYCDocumentDatamodel;
 import com.auro.application.teacher.presentation.view.adapter.StudentDoumentViewHolder;
 import com.auro.application.teacher.presentation.viewmodel.TeacherDoumentViewHolder;
+import com.yugasa.yubobotsdk.adapter.ProductItemAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,12 +39,20 @@ public class StudentKycDocumentAdapter extends RecyclerView.Adapter {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        View view = null;
+        RecyclerView.ViewHolder viewHolder = null;
         switch (viewType) {
             case AppConstant.FriendsLeaderBoard.STUDENT_DOC_ADAPTER:
+               
+                view = LayoutInflater.from(viewGroup.getContext())
+                       .inflate(R.layout.fragment_kyc_info_item_layout, viewGroup, false);
+
+
+
                 FragmentKycInfoItemLayoutBinding teacherDocumentItemLayoutBinding = DataBindingUtil.inflate(LayoutInflater.from(viewGroup.getContext()), R.layout.fragment_kyc_info_item_layout, viewGroup, false);
                 return new StudentDoumentViewHolder(teacherDocumentItemLayoutBinding);
         }
-        return null;
+        return viewHolder;
     }
 
     @Override

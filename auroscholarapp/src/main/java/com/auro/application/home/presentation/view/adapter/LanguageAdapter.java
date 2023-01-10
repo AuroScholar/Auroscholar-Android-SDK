@@ -30,8 +30,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.Langua
     List<SelectLanguageModel> list;
     CommonCallBackListner commonCallBackListner;
 
-    // if checkedPosition = -1, there is no default selection
-    // if checkedPosition = 0, 1st item is selected by default
+
     private final int checkedPosition = 0;
     public LanguageAdapter(List<SelectLanguageModel> list, CommonCallBackListner commonCallBackListner) {
         this.list = list;
@@ -73,7 +72,6 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.Langua
                 binding.checkItem.setVisibility(View.VISIBLE);
                 binding.checkItem.setImageDrawable(AuroApp.getAppContext().getResources().getDrawable(R.drawable.ic_auro_check));
             } else {
-                //binding.checkItem.setImageDrawable(AuroApp.getAppContext().getResources().getDrawable(R.drawable.circle_auro_outline));
                 binding.checkItem.setVisibility(View.GONE);
             }
             binding.clickItem.setOnClickListener(new View.OnClickListener() {

@@ -19,28 +19,25 @@ public enum AuroAppPref {
     private final String PreferenceName = AuroApp.getAppContext().getPackageName();
     private PrefModel prefModel;
 
-    /**
-     * GET PREF MODEL OBJECT
-     * SET DATA IN MODEL
-     */
+
     public PrefModel getModelInstance() {
 
-      //  AppLogger.e("getModelInstance-","step 1");
+
         if (sharedPreferences == null) {
-        //    AppLogger.e("getModelInstance-","step 2");
+
             sharedPreferences = AuroApp.getAppContext().getSharedPreferences(PreferenceName, Context.MODE_PRIVATE);
         }
-      //  AppLogger.e("getModelInstance-","step 3");
+
         if (getPref() != null) {
-          //  AppLogger.e("getModelInstance-","step 6");
+
             return getPref();
         }
-      //  AppLogger.e("getModelInstance-","step 7");
+
         if (prefModel == null) {
-         //   AppLogger.e("getModelInstance-","step 8");
+
             prefModel = new PrefModel();
         }
-        //AppLogger.e("getModelInstance-","step 9");
+
         return prefModel;
     }
 

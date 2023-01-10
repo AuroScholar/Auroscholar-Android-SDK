@@ -1,5 +1,6 @@
 package com.auro.application.home.presentation.view.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,7 +51,16 @@ public class LevelInfoAdapter extends RecyclerView.Adapter<LevelInfoAdapter.View
 
         public void setData(SlabModel resModel, int position) {
             binding.quizAmount.setText(AuroApp.getAppContext().getResources().getString(R.string.rs)+resModel.getPrice());
-            binding.rating.setRating(resModel.getDetails().size());
+
+
+
+
+
+             binding.rating.setMax(resModel.getQuizCount());
+                binding.rating.setRating(resModel.getQuizCount());  //
+                binding.rating.setNumStars(resModel.getTotalquiz());
+
+
         }
 
     }
@@ -64,7 +74,7 @@ public class LevelInfoAdapter extends RecyclerView.Adapter<LevelInfoAdapter.View
 
 
     @Override
-    public void onBindViewHolder(ViewHolder Vholder, int position) {
+    public void onBindViewHolder(ViewHolder Vholder, @SuppressLint("RecyclerView") int position) {
         Vholder.setData(mValues.get(position), position);
         Vholder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

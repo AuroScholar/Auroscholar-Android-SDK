@@ -94,11 +94,14 @@ public class CertificateDialog extends DialogFragment implements View.OnClickLis
 
     @Override
     public void onClick(View view) {
-        int id = view.getId();
-        if (id == R.id.close_button) {
-            dismiss();
-        } else if (id == R.id.download_icon) {
-            askPermission();
+        switch (view.getId())
+        {
+            case R.id.close_button:
+                dismiss();
+                break;
+            case R.id.download_icon:
+                askPermission();
+                break;
         }
 
     }

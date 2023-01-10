@@ -1,6 +1,5 @@
 package com.auro.application.home.presentation.viewmodel;
 
-import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -20,17 +19,13 @@ import com.auro.application.util.AppLogger;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.auro.application.core.common.Status.STATE;
 import static com.auro.application.core.common.Status.VERSIONAPI;
 
-import android.os.Build;
 import android.widget.Toast;
-
-
 
 public class SplashScreenViewModel extends ViewModel {
 
@@ -88,7 +83,6 @@ public class SplashScreenViewModel extends ViewModel {
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private void getVersionApiCall() {
         getCompositeDisposable()
                 .add(homeRemoteUseCase.getVersionApiCheck()

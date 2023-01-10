@@ -64,7 +64,7 @@ public class EnterPinActivity extends BaseActivity implements View.OnClickListen
     protected void init() {
         binding = DataBindingUtil.setContentView(this, getLayout());
         ((AuroApp) this.getApplication()).getAppComponent().doInjection(this);
-        //view model and handler setup
+
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(SetPinViewModel.class);
         binding.setLifecycleOwner(this);
         if (getIntent() != null) {
@@ -94,13 +94,18 @@ public class EnterPinActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void onClick(View v) {
         ViewUtil.hideKeyboard(this);
-        int id = v.getId();
-        if (id == R.id.bt_continue) {
-            callLoginPinApi();
-        } else if (id == R.id.back_button) {
-            onBackPressed();
-        } else if (id == R.id.forgotPassword) {
-            sendOtpApi();
+        switch (v.getId()) {
+            case R.id.bt_continue:
+                callLoginPinApi();
+                break;
+
+            case R.id.back_button:
+                onBackPressed();
+                break;
+
+            case R.id.forgotPassword:
+                sendOtpApi();
+                break;
         }
     }
 
@@ -174,9 +179,7 @@ public class EnterPinActivity extends BaseActivity implements View.OnClickListen
         UserDetailResModel resModel = AuroAppPref.INSTANCE.getModelInstance().getStudentData();
         if (AuroAppPref.INSTANCE.getModelInstance().getUserType()==0){
             getProfile();
-//            Intent i = new Intent(this, DashBoardMainActivity.class);
-//            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//            startActivity(i);
+
         }
         else if(AuroAppPref.INSTANCE.getModelInstance().getUserType()==1){
             Intent i = new Intent(this, ParentProfileActivity.class);
@@ -198,7 +201,7 @@ public class EnterPinActivity extends BaseActivity implements View.OnClickListen
         String suserid = AuroAppPref.INSTANCE.getModelInstance().getStudentData().getUserId();
         HashMap<String,String> map_data = new HashMap<>();
         map_data.put("user_id",suserid);
-        //0000898904,123456
+
 
         RemoteApi.Companion.invoke().getStudentData(map_data)
                 .enqueue(new Callback<GetStudentUpdateProfile>()

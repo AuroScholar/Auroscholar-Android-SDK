@@ -1,6 +1,9 @@
 package com.auro.application.home.presentation.view.fragment;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -10,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.databinding.DataBindingUtil;
@@ -28,6 +32,8 @@ import com.auro.application.home.data.model.DashboardResModel;
 import com.auro.application.home.data.model.SelectLanguageModel;
 import com.auro.application.home.data.model.response.ChangeGradeResModel;
 import com.auro.application.home.data.model.response.CheckUserValidResModel;
+import com.auro.application.home.data.model.response.GetStudentUpdateProfile;
+import com.auro.application.home.presentation.view.activity.CompleteStudentProfileWithoutPin;
 import com.auro.application.home.presentation.view.activity.DashBoardMainActivity;
 import com.auro.application.home.presentation.view.activity.SplashScreenAnimationActivity;
 import com.auro.application.home.presentation.view.activity.OtpActivity;
@@ -35,6 +41,7 @@ import com.auro.application.home.presentation.view.activity.SplashScreenAnimatio
 import com.auro.application.home.presentation.viewmodel.GradeChangeViewModel;
 import com.auro.application.util.AppLogger;
 import com.auro.application.util.ConversionUtil;
+import com.auro.application.util.RemoteApi;
 import com.auro.application.util.TextUtil;
 import com.auro.application.util.ViewUtil;
 import com.auro.application.util.alert_dialog.CustomDialog;
@@ -49,6 +56,10 @@ import java.util.Objects;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 public class GradeChangeFragment extends BaseFragment implements View.OnClickListener {
 
@@ -61,7 +72,7 @@ public class GradeChangeFragment extends BaseFragment implements View.OnClickLis
     ViewModelFactory viewModelFactory;
     FragmentGradeChangeDialogBinding binding;
     GradeChangeViewModel viewModel;
-
+    String classnameprev;
     String TAG = "GradeChangeFragment";
 
 
@@ -105,6 +116,7 @@ public class GradeChangeFragment extends BaseFragment implements View.OnClickLis
         ViewUtil.setLanguageonUi(getActivity());
         setRetainInstance(true);
         init();
+        getProfile();
         setListener();
 
       /*  if(!TextUtil.isEmpty(source) && source.equalsIgnoreCase(AppConstant.SENDING_DATA.STUDENT_PROFILE))
@@ -131,7 +143,7 @@ public class GradeChangeFragment extends BaseFragment implements View.OnClickLis
 
     private void openErrorDialog() {
 
-        String message = prefModel.getLanguageMasterDynamic().getDetails().getYou_have_changed_you_grade()+" " + prefModel.getStudentClass() + "th - " + studentClass + "th."+prefModel.getLanguageMasterDynamic().getDetails().getYou_will_loose_your_current();
+        String message = prefModel.getLanguageMasterDynamic().getDetails().getYou_have_changed_you_grade()+" " + classnameprev + "th - " + studentClass + "th."+prefModel.getLanguageMasterDynamic().getDetails().getYou_will_loose_your_current();
         CustomDialogModel customDialogModel = new CustomDialogModel();
         customDialogModel.setContext(getActivity());
         customDialogModel.setTitle(prefModel.getLanguageMasterDynamic().getDetails().getInformation() != null ? prefModel.getLanguageMasterDynamic().getDetails().getInformation() : AuroApp.getAppContext().getResources().getString(R.string.information));
@@ -435,6 +447,38 @@ public class GradeChangeFragment extends BaseFragment implements View.OnClickLis
         return classesList;
 
     }
+    private void getProfile()
+    {
+        PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
+        HashMap<String,String> map_data = new HashMap<>();
+        map_data.put("user_id",prefModel.getStudentData().getUserId());
 
+
+        RemoteApi.Companion.invoke().getStudentData(map_data)
+                .enqueue(new Callback<GetStudentUpdateProfile>()
+                {
+                    @Override
+                    public void onResponse(Call<GetStudentUpdateProfile> call, Response<GetStudentUpdateProfile> response)
+                    {
+                        if (response.isSuccessful())
+                        {
+
+
+                             classnameprev = response.body().getStudentclass();
+                        }
+                        else
+                        {
+                            //Toast.makeText(getActivity(), response.message(), Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<GetStudentUpdateProfile> call, Throwable t)
+                    {
+                       // Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 
 }

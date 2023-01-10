@@ -41,10 +41,7 @@ public class SubjectQuizSpinnerAdapter extends ArrayAdapter {
 
     }
 
-/*    public StateSpinnerUserAdapter(List<StateDataModel> list) {
-        super(c);
 
-    }*/
 
     @Override
     public int getCount() {
@@ -72,16 +69,7 @@ public class SubjectQuizSpinnerAdapter extends ArrayAdapter {
         binding.stateTitle.setText(list.get(position).getSubject());
         Log.d("AdapterData", "getView: "+list.get(position).getSubject());
 
-//        binding.StateList.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (onItemClickState != null) {
-//                    onItemClickState.commonEventListner(AppUtil.getCommonClickModel(position, Status.SUBJECT, list.get(position)));
-//                }
-//               // onItemClickState.onItemClick(list.get(position ).getState_name());
-//                // onItemClickState.onItemClick(list.get(position ).getState_name());
-//            }
-//        });
+
         return binding.getRoot();
 
     }

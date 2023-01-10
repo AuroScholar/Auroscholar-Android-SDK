@@ -70,12 +70,16 @@ public class ChooseGradeActivity extends BaseActivity implements View.OnClickLis
         prefModel.setLogin(true);
         SharedPreferences.Editor editor = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
         editor.putString("statusparentprofile", "false");
+        editor.putString("isLogin","true");
         editor.putString("statusfillstudentprofile", "false");
         editor.putString("statussetpasswordscreen", "false");
         editor.putString("statuschoosegradescreen", "true");
         editor.putString("statussubjectpref","false");
+        editor.putString("statusopenprofileteacher", "false");
+        editor.putString("statusopendashboardteacher", "false");
         editor.putString("statuschoosedashboardscreen", "false");
         editor.putString("statusopenprofilewithoutpin", "false");
+        editor.putString("statuslogin", "true");
         editor.apply();
 
         init();
@@ -112,15 +116,18 @@ public class ChooseGradeActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.buttonSelect) {//change comment here
-            setClassInPref(grade);
-            if (grade == 0) {
-                ViewUtil.showSnackBar(binding.getRoot(), prefModel.getLanguageMasterDynamic().getDetails().getPlease_select_the_grade());
-            } else {
+        switch (view.getId()) {
+            case R.id.buttonSelect:
+                //change comment here
+                setClassInPref(grade);
+                if (grade == 0) {
+                    ViewUtil.showSnackBar(binding.getRoot(), prefModel.getLanguageMasterDynamic().getDetails().getPlease_select_the_grade());
+                } else {
 
-                callChangeGradeApi();
+                    callChangeGradeApi();
 
-            }
+                }
+                break;
         }
     }
 
@@ -180,6 +187,9 @@ public class ChooseGradeActivity extends BaseActivity implements View.OnClickLis
             case MESSAGE_SELECT_CLICK:
                 SelectLanguageModel model = (SelectLanguageModel) commonDataModel.getObject();
                 grade = ConversionUtil.INSTANCE.convertStringToInteger(model.getStudentClassName());
+                SharedPreferences.Editor editor1 = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
+                editor1.putString("gradeforsubjectpreference", String.valueOf(grade));
+                editor1.apply();
                 for (int i = 0; i < laugList.size(); i++) {
                     laugList.get(i).setCheck(i == commonDataModel.getSource());
                 }
@@ -235,13 +245,13 @@ public class ChooseGradeActivity extends BaseActivity implements View.OnClickLis
             switch (responseApi.status) {
 
                 case LOADING:
-                    /*do coding here*/
+
                     break;
 
                 case SUCCESS:
-                    // if (isVisible()) {
+
                     handleProgress(1);
-                    // handleApiRes(responseApi);
+
                     setClassInPref(grade);
                     if (isComingFrom!=null && isComingFrom.equalsIgnoreCase(AppConstant.ComingFromStatus.COMING_FROM_LOGIN_WITH_OTP)) {
                         Intent i = new Intent(this, DashBoardMainActivity.class);
@@ -256,16 +266,16 @@ public class ChooseGradeActivity extends BaseActivity implements View.OnClickLis
                 case NO_INTERNET:
                 case AUTH_FAIL:
                 case FAIL_400:
-                    // if(isVisible()) {
+
                     handleProgress(1);
                     showSnackbarError((String) responseApi.data);
-                    // }
+
                     break;
                 default:
-                    //if(isVisible()) {
+
                     handleProgress(1);
                     showSnackbarError((String) responseApi.data);
-                    //}
+
                     break;
             }
 

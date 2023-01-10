@@ -709,7 +709,7 @@ public class QuizTestNativeFragment extends BaseFragment implements CommonCallBa
     public void onStop() {
         super.onStop();
         handler.removeCallbacks(runnable);
-        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
+      getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
     }
 
 

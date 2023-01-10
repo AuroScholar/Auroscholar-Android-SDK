@@ -12,9 +12,7 @@ import android.widget.TextView;
 
 import com.auro.application.R;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public abstract class BaseFragment extends Fragment {
 
 

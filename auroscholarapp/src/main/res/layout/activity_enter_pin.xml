@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
 <ScrollView
     android:layout_width="fill_parent"
@@ -117,17 +117,30 @@
 
                         <com.chaos.view.PinView
                             android:id="@+id/pinView"
+                            style="@style/PinWidget.PinView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/_5sdp"
                             android:cursorVisible="true"
                             android:inputType="number"
+                            android:itemBackground="@color/transparent"
                             android:padding="@dimen/_12sdp"
                             android:textColor="@color/blue_color"
                             android:textSize="@dimen/_14sdp"
                             android:textStyle="bold"
+                            app:cursorColor="@color/blue_color"
+                            app:cursorWidth="2dp"
                             android:focusable="true"
-                            android:focusableInTouchMode="true" />
+
+                            android:focusableInTouchMode="true"
+                            app:hideLineWhenFilled="false"
+                            app:itemCount="4"
+                            app:itemHeight="@dimen/_30sdp"
+                            app:itemSpacing="@dimen/_5sdp"
+                            app:itemWidth="@dimen/_60sdp"
+                            app:lineColor="@color/grey_color"
+                            app:lineWidth="@dimen/_1sdp"
+                            app:viewType="line" />
 
 
                     </LinearLayout>

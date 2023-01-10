@@ -263,6 +263,7 @@
                                 android:layout_marginEnd="@dimen/_25sdp"
                                 android:visibility="gone"
                                 app:counterEnabled="true"
+                                android:inputType="textPersonName|textFilter"
                                 app:counterMaxLength="15"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -276,7 +277,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:gravity="center"
-                                    android:inputType="textPersonName"
+                                    android:inputType="textPersonName|textFilter"
                                     android:maxLength="15"
                                     android:maxLines="1" />
 
@@ -446,6 +447,7 @@
                                     android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
                                     android:inputType="textPersonName"
                                     android:maxLines="1"
+                                    android:longClickable="false"
                                     android:paddingRight="@dimen/_20sdp"
                                     android:textColor="@color/black"
                                     android:textSize="@dimen/_12sdp" />
@@ -469,6 +471,7 @@
                                     android:editable="false"
                                     android:inputType="none"
                                     android:maxLines="1"
+                                    android:longClickable="false"
                                     android:paddingRight="@dimen/_20sdp"
                                     android:textColor="@color/black"
                                     android:textSize="@dimen/_12sdp" />
@@ -504,6 +507,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="@dimen/_10sdp"
                                 android:layout_weight="3.5"
+                                android:visibility="gone"
                                 android:hint="@string/login_id">
 
                                 <com.google.android.material.textfield.TextInputEditText
@@ -513,6 +517,7 @@
                                     android:editable="false"
                                     android:inputType="none"
                                     android:maxLines="1"
+                                    android:longClickable="false"
                                     android:paddingRight="@dimen/_20sdp"
                                     android:textColor="@color/black"
                                     android:textSize="@dimen/_12sdp" />
@@ -555,6 +560,7 @@
                                     android:layout_height="wrap_content"
                                     android:editable="false"
                                     android:inputType="none"
+                                    android:longClickable="false"
                                     android:maxLines="1"
                                     android:paddingRight="@dimen/_20sdp"
                                     android:textColor="@color/black"
@@ -596,9 +602,10 @@
                                     android:id="@+id/editemail"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:digits="abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ.-@1234567890"
+                                    android:digits="abcdefghijklmnopqrstuvwxyz1234567890@#$_-."
                                     android:inputType="textPersonName"
                                     android:maxLines="1"
+                                    android:longClickable="false"
                                     android:paddingRight="@dimen/_20sdp"
                                     android:textColor="@color/black"
                                     android:textSize="@dimen/_12sdp" />
@@ -632,6 +639,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="@string/gender"
+                                android:editable="false"
                                 android:textColorHint="@color/auro_border_blue"
                                 app:endIconMode="none"
                                 app:layout_constraintBottom_toBottomOf="parent"
@@ -645,6 +653,7 @@
                                     android:drawableRight="@drawable/ic_user_drop_down"
                                     android:drawablePadding="@dimen/_18sdp"
                                     android:dropDownHeight="wrap_content"
+                                    android:longClickable="false"
                                     android:focusable="false"
                                     android:gravity="left"
                                     android:maxLines="1"
@@ -661,6 +670,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/tlStudentGender"
                                 android:layout_marginTop="@dimen/_8sdp"
+                                android:editable="false"
                                 android:hint="@string/school_type"
                                 android:textColorHint="@color/auro_border_blue"
                                 app:endIconMode="none">
@@ -675,6 +685,7 @@
                                     android:focusable="false"
                                     android:gravity="left"
                                     android:maxLines="1"
+                                    android:longClickable="false"
                                     android:paddingEnd="@dimen/_20sdp"
                                     android:textColor="@color/black" />
 
@@ -689,6 +700,7 @@
                                 android:layout_below="@+id/tlSchooltype"
                                 android:layout_marginTop="@dimen/_8sdp"
                                 android:hint="@string/board"
+                                android:editable="false"
                                 android:textColorHint="@color/auro_border_blue"
                                 app:endIconMode="none">
 
@@ -700,6 +712,7 @@
                                     android:drawablePadding="@dimen/_18sdp"
                                     android:dropDownHeight="wrap_content"
                                     android:focusable="false"
+                                    android:longClickable="false"
                                     android:gravity="left"
                                     android:maxLines="1"
                                     android:paddingEnd="@dimen/_20sdp"
@@ -715,6 +728,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/tlSchoolboard"
                                 android:layout_marginTop="@dimen/_8sdp"
+                                android:editable="false"
                                 android:hint="@string/language_medium"
                                 android:textColorHint="@color/auro_border_blue"
                                 app:endIconMode="none">
@@ -728,6 +742,7 @@
                                     android:dropDownHeight="wrap_content"
                                     android:focusable="false"
                                     android:gravity="left"
+                                    android:longClickable="false"
                                     android:maxLines="1"
                                     android:paddingEnd="@dimen/_20sdp"
                                     android:textColor="@color/black" />
@@ -742,6 +757,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/tlSchoolmedium"
                                 android:layout_marginTop="@dimen/_8sdp"
+                                android:editable="false"
                                 android:hint="@string/taking_private_tutions"
                                 android:textColorHint="@color/auro_border_blue"
                                 app:endIconMode="none">
@@ -756,6 +772,7 @@
                                     android:focusable="false"
                                     android:gravity="left"
                                     android:maxLines="1"
+                                    android:longClickable="false"
                                     android:paddingEnd="@dimen/_20sdp"
                                     android:textColor="@color/black" />
 
@@ -770,6 +787,7 @@
                                 android:layout_below="@+id/tltution"
                                 android:layout_marginTop="@dimen/_8sdp"
                                 android:hint="@string/taking_type"
+                                android:editable="false"
                                 android:textColorHint="@color/auro_border_blue"
                                 app:endIconMode="none">
 
@@ -782,6 +800,7 @@
                                     android:dropDownHeight="wrap_content"
                                     android:focusable="false"
                                     android:gravity="left"
+                                    android:longClickable="false"
                                     android:maxLines="1"
                                     android:paddingEnd="@dimen/_20sdp"
                                     android:textColor="@color/black" />
@@ -797,6 +816,7 @@
                                 android:layout_below="@+id/tltutiontype"
                                 android:layout_marginTop="@dimen/_8sdp"
                                 android:hint="@string/state"
+                                android:editable="false"
                                 android:textColorHint="@color/auro_border_blue"
                                 app:endIconMode="none">
 
@@ -810,6 +830,7 @@
                                     android:focusable="false"
                                     android:gravity="left"
                                     android:maxLines="1"
+                                    android:longClickable="false"
                                     android:paddingEnd="@dimen/_20sdp"
                                     android:textColor="@color/black" />
 
@@ -820,7 +841,7 @@
                                 android:id="@+id/tldistrict"
                                 style="@style/TextInputLayoutExposeStyle"
                                 android:layout_width="match_parent"
-
+                                android:editable="false"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/tlstate"
                                 android:layout_marginTop="@dimen/_8sdp"
@@ -837,6 +858,7 @@
                                     android:dropDownHeight="wrap_content"
                                     android:focusable="false"
                                     android:gravity="left"
+                                    android:longClickable="false"
                                     android:maxLines="1"
                                     android:paddingEnd="@dimen/_20sdp"
                                     android:textColor="@color/black" />
@@ -846,29 +868,32 @@
 
 
                             <RelativeLayout
-                                android:id="@+id/rel_school"
+                                android:id="@+id/rel_school1"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:visibility="gone"
                                 android:layout_below="@+id/tldistrict"
-                                android:layout_marginTop="15dp">
+                                android:layout_marginTop="10dp">
 
                                 <com.google.android.material.textfield.TextInputLayout
                                     android:id="@+id/txtsearch"
-                                    android:layout_width="260dp"
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginRight="@dimen/_10sdp"
 
-                                    android:background="@color/white"
-                                    android:hint="Search school here..">
+                                    android:layout_marginRight="@dimen/_10sdp"
+                                    android:layout_weight="3.5"
+                                    android:hint="Search school here.."
+                                    android:theme="@style/MyEditText">
 
                                     <com.google.android.material.textfield.TextInputEditText
                                         android:id="@+id/editsearch"
-                                        android:layout_width="match_parent"
+                                        android:layout_width="200dp"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginLeft="1dp"
-
+                                        android:layout_marginLeft="10dp"
                                         android:inputType="none"
                                         android:maxLines="1"
+                                        android:editable="false"
+                                        android:digits="abcdefghijklmnopqrstuvwxyz "
                                         android:paddingRight="@dimen/_20sdp"
                                         android:singleLine="true"
                                         android:textColor="@color/black"
@@ -877,15 +902,58 @@
 
                                 </com.google.android.material.textfield.TextInputLayout>
 
-                                <androidx.appcompat.widget.AppCompatButton
+                                <LinearLayout
                                     android:id="@+id/btnsearch"
-                                    android:layout_width="35dp"
-                                    android:layout_height="30dp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
                                     android:layout_marginTop="8dp"
                                     android:layout_marginRight="10dp"
                                     android:layout_toRightOf="@+id/txtsearch"
-                                    android:background="@android:drawable/ic_menu_search"
-                                    android:drawableTint="@color/auro_blue"></androidx.appcompat.widget.AppCompatButton>
+                                    android:background="@color/blue_color">
+
+                                    <androidx.appcompat.widget.AppCompatImageView
+
+                                        android:layout_width="35dp"
+                                        android:layout_height="30dp"
+                                        android:drawableTint="@color/white"
+                                        android:src="@android:drawable/ic_menu_search"></androidx.appcompat.widget.AppCompatImageView>
+                                </LinearLayout>
+
+
+                            </RelativeLayout>
+                            <RelativeLayout
+                                android:id="@+id/rel_school"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/tldistrict"
+                                android:layout_margin="@dimen/_5sdp"
+                                >
+
+                                <AutoCompleteTextView
+                                    android:id="@+id/autoCompleteTextView1"
+                                    style="@style/Widget.AppCompat.AutoCompleteTextView"
+                                    android:layout_marginTop="@dimen/_4sdp"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:drawableRight="@drawable/places_ic_search"
+                                    android:drawableTint="@color/grey"
+                                    android:hint="Search School"
+                                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
+                                    android:popupBackground="#ffffff"
+                                    android:textColor="@color/black"
+                                    android:textColorHint="@color/grey"
+                                    android:textSize="@dimen/_14ssp" />
+                                <androidx.appcompat.widget.AppCompatTextView
+                                    android:id="@+id/addnewschool"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Add School +"
+                                    android:layout_marginTop="@dimen/_8sdp"
+                                    android:textColor="@color/blue_color"
+                                    android:textSize="@dimen/_14sdp"
+                                    android:layout_below="@+id/autoCompleteTextView1"
+                                    android:layout_alignParentRight="true"
+                                    ></androidx.appcompat.widget.AppCompatTextView>
                             </RelativeLayout>
 
                             <com.google.android.material.textfield.TextInputLayout
@@ -903,6 +971,7 @@
                                 <AutoCompleteTextView
                                     android:id="@+id/etschool"
                                     android:layout_width="match_parent"
+                                    android:longClickable="false"
                                     android:layout_height="wrap_content"
                                     android:drawableRight="@drawable/ic_user_drop_down"
                                     android:drawablePadding="@dimen/_18sdp"
@@ -936,6 +1005,7 @@
                                     android:drawablePadding="@dimen/_18sdp"
                                     android:dropDownHeight="wrap_content"
                                     android:focusable="false"
+                                    android:longClickable="false"
                                     android:gravity="left"
                                     android:maxLines="1"
                                     android:paddingEnd="@dimen/_20sdp"
@@ -1518,9 +1588,10 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="@dimen/_5sdp"
                                     android:background="@null"
-                                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^.,/?*()_+"
+                                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#_"
                                     android:hint="@string/enter_username"
                                     android:maxEms="10"
+                                    android:longClickable="false"
                                     android:maxLength="10"
                                     android:inputType="textPersonName"
                                     android:singleLine="true"
@@ -1551,10 +1622,20 @@
                                 android:inputType="number"
                                 android:itemBackground="@color/transparent"
                                 android:padding="@dimen/_12sdp"
+                                android:longClickable="false"
                                 android:textColor="@color/blue_color"
                                 android:textSize="@dimen/_14sdp"
                                 android:textStyle="bold"
-                              />
+                                app:cursorColor="@color/blue_color"
+                                app:cursorWidth="2dp"
+                                app:hideLineWhenFilled="false"
+                                app:itemCount="4"
+                                app:itemHeight="@dimen/_30sdp"
+                                app:itemSpacing="@dimen/_5sdp"
+                                app:itemWidth="@dimen/_60sdp"
+                                app:lineColor="@color/grey_color"
+                                app:lineWidth="@dimen/_1sdp"
+                                app:viewType="line" />
 
                             <com.auro.application.core.util.uiwidget.RPTextView
                                 android:id="@+id/confirm_pin_text"
@@ -1575,12 +1656,21 @@
                                 android:cursorVisible="true"
                                 android:inputType="number"
                                 android:itemBackground="@color/transparent"
-
+                                android:longClickable="false"
                                 android:padding="@dimen/_12sdp"
                                 android:textColor="@color/blue_color"
                                 android:textSize="@dimen/_14sdp"
                                 android:textStyle="bold"
-                                />
+                                app:cursorColor="@color/blue_color"
+                                app:cursorWidth="2dp"
+                                app:hideLineWhenFilled="false"
+                                app:itemCount="4"
+                                app:itemHeight="@dimen/_30sdp"
+                                app:itemSpacing="@dimen/_5sdp"
+                                app:itemWidth="@dimen/_60sdp"
+                                app:lineColor="@color/grey_color"
+                                app:lineWidth="@dimen/_1sdp"
+                                app:viewType="line" />
 
 
                         </LinearLayout>

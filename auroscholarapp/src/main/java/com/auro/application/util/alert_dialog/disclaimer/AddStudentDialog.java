@@ -71,8 +71,8 @@ public class AddStudentDialog extends Dialog {
 
     private void setText() {
 
-        int leadWidth = activity.getResources().getDimensionPixelOffset(R.dimen._10sdp);
-        int gapWidth = activity.getResources().getDimensionPixelOffset(R.dimen._20sdp);
+        int leadWidth = activity.getResources().getDimensionPixelOffset(R.dimen.space_medium);
+        int gapWidth = activity.getResources().getDimensionPixelOffset(R.dimen.space_xlarge);
         leadWidth = 0;
         binding.tvMessage.setText(new Truss()
                 .appendln("I/we hereby allow my/our child to use the Auro Scholar application to take quizzes, learn and win scholarships. In consideration of this, I will not allow, promote or use any unfair means to help my child to get scholarships or while taking quizzes.", new Snippety().bullet(leadWidth, gapWidth))

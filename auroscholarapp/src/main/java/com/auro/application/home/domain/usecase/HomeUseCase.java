@@ -60,9 +60,6 @@ import java.util.regex.Pattern;
 public class HomeUseCase {
 
 
-  
-
-
     public ValidationModel isUserTypeSelected(int userType, int classtype) {
         if (userType == AppConstant.userTypeLogin.STUDENT) {
 
@@ -547,9 +544,7 @@ public class HomeUseCase {
         if (demographicResModel.getStudentName().equalsIgnoreCase("Guest") || TextUtil.isEmpty(demographicResModel.getStudentName())) {
             return new ValidationModel(false,details.getPlease_enter_your_name());
         }
-      /*  if (TextUtil.isEmpty(demographicResModel.getEmailID())) {
-            return new ValidationModel(false, AppConstant.SpinnerType.PLEASE_ENTER_EMAIL_ID);
-        }*/
+
         if (demographicResModel.getGender().equalsIgnoreCase(AppConstant.SpinnerType.PLEASE_SELECT_GENDER)) {
             return new ValidationModel(false,details.getPlease_select_gender());
         }
@@ -570,12 +565,7 @@ public class HomeUseCase {
                 return new ValidationModel(false,details.getPlease_select_tution_type());
             }
         }
-/*        if (demographicResModel.getStateCode().equalsIgnoreCase("")) {
-            return new ValidationModel(false, AppConstant.SpinnerType.PLEASE_ENTER_VALID_STATE);
-        }
-        if (demographicResModel.getDistricts().equalsIgnoreCase("")) {
-            return new ValidationModel(false, AppConstant.SpinnerType.PLEASE_ENTER_VALID_DISTRICT);
-        }*/
+
 
         if (TextUtil.isEmpty(demographicResModel.getStateId())) {
             return new ValidationModel(false, "Please select  the state");

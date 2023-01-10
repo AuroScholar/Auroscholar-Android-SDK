@@ -345,6 +345,14 @@
                                 android:layout_below="@+id/rpChoose_Student"
                                 android:layout_marginBottom="@dimen/_10sdp"
                                 android:clipToPadding="true" />
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rv_choose_student2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone"
+                                android:layout_below="@+id/rpChoose_Student"
+                                android:layout_marginBottom="@dimen/_10sdp"
+                                android:clipToPadding="true" />
 
                             <com.auro.application.core.util.uiwidget.RPTextView
                                 android:id="@+id/student_list_message"

@@ -103,7 +103,6 @@ public class TeacherDashboardActivity extends BaseActivity implements OnItemClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        // getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         ViewUtil.setLanguageonUi(this);
         init();
         setListener();
@@ -116,7 +115,7 @@ public class TeacherDashboardActivity extends BaseActivity implements OnItemClic
         dynamiclinkResModel.setSource("");
         dynamiclinkResModel.setNavigationTo(AppConstant.NavigateToScreen.STUDENT_DASHBOARD);
         dynamiclinkResModel.setReffer_type(AppConstant.NavigateToScreen.TEACHER);
-      //  viewModel.getDynamicData(dynamiclinkResModel);
+
     }
 
     @Override
@@ -124,7 +123,7 @@ public class TeacherDashboardActivity extends BaseActivity implements OnItemClic
         memberType = "Member";
         binding = DataBindingUtil.setContentView(this, getLayout());
         ((AuroApp) this.getApplication()).getAppComponent().doInjection(this);
-        //view model and handler setup
+
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(HomeViewModel.class);
         binding.setViewModel(viewModel);
         binding.setLifecycleOwner(this);
@@ -138,7 +137,7 @@ public class TeacherDashboardActivity extends BaseActivity implements OnItemClic
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         screenHeight = displayMetrics.heightPixels;
         screenWidth = displayMetrics.widthPixels;
-        // printHashKey(this);
+
         setHomeFragmentTab();
 
 
@@ -146,7 +145,7 @@ public class TeacherDashboardActivity extends BaseActivity implements OnItemClic
 
     @Override
     protected void setListener() {
-        /*set listner here*/
+
         if (viewModel != null && viewModel.serviceLiveData().hasObservers()) {
             viewModel.serviceLiveData().removeObservers(this);
         } else {
@@ -183,12 +182,7 @@ public class TeacherDashboardActivity extends BaseActivity implements OnItemClic
     }
 
 
-    private void setText(String text) {
-        popBackStack();
-        binding.naviagtionContent.errorMesssage.setVisibility(View.VISIBLE);
-        binding.naviagtionContent.errorMesssage.setText(text);
 
-    }
 
 
     public void openFragment(Fragment fragment) {
@@ -249,7 +243,7 @@ public class TeacherDashboardActivity extends BaseActivity implements OnItemClic
             ViewUtil.showSnackBar(binding.naviagtionContent.homeContainer, "Press again to close the app");
         } else {
             finish();
-            //  finishAffinity();
+
         }
     }
 

@@ -1613,6 +1613,458 @@ public class Details {
     @SerializedName("search_school_here")
     @Expose
     private String search_school_here;
+    @SerializedName("choose_month")
+    @Expose
+    private String choose_month;
+    @SerializedName("kyc_approved")
+    @Expose
+    private String kyc_approved;
+    @SerializedName("approved_scholarship")
+    @Expose
+    private String approved_scholarship;
+    @SerializedName("disbursed_scholarship")
+    @Expose
+    private String disbursed_scholarship;
+
+    @SerializedName("search_student")
+    @Expose
+    private String search_student;
+
+    @SerializedName("search")
+    @Expose
+    private String search;
+
+    @SerializedName("students")
+    @Expose
+    private String students;
+
+    @SerializedName("total_scholar_disburse")
+    @Expose
+    private String total_scholar_disburse;
+
+    @SerializedName("total_quiz_attempt")
+    @Expose
+    private String total_quiz_attempt;
+
+    @SerializedName("quiz_score")
+    @Expose
+    private String quiz_score;
+
+    @SerializedName("quiz_status")
+    @Expose
+    private String quiz_status;
+
+    @SerializedName("scholarship_status")
+    @Expose
+    private String scholarship_status;
+
+    @SerializedName("kyc_status")
+    @Expose
+    private String kyc_status;
+
+    @SerializedName("teacher_buddy")
+    @Expose
+    private String teacher_buddy;
+    @SerializedName("no_buddy_add")
+    @Expose
+    private String no_buddy_add;
+    @SerializedName("txt_buddy_add")
+    @Expose
+    private String txt_buddy_add;
+    @SerializedName("share_buddy_link")
+    @Expose
+    private String share_buddy_link;
+    @SerializedName("add_buddy")
+    @Expose
+    private String add_buddy;
+    @SerializedName("search_auro_teacher")
+    @Expose
+    private String search_auro_teacher;
+//    @SerializedName("auro_teacher")
+//    @Expose
+//    private String auro_teacher;
+    @SerializedName("slelect_all")
+    @Expose
+    private String slelect_all;
+    @SerializedName("send_invite")
+    @Expose
+    private String send_invite;
+    @SerializedName("reject_buddy")
+    @Expose
+    private String reject_buddy;
+    @SerializedName("my_buddy")
+    @Expose
+    private String my_buddy;
+    @SerializedName("receive_buddy")
+    @Expose
+    private String receive_buddy;
+    @SerializedName("sent_buddy")
+    @Expose
+    private String sent_buddy;
+    @SerializedName("share_buddy")
+    @Expose
+    private String share_buddy;
+
+    @SerializedName("add_new_buddies")
+    @Expose
+    private String add_new_buddies;
+    @SerializedName("have_buddy")
+    @Expose
+    private String have_buddy;
+    @SerializedName("status_pending")
+    @Expose
+    private String status_pending;
+    @SerializedName("status_reject")
+    @Expose
+    private String status_reject;
+    @SerializedName("status_accept")
+    @Expose
+    private String status_accept;
+    @SerializedName("sure_txt")
+    @Expose
+    private String sure_txt;
+    @SerializedName("remove_buddy")
+    @Expose
+    private String remove_buddy;
+    @SerializedName("budddy_cancle")
+    @Expose
+    private String budddy_cancle;
+    @SerializedName("yes_remove_buddy")
+    @Expose
+    private String yes_remove_buddy;
+    @SerializedName("accept_buddy")
+    @Expose
+    private String accept_buddy;
+
+    @SerializedName("booked_slots")
+    @Expose
+    private String booked_slots;
+    @SerializedName("upcoming_slot")
+    @Expose
+    private String upcoming_slot;
+    @SerializedName("select_all")
+    @Expose
+    private String select_all;
+
+    public String getSelect_all() {
+        return select_all;
+    }
+
+    public void setSelect_all(String select_all) {
+        this.select_all = select_all;
+    }
+
+    public String getBooked_slots() {
+        return booked_slots;
+    }
+
+    public void setBooked_slots(String booked_slots) {
+        this.booked_slots = booked_slots;
+    }
+
+    public String getUpcoming_slot() {
+        return upcoming_slot;
+    }
+
+    public void setUpcoming_slot(String upcoming_slot) {
+        this.upcoming_slot = upcoming_slot;
+    }
+
+    public String getTeacher_buddy() {
+        return teacher_buddy;
+    }
+
+    public void setTeacher_buddy(String teacher_buddy) {
+        this.teacher_buddy = teacher_buddy;
+    }
+
+    public String getNo_buddy_add() {
+        return no_buddy_add;
+    }
+
+    public void setNo_buddy_add(String no_buddy_add) {
+        this.no_buddy_add = no_buddy_add;
+    }
+
+    public String getTxt_buddy_add() {
+        return txt_buddy_add;
+    }
+
+    public void setTxt_buddy_add(String txt_buddy_add) {
+        this.txt_buddy_add = txt_buddy_add;
+    }
+
+    public String getShare_buddy_link() {
+        return share_buddy_link;
+    }
+
+    public void setShare_buddy_link(String share_buddy_link) {
+        this.share_buddy_link = share_buddy_link;
+    }
+
+    public String getAdd_buddy() {
+        return add_buddy;
+    }
+
+    public void setAdd_buddy(String add_buddy) {
+        this.add_buddy = add_buddy;
+    }
+
+    public String getSearch_auro_teacher() {
+        return search_auro_teacher;
+    }
+
+    public void setSearch_auro_teacher(String search_auro_teacher) {
+        this.search_auro_teacher = search_auro_teacher;
+    }
+
+    public String getAuro_teacher() {
+        return auroTeacher;
+    }
+
+    public void setAuro_teacher(String auroTeacher) {
+        this.auroTeacher = auroTeacher;
+    }
+
+    public String getSlelect_all() {
+        return slelect_all;
+    }
+
+    public void setSlelect_all(String slelect_all) {
+        this.slelect_all = slelect_all;
+    }
+
+    public String getSend_invite() {
+        return send_invite;
+    }
+
+    public void setSend_invite(String send_invite) {
+        this.send_invite = send_invite;
+    }
+
+    public String getReject_buddy() {
+        return reject_buddy;
+    }
+
+    public void setReject_buddy(String reject_buddy) {
+        this.reject_buddy = reject_buddy;
+    }
+
+    public String getMy_buddy() {
+        return my_buddy;
+    }
+
+    public void setMy_buddy(String my_buddy) {
+        this.my_buddy = my_buddy;
+    }
+
+    public String getReceive_buddy() {
+        return receive_buddy;
+    }
+
+    public void setReceive_buddy(String receive_buddy) {
+        this.receive_buddy = receive_buddy;
+    }
+
+    public String getSent_buddy() {
+        return sent_buddy;
+    }
+
+    public void setSent_buddy(String sent_buddy) {
+        this.sent_buddy = sent_buddy;
+    }
+
+    public String getShare_buddy() {
+        return share_buddy;
+    }
+
+    public void setShare_buddy(String share_buddy) {
+        this.share_buddy = share_buddy;
+    }
+
+    public String getAdd_new_buddies() {
+        return add_new_buddies;
+    }
+
+    public void setAdd_new_buddies(String add_new_buddies) {
+        this.add_new_buddies = add_new_buddies;
+    }
+
+    public String getHave_buddy() {
+        return have_buddy;
+    }
+
+    public void setHave_buddy(String have_buddy) {
+        this.have_buddy = have_buddy;
+    }
+
+    public String getStatus_pending() {
+        return status_pending;
+    }
+
+    public void setStatus_pending(String status_pending) {
+        this.status_pending = status_pending;
+    }
+
+    public String getStatus_reject() {
+        return status_reject;
+    }
+
+    public void setStatus_reject(String status_reject) {
+        this.status_reject = status_reject;
+    }
+
+    public String getStatus_accept() {
+        return status_accept;
+    }
+
+    public void setStatus_accept(String status_accept) {
+        this.status_accept = status_accept;
+    }
+
+    public String getSure_txt() {
+        return sure_txt;
+    }
+
+    public void setSure_txt(String sure_txt) {
+        this.sure_txt = sure_txt;
+    }
+
+    public String getRemove_buddy() {
+        return remove_buddy;
+    }
+
+    public void setRemove_buddy(String remove_buddy) {
+        this.remove_buddy = remove_buddy;
+    }
+
+    public String getBudddy_cancle() {
+        return budddy_cancle;
+    }
+
+    public void setBudddy_cancle(String budddy_cancle) {
+        this.budddy_cancle = budddy_cancle;
+    }
+
+    public String getYes_remove_buddy() {
+        return yes_remove_buddy;
+    }
+
+    public void setYes_remove_buddy(String yes_remove_buddy) {
+        this.yes_remove_buddy = yes_remove_buddy;
+    }
+
+    public String getAccept_buddy() {
+        return accept_buddy;
+    }
+
+    public void setAccept_buddy(String accept_buddy) {
+        this.accept_buddy = accept_buddy;
+    }
+
+    public String getKyc_status() {
+        return kyc_status;
+    }
+
+    public void setKyc_status(String kyc_status) {
+        this.kyc_status = kyc_status;
+    }
+
+    public String getSearch_student() {
+        return search_student;
+    }
+
+    public void setSearch_student(String search_student) {
+        this.search_student = search_student;
+    }
+
+    public String getSearch() {
+        return search;
+    }
+
+    public void setSearch(String search) {
+        this.search = search;
+    }
+
+    public String getStudents() {
+        return students;
+    }
+
+    public void setStudents(String students) {
+        this.students = students;
+    }
+
+    public String getTotal_scholar_disburse() {
+        return total_scholar_disburse;
+    }
+
+    public void setTotal_scholar_disburse(String total_scholar_disburse) {
+        this.total_scholar_disburse = total_scholar_disburse;
+    }
+
+    public String getTotal_quiz_attempt() {
+        return total_quiz_attempt;
+    }
+
+    public void setTotal_quiz_attempt(String total_quiz_attempt) {
+        this.total_quiz_attempt = total_quiz_attempt;
+    }
+
+    public String getQuiz_score() {
+        return quiz_score;
+    }
+
+    public void setQuiz_score(String quiz_score) {
+        this.quiz_score = quiz_score;
+    }
+
+    public String getQuiz_status() {
+        return quiz_status;
+    }
+
+    public void setQuiz_status(String quiz_status) {
+        this.quiz_status = quiz_status;
+    }
+
+    public String getScholarship_status() {
+        return scholarship_status;
+    }
+
+    public void setScholarship_status(String scholarship_status) {
+        this.scholarship_status = scholarship_status;
+    }
+
+    public String getDisbursed_scholarship() {
+        return disbursed_scholarship;
+    }
+
+    public void setDisbursed_scholarship(String disbursed_scholarship) {
+        this.disbursed_scholarship = disbursed_scholarship;
+    }
+
+    public String getApproved_scholarship() {
+        return approved_scholarship;
+    }
+
+    public void setApproved_scholarship(String approved_scholarship) {
+        this.approved_scholarship = approved_scholarship;
+    }
+
+    public String getKyc_approved() {
+        return kyc_approved;
+    }
+
+    public void setKyc_approved(String kyc_approved) {
+        this.kyc_approved = kyc_approved;
+    }
+
+    public String getChoose_month() {
+        return choose_month;
+    }
+
+    public void setChoose_month(String choose_month) {
+        this.choose_month = choose_month;
+    }
 
     public String getSearch_school_here() {
         return search_school_here;

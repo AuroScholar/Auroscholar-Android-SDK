@@ -1,25 +1,23 @@
 package com.auro.application.util
 
-import com.auro.application.core.common.ErrorStatus
-import com.auro.application.core.common.ResponseApi
-import com.auro.application.core.common.ResponseStatus
+import com.auro.application.core.common.AppConstant
 import com.auro.application.core.network.URLConstant
 import com.auro.application.home.data.model.*
-import com.auro.application.home.data.model.passportmodels.PassportMonthModel
 import com.auro.application.home.data.model.passportmodels.PassportQuizMonthModel
-import com.auro.application.home.data.model.response.ChildDetailResModel
-import com.auro.application.home.data.model.response.GetStudentUpdateProfile
-import com.auro.application.home.data.model.signupmodel.request.SetUsernamePinReqModel
+import com.auro.application.home.data.model.response.*
 import com.auro.application.home.data.model.signupmodel.response.RegisterApiResModel
 import com.auro.application.home.data.model.signupmodel.response.SetUsernamePinResModel
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import okhttp3.ResponseBody
+import com.auro.application.teacher.data.model.StudentListDataModel
+import com.auro.application.teacher.data.model.response.*
+import com.google.gson.JsonObject
+import io.reactivex.Single
+import okhttp3.*
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
+import retrofit2.http.Headers
 
 
 interface RemoteApi
@@ -33,10 +31,17 @@ interface RemoteApi
     @POST("get_parent_details")
     public fun getParentData(@Body params:HashMap<String,String>):Call<ParentProfileDataModel>
 
+    @POST("add_new_school")
+    public fun addNewSchool(@Body params:HashMap<String,String>):Call<AddNewSchoolResModel>
+
     @POST("passport")
-    public fun getPassportData(@Body params:HashMap<String,String>):Call<PassportMonthModel>
+    public fun getPassportData(@Body params:HashMap<String,String>):Call<PassportStudentDetailResModel>
 
+    @POST("all_student_passport")
+    public fun getStudentPassportData(@Body params:HashMap<String,String>):Call<TeacherStudentPassportResModel>
 
+    @POST("get_quiz_months")
+    public fun getStudentPassportMonth(@Body params:HashMap<String,String>):Call<TeacherStudentPassportDetailResModel>
 
     @POST("get_quiz_month_subjects")
     public fun getQuizMonthSubject(@Body params:HashMap<String,String>):Call<PassportQuizMonthModel>
@@ -44,12 +49,20 @@ interface RemoteApi
 
     @POST("get_user_details")
     public fun getStudentData(@Body params:HashMap<String,String>):Call<GetStudentUpdateProfile>
+    @POST("get_teacher_profile")
+    public fun getTeacherData(@Body params:HashMap<String,String>):Call<MyProfileResModel>
 
     @POST("check_kyc_status")
     public fun getCheckKYC(@Body params:HashMap<String,String>):Call<GetStudentUpdateProfile>
 
     @POST("student_full_details")
     public fun getStatusForInsta(@Body params:HashMap<String,String>):Call<DashboardResponselDataModel>
+
+    @POST("get_kyc_details")
+    public fun getKYCStatus(@Body params:HashMap<String,String>):Call<StudentKycStatusResModel>
+
+    @POST("get_user_slab")
+    public fun getSlabAPI(@Body params:HashMap<String,String>):Call<SlabsResModel>
 
     @POST("show_pending_refferals")
     public fun getPendingRefferal(@Body params:HashMap<String,String>):Call<ReferralPopUpDataModel>
@@ -63,8 +76,53 @@ interface RemoteApi
     @POST("get_language_transalation")
     public fun getSchoolmedium(@Body params:HashMap<String,String>):Call<SchoolMediumLangDataModel>
 
+    @POST("fetch_student_preference")
+    public fun getStudentSubject(@Body params:HashMap<String,String>):Call<SubjectPreferenceDataModel>
+
+
     @POST("user_check_new")
     public fun getUserCheck(@Body params:HashMap<String,String>):Call<CheckUserResModel>
+
+    @POST("invite_school_teachers_list")
+    public fun getInviteTeacherList(@Body params:HashMap<String,String>):Call<TeacherInviteTeacherResModel>
+
+
+    @Headers("Secret-Id: 2198f0011288666d3694ccf4e7d16c29",
+        "Secret-Key: f7115915ae4efc1bdab7ae9fc686348848f8cc2e7bf4a9",
+        "Lang-Code: English")
+    @POST("reffer")
+    public fun getreffertostudent(@Body params:HashMap<String,String>):Call<DynamiclinkResModel>
+
+
+    @POST("GroupStudentDetailsByGroupIb")
+    public fun getGroupStudentDetailsByGroupIb(@Body params:HashMap<String,String>):Call<StudentListDataModel>
+
+
+    @POST("send_invite_to_school_teachers")
+    public fun getSendInvite(@Body params:HashMap<String,String>):Call<TeacherInviteTeacherResModel>
+
+    @POST("teacher_approved_status")
+    public fun getApproveInvite(@Body params:HashMap<String,String>):Call<TeacherInviteTeacherResModel>
+
+
+    @POST("delete_teacher_from_list")
+    public fun getDeleteTeacher(@Body params:HashMap<String,String>):Call<TeacherInviteTeacherResModel>
+
+    @POST("teacher_referred_list")
+    public fun getTeacherBuddyList(@Body params:HashMap<String,String>):Call<AcceptTeacherBuddyResModel>
+
+    @POST("teacher_buddy_list")
+    public fun getMyBuddyList(@Body params:HashMap<String,String>):Call<MyBuddyResModel>
+
+    @POST("teacher_buddy_list")
+    public fun getTestMyBuddyList(@Body params:HashMap<String,String>):Call<AcceptTeacherBuddyResModel>
+
+    @POST("teacher_buddy_list")
+    public fun getMyBuddyListInvite(@Body params:HashMap<String,String>):Call<MyBuddyResModel>
+
+    @POST("teacher_invitation_list")
+    public fun getTeacherInvitationList(@Body params:HashMap<String,String>):Call<ReceiveTeacherBuddyResModel>
+
 
     @POST("set_user_pin")
     public fun setparentpin(@Body params:HashMap<String,String>):Call<CheckUserResModel>
@@ -89,8 +147,6 @@ interface RemoteApi
 
     @POST("set_user_pin")
     public fun setparentuserpin(@Body params:HashMap<String,String>):Call<SetUsernamePinResModel>
-
-
 
 //    @FormUrlEncoded
 //    @POST("get_user_details")
@@ -212,6 +268,31 @@ interface RemoteApi
                                        @Part image:MultipartBody.Part
     ):Call<StudentResponselDataModel>
 
+    @Headers("Secret-Id: 2198f0011288666d3694ccf4e7d16c29",
+        "Secret-Key: f7115915ae4efc1bdab7ae9fc686348848f8cc2e7bf4a9",
+        "Lang-Code: English")
+    @Multipart
+    @POST(URLConstant.TEACHER_PROFILE_UPDATE_API)
+    fun updateTeacherProfileApi(
+        @Part(AppConstant.DashBoardParams.USER_ID) userId:RequestBody ,
+                                      @Part(AppConstant.TeacherProfileParams.TEACHER_NAME) teacherName:RequestBody ,
+                                      @Part(AppConstant.TeacherProfileParams.USER_NAME) userName:RequestBody ,
+                                      @Part(AppConstant.MOBILE_NUMBER) mobileNumber:RequestBody ,
+                                      @Part(AppConstant.TEACHER_EMAIL_ID) emaiId:RequestBody ,
+                                      @Part(AppConstant.GENDER) gender:RequestBody ,
+                                      @Part(AppConstant.COUNTRY_ID) contryId:RequestBody ,
+                                      @Part(AppConstant.TeacherProfileParams.STATE_ID) stateId:RequestBody ,
+                                      @Part(AppConstant.TeacherProfileParams.DISTRICT_ID) districtId:RequestBody ,
+                                      @Part(AppConstant.SCHOOL_ID) schoolid:RequestBody ,
+                                      @Part(AppConstant.DashBoardParams.PREFERED_LANGUAGE) prefrence:RequestBody ,
+                                      @Part(AppConstant.DashBoardParams.DEVICE_TOKEN) deviceToken:RequestBody ,
+                                      @Part(AppConstant.DashBoardParams.DATE_OF_BIRTH) dateofBirth:RequestBody,
+                                      @Part image:MultipartBody.Part
+    ):Call<StudentResponselDataModel>
+
+
+
+
     @Multipart
     @POST("update_student_photo")
     public fun update_student_photo(
@@ -220,7 +301,13 @@ interface RemoteApi
                                       @Part image:MultipartBody.Part
     ):Call<StudentResponselDataModel>
 
-
+    @Multipart
+    @POST("update_teacher_photo")
+    public fun update_teacher_photo(
+        @Part("user_id") userId:RequestBody ,
+        @Part("user_prefered_language_id") userpreferlanguageid:RequestBody ,
+        @Part image:MultipartBody.Part
+    ):Call<MyProfileResModel>
 
 
 
@@ -256,6 +343,7 @@ interface RemoteApi
     {
       return Retrofit.Builder()
         .baseUrl(URLConstant.BASE_URL)
+
         .addConverterFactory(GsonConverterFactory.create())
         .build()
         .create(RemoteApi::class.java)

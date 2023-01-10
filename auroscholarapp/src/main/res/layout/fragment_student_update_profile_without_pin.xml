@@ -446,6 +446,7 @@
                                     android:layout_height="wrap_content"
                                     android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
                                     android:maxLines="1"
+                                    android:longClickable="false"
                                     android:paddingRight="@dimen/_20sdp"
                                     android:textColor="@color/black"
                                     android:textSize="@dimen/_12sdp" />
@@ -469,6 +470,7 @@
                                     android:editable="false"
                                     android:inputType="none"
                                     android:maxLines="1"
+                                    android:longClickable="false"
                                     android:paddingRight="@dimen/_20sdp"
                                     android:textColor="@color/black"
                                     android:textSize="@dimen/_12sdp" />
@@ -513,6 +515,7 @@
                                     android:editable="false"
                                     android:inputType="none"
                                     android:maxLines="1"
+                                    android:longClickable="false"
                                     android:paddingRight="@dimen/_20sdp"
                                     android:textColor="@color/black"
                                     android:textSize="@dimen/_12sdp" />
@@ -555,6 +558,7 @@
                                     android:layout_height="wrap_content"
                                     android:editable="false"
                                     android:inputType="none"
+                                    android:longClickable="false"
                                     android:maxLines="1"
                                     android:paddingRight="@dimen/_20sdp"
                                     android:textColor="@color/black"
@@ -596,9 +600,9 @@
                                     android:id="@+id/editemail"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:digits="abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ.-@1234567890"
-                                    android:inputType="textPersonName"
+                                    android:digits="abcdefghijklmnopqrstuvwxyz1234567890@#$_-."                                    android:inputType="textPersonName"
                                     android:maxLines="1"
+                                    android:longClickable="false"
                                     android:paddingRight="@dimen/_20sdp"
                                     android:textColor="@color/black"
                                     android:textSize="@dimen/_12sdp" />
@@ -635,6 +639,7 @@
                                 android:textColorHint="@color/auro_border_blue"
                                 app:endIconMode="none"
                                 app:layout_constraintBottom_toBottomOf="parent"
+                                android:editable="false"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent">
 
@@ -646,6 +651,7 @@
                                     android:drawablePadding="@dimen/_18sdp"
                                     android:focusable="false"
                                     android:gravity="left"
+                                    android:longClickable="false"
                                     android:maxLines="1"
                                     android:paddingEnd="@dimen/_20sdp"
                                     android:textColor="@color/black" />
@@ -661,6 +667,7 @@
                                 android:layout_below="@+id/tlStudentGender"
                                 android:layout_marginTop="@dimen/_8sdp"
                                 android:hint="@string/school_type"
+                                android:editable="false"
                                 android:textColorHint="@color/auro_border_blue"
                                 app:endIconMode="none">
 
@@ -673,6 +680,7 @@
                                     android:focusable="false"
                                     android:gravity="left"
                                     android:maxLines="1"
+                                    android:longClickable="false"
                                     android:paddingEnd="@dimen/_20sdp"
                                     android:textColor="@color/black" />
 
@@ -685,6 +693,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/tlSchooltype"
+                                android:editable="false"
                                 android:layout_marginTop="@dimen/_8sdp"
                                 android:hint="@string/board"
                                 android:textColorHint="@color/auro_border_blue"
@@ -698,6 +707,7 @@
                                     android:drawablePadding="@dimen/_18sdp"
                                     android:focusable="false"
                                     android:gravity="left"
+                                    android:longClickable="false"
                                     android:maxLines="1"
                                     android:paddingEnd="@dimen/_20sdp"
                                     android:textColor="@color/black" />
@@ -712,6 +722,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/tlSchoolboard"
                                 android:layout_marginTop="@dimen/_8sdp"
+                                android:editable="false"
                                 android:hint="@string/language_medium"
                                 android:textColorHint="@color/auro_border_blue"
                                 app:endIconMode="none">
@@ -724,6 +735,7 @@
                                     android:drawablePadding="@dimen/_18sdp"
                                     android:focusable="false"
                                     android:gravity="left"
+                                    android:longClickable="false"
                                     android:maxLines="1"
                                     android:paddingEnd="@dimen/_20sdp"
                                     android:textColor="@color/black" />
@@ -735,6 +747,7 @@
                                 android:id="@+id/tltution"
                                 style="@style/TextInputLayoutExposeStyle"
                                 android:layout_width="match_parent"
+                                android:editable="false"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/tlSchoolmedium"
                                 android:layout_marginTop="@dimen/_8sdp"
@@ -749,6 +762,7 @@
                                     android:drawableRight="@drawable/ic_user_drop_down"
                                     android:drawablePadding="@dimen/_18sdp"
                                     android:focusable="false"
+                                    android:longClickable="false"
                                     android:gravity="left"
                                     android:maxLines="1"
                                     android:paddingEnd="@dimen/_20sdp"
@@ -762,6 +776,7 @@
                                 style="@style/TextInputLayoutExposeStyle"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:editable="false"
                                 android:layout_below="@+id/tltution"
                                 android:layout_marginTop="@dimen/_8sdp"
                                 android:hint="@string/taking_type"
@@ -776,6 +791,7 @@
                                     android:drawablePadding="@dimen/_18sdp"
                                     android:focusable="false"
                                     android:gravity="left"
+                                    android:longClickable="false"
                                     android:maxLines="1"
                                     android:paddingEnd="@dimen/_20sdp"
                                     android:textColor="@color/black" />
@@ -791,6 +807,7 @@
                                 android:layout_below="@+id/tltutiontype"
                                 android:layout_marginTop="@dimen/_8sdp"
                                 android:hint="@string/state"
+                                android:editable="false"
                                 android:textColorHint="@color/auro_border_blue"
                                 app:endIconMode="none">
 
@@ -802,6 +819,7 @@
                                     android:drawablePadding="@dimen/_18sdp"
                                     android:focusable="false"
                                     android:gravity="left"
+                                    android:longClickable="false"
                                     android:maxLines="1"
                                     android:paddingEnd="@dimen/_20sdp"
                                     android:textColor="@color/black" />
@@ -813,7 +831,7 @@
                                 android:id="@+id/tldistrict"
                                 style="@style/TextInputLayoutExposeStyle"
                                 android:layout_width="match_parent"
-
+                                android:editable="false"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/tlstate"
                                 android:layout_marginTop="@dimen/_8sdp"
@@ -829,6 +847,7 @@
                                     android:drawablePadding="@dimen/_18sdp"
                                     android:focusable="false"
                                     android:gravity="left"
+                                    android:longClickable="false"
                                     android:maxLines="1"
                                     android:paddingEnd="@dimen/_20sdp"
                                     android:textColor="@color/black" />
@@ -844,6 +863,7 @@
                                 android:layout_below="@+id/tldistrict"
                                 android:layout_marginTop="@dimen/_8sdp"
                                 android:hint="@string/school"
+                                android:editable="false"
                                 android:textColorHint="@color/auro_border_blue"
 
                                 app:endIconMode="none">
@@ -857,6 +877,7 @@
                                     android:focusable="true"
                                     android:gravity="left"
                                     android:maxLines="1"
+                                    android:longClickable="false"
                                     android:paddingEnd="@dimen/_20sdp"
                                     android:singleLine="true"
                                     android:textColor="@color/black" />
@@ -872,6 +893,7 @@
                                 android:layout_below="@+id/tlschool"
                                 android:layout_marginTop="@dimen/_8sdp"
                                 android:hint="@string/grade_student"
+                                android:editable="false"
                                 android:textColorHint="@color/auro_border_blue"
                                 app:endIconMode="none">
 
@@ -883,6 +905,7 @@
                                     android:drawablePadding="@dimen/_18sdp"
                                     android:focusable="false"
                                     android:gravity="left"
+                                    android:longClickable="false"
                                     android:maxLines="1"
                                     android:paddingEnd="@dimen/_20sdp"
                                     android:textColor="@color/black" />
@@ -1498,7 +1521,16 @@
                                 android:textColor="@color/blue_color"
                                 android:textSize="@dimen/_14sdp"
                                 android:textStyle="bold"
-                               />
+                                app:cursorColor="@color/blue_color"
+                                app:cursorWidth="2dp"
+                                app:hideLineWhenFilled="false"
+                                app:itemCount="4"
+                                app:itemHeight="@dimen/_30sdp"
+                                app:itemSpacing="@dimen/_5sdp"
+                                app:itemWidth="@dimen/_60sdp"
+                                app:lineColor="@color/grey_color"
+                                app:lineWidth="@dimen/_1sdp"
+                                app:viewType="line" />
 
                             <com.auro.application.core.util.uiwidget.RPTextView
                                 android:id="@+id/confirm_pin_text"
@@ -1524,7 +1556,16 @@
                                 android:textColor="@color/blue_color"
                                 android:textSize="@dimen/_14sdp"
                                 android:textStyle="bold"
-                                />
+                                app:cursorColor="@color/blue_color"
+                                app:cursorWidth="2dp"
+                                app:hideLineWhenFilled="false"
+                                app:itemCount="4"
+                                app:itemHeight="@dimen/_30sdp"
+                                app:itemSpacing="@dimen/_5sdp"
+                                app:itemWidth="@dimen/_60sdp"
+                                app:lineColor="@color/grey_color"
+                                app:lineWidth="@dimen/_1sdp"
+                                app:viewType="line" />
 
 
                         </LinearLayout>

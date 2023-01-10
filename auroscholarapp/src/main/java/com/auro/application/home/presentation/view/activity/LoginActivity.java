@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -41,6 +42,8 @@ import com.auro.application.home.data.model.signupmodel.response.LoginResModel;
 import com.auro.application.home.presentation.view.adapter.SelectYourParentChildAdapter;
 import com.auro.application.home.presentation.view.fragment.BottomSheetUsersDialog;
 import com.auro.application.home.presentation.viewmodel.LoginScreenViewModel;
+import com.auro.application.teacher.data.model.response.MyProfileResModel;
+import com.auro.application.teacher.presentation.view.activity.TeacherProfileActivity;
 import com.auro.application.util.AppLogger;
 import com.auro.application.util.AppUtil;
 import com.auro.application.util.RemoteApi;
@@ -50,7 +53,10 @@ import com.auro.application.util.alert_dialog.ValidatePhoneDialog;
 import com.auro.application.util.alert_dialog.disclaimer.UserNotRegisterDialog;
 import com.auro.application.util.firebaseAnalytics.AnalyticsRegistry;
 import com.auro.application.util.strings.AppStringDynamic;
+import com.facebook.login.Login;
 
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -60,6 +66,11 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import io.branch.indexing.BranchUniversalObject;
+import io.branch.referral.Branch;
+import io.branch.referral.BranchError;
+import io.branch.referral.util.LinkProperties;
+import io.branch.referral.validators.IntegrationValidator;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -94,23 +105,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         binding.setLifecycleOwner(this);
         binding.forgotPassword.setPaintFlags(binding.forgotPassword.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         binding.loginWithOtp.setPaintFlags(binding.forgotPassword.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-//       binding.passwordlayout.setVisibility(View.GONE);
-//       binding.etPassword.setVisibility(View.GONE);
-     //  binding.etPassword.setText("");
-      // binding.etPassword.setEnabled(true);
-//        binding.etPassword.setEnabled(true);
-//        binding.etPassword.setText("");
+
         setListener();
         callLoginApi();
-       binding.setpassword.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               Intent i = new Intent(LoginActivity.this, ResetPasswordActivity.class);
-               i.putExtra(AppConstant.COMING_FROM, AppConstant.FROM_SET_PASSWORD);
-               startActivity(i);
-               finish();
-           }
-       });
+        binding.setpassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(LoginActivity.this, ResetPasswordActivity.class);
+                i.putExtra(AppConstant.COMING_FROM, AppConstant.FROM_SET_PASSWORD);
+                startActivity(i);
+                finish();
+            }
+        });
 
         AppUtil.loadAppLogo(binding.auroScholarLogo, this);
         ViewUtil.customTextView(binding.termsCondition, this);
@@ -142,68 +148,86 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
     @Override
     public void onClick(View view) {
-        int id = view.getId();
-        if (id == R.id.RPButtonSendOtp) {
-            ViewUtil.hideKeyboard(this);
-        } else if (id == R.id.back_button) {//openValidatePhoneNumberDialog();
-            SharedPreferences preferences = getSharedPreferences("My_Pref", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.clear();
-            editor.apply();
-            backButton();
-        } else if (id == R.id.RPAccept) {
-            comingFromText = "";
-            ViewUtil.hideKeyboard(this);
-            //setBottomsheetVisibility(0);
+        switch (view.getId()) {
+            case R.id.RPButtonSendOtp:
+                ViewUtil.hideKeyboard(this);
+                break;
 
-            closeProgressAfterFewSeconds();
-            setSrID();
-            checkUserType();
-        } else if (id == R.id.forgotPassword) {
-            comingFromText = "";
-            setForgotFlowStatus(true);
-            try {
+            case R.id.back_button:
+
+                SharedPreferences preferences =getSharedPreferences("My_Pref", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.clear();
+                editor.apply();
+                backButton();
+                break;
+            case R.id.RPAccept:
+                comingFromText = "";
+                ViewUtil.hideKeyboard(this);
+
+                String mobileno = binding.etMobileNumber.getText().toString();
+                SharedPreferences.Editor editor2 = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
+                editor2.putString("usermobilenumber", mobileno);
+                editor2.apply();
+                closeProgressAfterFewSeconds();
+                setSrID();
+                checkUserType();
+                break;
+
+            case R.id.forgotPassword:
+                comingFromText = "";
+                setForgotFlowStatus(true);
+                try {
+                    binding.passwordlayout.setVisibility(View.GONE);
+                    binding.etPassword.setVisibility(View.GONE);
+                    binding.etPassword.setText("");
+                    String mobileno2 = binding.etMobileNumber.getText().toString();
+                    sendOtpApiReqPassForForget(mobileno2);
+                    SharedPreferences.Editor editor1 = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
+                    editor1.putString("forgetusermobilenumber", mobileno2);
+                    editor1.apply();
+                } catch (Exception e) {
+
+                }
+                break;
+
+            case R.id.loginWithOtp:
                 binding.passwordlayout.setVisibility(View.GONE);
                 binding.etPassword.setVisibility(View.GONE);
                 binding.etPassword.setText("");
-                String mobileno = binding.etMobileNumber.getText().toString();
-                sendOtpApiReqPassForForget(mobileno);
-                SharedPreferences.Editor editor1 = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
-                editor1.putString("forgetusermobilenumber", mobileno);
-                editor1.apply();
-            } catch (Exception e) {
+                comingFromText = AppConstant.ComingFromStatus.COMING_FROM_LOGIN_WITH_OTP;
+                setForgotFlowStatus(false);
+                String mobileno3 = binding.etMobileNumber.getText().toString();
+                sendOtpApiReqPass(mobileno3);
+                break;
 
-            }
-        } else if (id == R.id.loginWithOtp) {
-            binding.passwordlayout.setVisibility(View.GONE);
-            binding.etPassword.setVisibility(View.GONE);
-            binding.etPassword.setText("");
-            comingFromText = AppConstant.ComingFromStatus.COMING_FROM_LOGIN_WITH_OTP;
-            setForgotFlowStatus(false);
-            String mobileno = binding.etMobileNumber.getText().toString();
-            sendOtpApiReqPass(mobileno);
-        } else if (id == R.id.passwordIcon) {
-            handleClickPassword();
+
+            case R.id.passwordIcon:
+                handleClickPassword();
+                break;
+
+
+
         }
     }
 
-   public void checkUserType() {
+    void checkUserType() {
         PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
-//        if (prefModel.getUserType() == AppConstant.UserType.TEACHER) {
-//            if (checkUserResModel != null && checkUserResModel.getUserDetails() != null && !checkUserResModel.getUserDetails().isEmpty() && binding.passwordlayout.getVisibility() == View.VISIBLE && checkUserResModel.getUserDetails().size() > 0) {
-//
-//                callLoginApi();
-//            } else {
-//                callCheckUser();
-//            }
-//        } else {
-         //   if (checkUserResModel != null && checkUserResModel.getUserDetails() != null && !checkUserResModel.getUserDetails().isEmpty() && binding.passwordlayout.getVisibility() == View.VISIBLE && checkUserResModel.getUserDetails().size() > 0) {
-                callLoginApi();
-          //  } else {
+        if (prefModel.getUserType() == AppConstant.UserType.TEACHER) {
+            if (checkUserResModel != null && checkUserResModel.getUserDetails() != null && !checkUserResModel.getUserDetails().isEmpty() && binding.passwordlayout.getVisibility() == View.VISIBLE && checkUserResModel.getUserDetails().size() > 0) {
 
-            //    callCheckUser();
-           // }
-     //   }
+                callLoginApi();
+            } else {
+                callCheckUser();
+            }
+        } else {
+            if (checkUserResModel != null && checkUserResModel.getUserDetails() != null && !checkUserResModel.getUserDetails().isEmpty() && binding.passwordlayout.getVisibility() == View.VISIBLE && checkUserResModel.getUserDetails().size() > 0) {
+                callLoginApi();
+            } else {
+
+                callCheckUser();
+            }
+        }
 
 
     }
@@ -232,8 +256,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     }
 
     void handleClickPassword() {
-//        binding.etPassword.setEnabled(true);
-//        binding.etPassword.setText("");
+
         String password = binding.etPassword.getText().toString();
         TransformationMethod transformationMethod = binding.etPassword.getTransformationMethod();
         if (transformationMethod == null) {
@@ -318,22 +341,22 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         Intent intent = new Intent(this, WebActivity.class);
         intent.putExtra(AppConstant.WEB_LINK, link);
         startActivity(intent);
-        //  openMinderWebview();
+
     }
 
     private void sendOtpApiReqPass(String phonenumber) {
         setProgressVisibility(View.VISIBLE);
-        // String phonenumber = checkUserResModel.getUserMobile();
+
         SendOtpReqModel mreqmodel = new SendOtpReqModel();
         mreqmodel.setMobileNo(phonenumber);
         callLoginApi();
-      //  callLoginApi();
+
         viewModel.checkInternet(mreqmodel, Status.SEND_OTP);
     }
 
     private void sendOtpApiReqPassForForget(String phonenumber) {
         setProgressVisibility(View.VISIBLE);
-        // String phonenumber = checkUserResModel.getUserMobile();
+
         SendOtpReqModel mreqmodel = new SendOtpReqModel();
         mreqmodel.setMobileNo(phonenumber);
         callLoginApiForForget();
@@ -347,45 +370,42 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         String password = binding.etPassword.getText().toString();
 
 
-//        if (TextUtil.isEmpty(username)) {
-//            showSnackbarError(details.getPlease_enter_the_mobile_number());
-//            return;
-//        }
+        if (TextUtil.isEmpty(username)) {
+            showSnackbarError(details.getPlease_enter_the_mobile_number());
+            return;
+        }
 
 
-//        else if (username.length() > 10) {
-//            showSnackbarError(details.getEnter_valid_username());
-//            return;
-//        }
-//        else if (binding.passwordlayout.getVisibility() == View.VISIBLE && TextUtil.isEmpty(password)) {
-//            showSnackbarError(details.getPlease_enter_password());
-//            return;
-//        }
 
-//        else if (binding.passwordlayout.getVisibility() == View.VISIBLE && binding.etPassword.getText().toString().length() < 5) {
-//            showSnackbarError(details.getPlease_enter_valid_password());
-//            return;
-//        }
-//        else if (binding.etPassword.getText().toString().length() == 5) {
-//            showSnackbarError(details.getPlease_enter_valid_password());
-//            return;
-//        }
-//        else if (binding.etPassword.getText().toString().length() > 10) {
-//            showSnackbarError(details.getPlease_enter_valid_password());
-//            return;
-//        }
+        else if (binding.passwordlayout.getVisibility() == View.VISIBLE && TextUtil.isEmpty(password)) {
+            showSnackbarError(details.getPlease_enter_password());
+            return;
+        }
+
+        else if (binding.passwordlayout.getVisibility() == View.VISIBLE && binding.etPassword.getText().toString().length() < 5) {
+            showSnackbarError(details.getPlease_enter_valid_password());
+            return;
+        }
+        else if (binding.etPassword.getText().toString().length() == 5) {
+            showSnackbarError(details.getPlease_enter_valid_password());
+            return;
+        }
+        else if (binding.etPassword.getText().toString().length() > 10) {
+            showSnackbarError(details.getPlease_enter_valid_password());
+            return;
+        }
 
 
-     //  else {
+        else {
             setProgressVisibility(View.VISIBLE);
             PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
             CheckUserApiReqModel checkUserApiReqModel = new CheckUserApiReqModel();
             checkUserApiReqModel.setEmailId("");
             checkUserApiReqModel.setMobileNo("");
             checkUserApiReqModel.setUserType("" + prefModel.getUserType());
-            checkUserApiReqModel.setUserName(prefModel.getUserMobile());
+            checkUserApiReqModel.setUserName(binding.etMobileNumber.getText().toString());
             viewModel.checkInternet(checkUserApiReqModel, Status.CHECKVALIDUSER);
-       // }
+        }
 
     }
 
@@ -409,8 +429,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                         SendOtpResModel sendOtpResModel = (SendOtpResModel) responseApi.data;
                         if (!sendOtpResModel.getError()) {
                             startActivityOTPScreen(sendOtpResModel);
-                        } else {
-                            showSnackbarError(sendOtpResModel.getMessage());
+                        } else if (sendOtpResModel.getError()){
+                            Toast.makeText(this, "Your OTP limit is exceed! Please try after 30 mins", Toast.LENGTH_SHORT).show();
+                            showSnackbarError("Your OTP limit is exceed! Please try after 30 mins");
+
+                            //showSnackbarError(sendOtpResModel.getMessage());
                         }
                     } else if (responseApi.apiTypeStatus == Status.LOGIN_API) {
                         LoginResModel loginResModel = (LoginResModel) responseApi.data;
@@ -429,11 +452,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 default:
                     AppLogger.e(TAG, "-- step 3");
                     binding.progressbar.pgbar.setVisibility(View.GONE);
-                  //  showSnackbarError((String) responseApi.data);
+                    //  showSnackbarError((String) responseApi.data);
 
                     if (binding.passwordlayout.getVisibility() == View.VISIBLE && !binding.etPassword.getText().toString().isEmpty() && !binding.etPassword.getText().toString().equals("")){
                         showSnackbarError((String) details.getInvalid_login());
                     }
+
 
                     break;
             }
@@ -480,10 +504,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
         prefModel.setCheckUserResModel(checkUserResModel);
         AuroAppPref.INSTANCE.setPref(prefModel);
-        /*Normal User*/
+
         switch (checkUserResModel.getCode()) {
             case AppConstant.UsercheckApiCode.PASS_NOT_NULL:
-                //  setVisibilityofUi(0);
+
                 break;
 
             case AppConstant.UsercheckApiCode.SR_ID_USER:
@@ -500,19 +524,19 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             case AppConstant.UsercheckApiCode.SR_ID_NOT_FOUND:
                 AppLogger.e(TAG, "USER_NOT_FOUND");
                 if (binding.etMobileNumber.getText().toString().length() == 10) {
-                   // binding.etPassword.setVisibility(View.GONE);
+                    // binding.etPassword.setVisibility(View.GONE);
                     String number = binding.etMobileNumber.getText().toString().trim();
                     String regexStr = "^[0-9]$";
                     if(binding.etMobileNumber.getText().toString().length()==10 && android.util.Patterns.PHONE.matcher(number).matches()){
                         userNotRegisterDialog();
-                        }
-                        else{
+                    }
+                    else{
                         showSnackbarError(details.getPlease_enter_valid_phone_number());
 
-                        }
+                    }
 
                 } else {
-                   showSnackbarError(checkUserResModel.getMessage());
+                    showSnackbarError(checkUserResModel.getMessage());
                 }
 
                 break;
@@ -531,42 +555,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         }
 
 
-       /* AppLogger.e(TAG, "--" + checkUserResModel.getCode());
-        AppLogger.e(TAG, "--" + checkUserResModel.getStudentName());
-        AppLogger.e(TAG, "--" + checkUserResModel.getGrade());
-        PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
-        prefModel.setUserMobile(checkUserResModel.getUserMobile());
-        prefModel.setStatusUserCode(checkUserResModel.getCode());
-        prefModel.setStudentClasses(checkUserResModel.getClasses());
-        prefModel.setStudentName(checkUserResModel.getStudentName());
-        prefModel.setUserId(checkUserResModel.getUserId());
-        prefModel.setUserName( binding.etMobileNumber.getText().toString());
-        prefModel.setStudentClass(ConversionUtil.INSTANCE.convertStringToInteger(checkUserResModel.getGrade()));
-        AuroAppPref.INSTANCE.setPref(prefModel);
 
-        switch (checkUserResModel.getCode()) {
-            case AppConstant.UsercheckApiCode.PASS_NOT_NULL:
-                setVisibilityofUi(0);
-                break;
-
-            case AppConstant.UsercheckApiCode.SR_ID_USER:
-                AppLogger.e(TAG, "--SR_ID_USER");
-                openValidatePhoneNumberDialog();
-                break;
-
-            case AppConstant.UsercheckApiCode.PASS_NULL:
-                AppLogger.e(TAG, "PASS_NULL");
-                sendOtpApiReqPass(checkUserResModel.getUserMobile());
-                break;
-
-            case AppConstant.UsercheckApiCode.USER_NOT_FOUND:
-            case AppConstant.UsercheckApiCode.SR_ID_NOT_FOUND:
-                AppLogger.e(TAG, "USER_NOT_FOUND");
-                userNotRegisterDialog();
-                //showSnackbarError(checkUserResModel.getMessage());
-
-                break;
-        }*/
     }
 
 
@@ -579,7 +568,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 if (!resModel.getSetPin()) {
                     comingFromText = AppConstant.ComingFromStatus.COMING_FROM_PASSWORD_NOT_SET;
                     openSetPinActivity(resModel);
-                    // sendOtpApiReqPass(resModel.getUserMobile());
+
                 } else {
                     openEnterPinActivity(resModel);
                 }
@@ -598,7 +587,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                         comingFromText = AppConstant.ComingFromStatus.COMING_FROM_PASSWORD_NOT_SET;
                         sendOtpApiReqPass(resModel.getUserMobile());
                     } else {
-                      //  setVisibilityofUi(0);
+
                     }
                 }
                 setDatainPref(resModel);
@@ -611,12 +600,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                     setDatainPref(resModel);
                 }
             }
-           if (binding.etPassword.getText().toString().isEmpty()||binding.etPassword.getText().toString().equals("")){
+            if (binding.etPassword.getText().toString().isEmpty()||binding.etPassword.getText().toString().equals("")){
 
-           }
-           else{
-               openBottomSheetDialog();
-           }
+            }
+            else{
+                openBottomSheetDialog();
+            }
         }
     }
 
@@ -686,7 +675,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                // This method will be executed once the timer is over
+
                 setProgressVisibility(View.GONE);
             }
         }, 10000);
@@ -694,37 +683,34 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     }
 
     private void callLoginApi() {
-//        binding.loginWithOtp.setVisibility(View.VISIBLE);
-//        binding.setpassword.setVisibility(View.GONE);
-//        String username = binding.etMobileNumber.getText().toString();
-//        String password = binding.etPassword.getText().toString();
-//
-//        if (binding.passwordlayout.getVisibility() == View.VISIBLE && TextUtil.isEmpty(password)) {
-//            showSnackbarError(details.getPlease_enter_password());
-//            return;
-//        }
-//        else if (binding.passwordlayout.getVisibility() == View.VISIBLE && password.length() < 5 && !TextUtil.isEmpty(password)) {
-//            showSnackbarError(details.getPlease_enter_valid_password());
-//            return;
-//        }
-//        else if (binding.passwordlayout.getVisibility() == View.VISIBLE && password.length() == 5 && !TextUtil.isEmpty(password)) {
-//            showSnackbarError(details.getPlease_enter_valid_password());
-//            return;
-//        }
-//        else if (binding.passwordlayout.getVisibility() == View.VISIBLE && password.length() > 10 && !TextUtil.isEmpty(password)) {
-//            showSnackbarError(details.getPlease_enter_valid_password());
-//            return;
-//        }
-//        else{
-        PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
 
-        setProgressVisibility(View.VISIBLE);
+        String username = binding.etMobileNumber.getText().toString();
+        String password = binding.etPassword.getText().toString();
+
+        if (binding.passwordlayout.getVisibility() == View.VISIBLE && TextUtil.isEmpty(password)) {
+            showSnackbarError(details.getPlease_enter_password());
+            return;
+        }
+        else if (binding.passwordlayout.getVisibility() == View.VISIBLE && password.length() < 5 && !TextUtil.isEmpty(password)) {
+            showSnackbarError(details.getPlease_enter_valid_password());
+            return;
+        }
+        else if (binding.passwordlayout.getVisibility() == View.VISIBLE && password.length() == 5 && !TextUtil.isEmpty(password)) {
+            showSnackbarError(details.getPlease_enter_valid_password());
+            return;
+        }
+        else if (binding.passwordlayout.getVisibility() == View.VISIBLE && password.length() > 10 && !TextUtil.isEmpty(password)) {
+            showSnackbarError(details.getPlease_enter_valid_password());
+            return;
+        }
+        else{
+            setProgressVisibility(View.VISIBLE);
             LoginReqModel loginReqModel = new LoginReqModel();
-            loginReqModel.setUserName(prefModel.getUserMobile());
-            loginReqModel.setPassword("123456");
-            loginReqModel.setUserType(String.valueOf(prefModel.getUserType()));
+            loginReqModel.setUserName(binding.etMobileNumber.getText().toString());
+            loginReqModel.setPassword(password);
+            loginReqModel.setUserType("" + AuroAppPref.INSTANCE.getModelInstance().getUserType());
             viewModel.checkInternet(loginReqModel, Status.LOGIN_API);
-        //}
+        }
 
 
     }
@@ -732,15 +718,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     private void callLoginApiForForget() {
         String username = binding.etMobileNumber.getText().toString();
         String password = binding.etPassword.getText().toString();
-//
-//        if (binding.passwordlayout.getVisibility() == View.VISIBLE && TextUtil.isEmpty(password)) {
-//            showSnackbarError(details.getPlease_enter_password());
-//            return;
-//        }
-//        else if (binding.passwordlayout.getVisibility() == View.VISIBLE && password.length() < 5 && !TextUtil.isEmpty(password)) {
-//            showSnackbarError(details.getPlease_enter_valid_password());
-//            return;
-//        }
+
 
         setProgressVisibility(View.VISIBLE);
         LoginReqModel loginReqModel = new LoginReqModel();
@@ -806,6 +784,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     }
 
     private void backButton() {
+        binding.etPassword.setText("");
         checkUserResModel = new CheckUserResModel();
         int visibility = binding.passwordlayout.getVisibility();
         if (visibility == View.VISIBLE) {
@@ -825,24 +804,23 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
         prefModel.setLogin(true);
         prefModel.setUserMobile(loginResModel.getUserMobile());
+        SharedPreferences.Editor editor = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
+
+        editor.putString("statuslogin", "true");
+        editor.apply();
         AuroAppPref.INSTANCE.setPref(prefModel);
         if (prefModel.getUserType() == AppConstant.UserType.TEACHER) {
             UserDetailResModel resModel = prefModel.getStudentData();
             if (resModel != null && !resModel.getSetUserPass()) {
                 openSetPasswordActivity();
             } else {
-                openTeacherHomeActivity();
+                getProfile();
+
             }
         }
 
         else{
-           // UserDetailResModel resModel = checkUserResModel.getUserDetails().get(0);
 
-
-//            if (resModel.getIsMaster().equalsIgnoreCase(AppConstant.UserType.USER_TYPE_PARENT)) {
-//
-//                openuserprofile();
-//            }
             if (checkUserResModel.getUserDetails().size() > 1){
                 Log.d("listsize", String.valueOf(checkUserResModel.getUserDetails().size()));
                 openBottomSheetDialog();
@@ -852,16 +830,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 Log.d("listsize", String.valueOf(checkUserResModel.getUserDetails().size()));
                 openChooseGradeActivity();
             }
-                else{
-                    AppLogger.e("whichScreenOpen step 1-", "" + prefModel.isLogin());
-                    int studentClass = prefModel.getStudentClass();
-                    AppLogger.e("whichScreenOpen step 2-", "" + studentClass);
-                    if (studentClass > 0) {
-                        startDashboardActivity(loginResModel.getUserMobile());
-                    } else {
-                        openChooseGradeActivity();
-                    }
+            else{
+                AppLogger.e("whichScreenOpen step 1-", "" + prefModel.isLogin());
+                int studentClass = prefModel.getStudentClass();
+                AppLogger.e("whichScreenOpen step 2-", "" + studentClass);
+                if (studentClass > 0) {
+                    startDashboardActivity(loginResModel.getUserMobile());
+                } else {
+                    openChooseGradeActivity();
                 }
+            }
 
         }
 
@@ -886,6 +864,54 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
         finish();
+    }
+
+    private void getProfile()
+    {
+        String userid = AuroAppPref.INSTANCE.getModelInstance().getStudentData().getUserId();
+        PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
+        String userlangid = prefModel.getUserLanguageId();
+        HashMap<String,String> map_data = new HashMap<>();
+        map_data.put("user_id",userid);
+        map_data.put("user_prefered_language_id",userlangid);
+
+        RemoteApi.Companion.invoke().getTeacherData(map_data)
+                .enqueue(new Callback<MyProfileResModel>()
+                {
+                    @Override
+                    public void onResponse(Call<MyProfileResModel> call, Response<MyProfileResModel> response)
+                    {
+                        if (response.isSuccessful()) {
+                            String teachername = response.body().getTeacherName();
+                            String statename = response.body().getState_name();
+                            String districtname = response.body().getDistrict_name();
+                            String schoolname = response.body().getSchool_name();
+
+                            if (teachername == null || teachername.equals("null") || teachername.equals("") || teachername.isEmpty()||
+                                    statename == null || statename.equals("null") || statename.equals("") || statename.isEmpty()||
+                                    districtname == null || districtname.equals("null") || districtname.equals("") || districtname.isEmpty()||
+                                    schoolname == null || schoolname.equals("null") || schoolname.equals("") || schoolname.isEmpty()){
+                                Intent i = new Intent(LoginActivity.this, TeacherProfileActivity.class);
+                                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(i);
+                            }
+                            else{
+                                openTeacherHomeActivity();
+                            }
+
+                        }
+                        else
+                        {
+                            Log.d(TAG, "onResponser: "+response.message().toString());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<MyProfileResModel> call, Throwable t)
+                    {
+                        Log.d(TAG, "onFailure: "+t.getMessage());
+                    }
+                });
     }
 
     private void openChooseGradeActivity() {
@@ -975,4 +1001,47 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        IntegrationValidator.validate(LoginActivity.this);
+        Branch.sessionBuilder(this).withCallback(new Branch.BranchUniversalReferralInitListener() {
+            @Override
+            public void onInitFinished(@Nullable BranchUniversalObject branchUniversalObject, @Nullable LinkProperties linkProperties, @Nullable BranchError error) {
+                if (error != null) {
+                }
+                else {
+                    Log.e("BranchSDK_Tester", "branch init complete!");
+                    if (branchUniversalObject != null) {
+                        Log.e("BranchSDK_Tester", "title " + branchUniversalObject.getTitle());
+                        Log.e("BranchSDK_Tester", "CanonicalIdentifier " + branchUniversalObject.getCanonicalIdentifier());
+                        Log.e("BranchSDK_Tester", "metadata " + branchUniversalObject.getContentMetadata().convertToJson());
+                    }
+
+                    if (linkProperties != null) {
+                        Log.e("BranchSDK_Tester", "Channel " + linkProperties.getChannel());
+                        Log.e("BranchSDK_Tester", "control params " + linkProperties.getControlParams());
+                    }
+                }
+            }
+
+
+        }).withData(this.getIntent().getData()).init();
+
+    }
+    @Override
+    public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        this.setIntent(intent);
+        Branch.sessionBuilder(this).withCallback(new Branch.BranchReferralInitListener() {
+            @Override
+            public void onInitFinished(JSONObject referringParams, BranchError error) {
+                if (error != null) {
+                    Log.e("BranchSDK_Tester", error.getMessage());
+                } else if (referringParams != null) {
+                    Log.e("BranchSDK_Tester", referringParams.toString());
+                }
+            }
+        }).reInit();
+    }
 }

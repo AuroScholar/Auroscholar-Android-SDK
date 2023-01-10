@@ -92,14 +92,7 @@ public class PassportMonthAdapter extends RecyclerView.Adapter<PassportMonthAdap
         Vholder.setData(mValues.get(position), position);
 
         setSubjectAdapter(position);
-      /*  Vholder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listner != null) {
-                    listner.commonEventListner(AppUtil.getCommonClickModel(1, Status.ITEM_CLICK, mValues.get(position)));
-                }
-            }
-        });*/
+
 
 
     }

@@ -84,7 +84,6 @@ import com.auro.application.util.permission.Permissions;
 import com.auro.application.util.strings.AppStringDynamic;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.snackbar.Snackbar;
@@ -140,7 +139,7 @@ public class ParentProfileActivity extends BaseActivity implements View.OnFocusC
     int new_file_size;
     Details details;
     public ParentProfileActivity() {
-        // Required empty public constructor
+
     }
 
     List<String> genderLines;
@@ -149,8 +148,7 @@ public class ParentProfileActivity extends BaseActivity implements View.OnFocusC
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, getLayout());
-      //  ((AuroApp) this.getApplication()).getAppComponent().doInjection(this);
-        //viewModel = ViewModelProviders.of(this, viewModelFactory).get(ParentProfileViewModel.class);
+
         binding.setLifecycleOwner(this);
         AppUtil.loadAppLogo(binding.auroScholarLogo, this);
         prefModel =  AuroAppPref.INSTANCE.getModelInstance();
@@ -162,12 +160,18 @@ public class ParentProfileActivity extends BaseActivity implements View.OnFocusC
         getProfile(parentuserid);
         PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
         prefModel.setLogin(true);
+        SharedPreferences.Editor editor8 = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
+        editor8.putString("statuslogin", "true");
+        editor8.apply();
         SharedPreferences.Editor editor = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
         editor.putString("statusparentprofile", "true");
+        editor.putString("isLogin","true");
         editor.putString("statusfillstudentprofile", "false");
         editor.putString("statussetpasswordscreen", "false");
         editor.putString("statuschoosegradescreen", "false");
         editor.putString("statuschoosedashboardscreen", "false");
+        editor.putString("statusopenprofileteacher", "false");
+        editor.putString("statusopendashboardteacher", "false");
         editor.putString("statusopenprofilewithoutpin", "false");
         editor.putString("statussubjectpref","false");
         editor.apply();
@@ -193,16 +197,21 @@ public class ParentProfileActivity extends BaseActivity implements View.OnFocusC
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.clear();
                 editor.commit();
+                PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
+                prefModel.setLogin(false);
                 SharedPreferences.Editor editor1 = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
                 editor1.putString("statusparentprofile", "false");
+                editor.putString("isLogin","false");
                 editor1.putString("statusfillstudentprofile", "false");
                 editor1.putString("statussetpasswordscreen", "false");
                 editor1.putString("statuschoosegradescreen", "false");
                 editor1.putString("statuschoosedashboardscreen", "false");
+                editor.putString("statusopenprofileteacher", "false");
+                editor.putString("statusopendashboardteacher", "false");
                 editor.putString("statussubjectpref","false");
                 editor1.apply();
                 finish();
-               // AuroAppPref.INSTANCE.clearAuroAppPref();
+
                 Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
               startActivity(i);
@@ -265,12 +274,7 @@ public class ParentProfileActivity extends BaseActivity implements View.OnFocusC
             }
         });
 
-//        if (AuroAppPref.INSTANCE.getModelInstance().getCheckUserResModel().getUserDetails().size() == 6 || AuroAppPref.INSTANCE.getModelInstance().getCheckUserResModel().getUserDetails().size() >= 6){
-//            binding.switchProfile.setVisibility(View.GONE);
-//        }
-//        else{
-//            binding.switchProfile.setVisibility(View.VISIBLE);
-//        }
+
         String username = prefModel.getCheckUserResModel().getUserDetails().get(0).getUserName();
 
         getAddedChild(username);
@@ -281,9 +285,7 @@ public class ParentProfileActivity extends BaseActivity implements View.OnFocusC
     protected void init() {
         setCurrentFlag(AppConstant.CurrentFlagStatus.SET_PROFILE_SCREEN);
         PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
-       // binding.etPhoneNumber.setText(prefModel.getStudentData().getUserMobile());
-      //  viewModel.getStateData();
-        //viewModel.getDistrictListData();
+
         SharedPreferences prefs = getSharedPreferences("My_Pref", MODE_PRIVATE);
         String parentuserid = prefs.getString("parentuserid", "");
         getProfile(parentuserid);
@@ -303,8 +305,7 @@ public class ParentProfileActivity extends BaseActivity implements View.OnFocusC
         binding.etGender.setOnFocusChangeListener(this);
         binding.etGender.setOnTouchListener(this);
 
-//        binding.etState.setOnFocusChangeListener(this);
-//        binding.etState.setOnTouchListener(this);
+
 
 
         binding.etDistict.setOnFocusChangeListener(this);
@@ -316,7 +317,7 @@ public class ParentProfileActivity extends BaseActivity implements View.OnFocusC
         if (viewModel != null && viewModel.serviceLiveData().hasObservers()) {
             viewModel.serviceLiveData().removeObservers(this);
         } else {
-            //observeServiceResponse();
+
         }
     }
 
@@ -345,9 +346,8 @@ public class ParentProfileActivity extends BaseActivity implements View.OnFocusC
     {
         GenderSpinnerAdapter adapter = new GenderSpinnerAdapter(this, android.R.layout.simple_dropdown_item_1line, genderList, this);
 
-        //List<String> genederlist = Arrays.asList(getResources().getStringArray(R.array.genderlist_profile));
-//        Log.d(TAG, "genderlist: "+genederlist);
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,genederlist);
+
+
         binding.etGender.setAdapter(adapter);//setting the adapter data into the AutoCompleteTextView
         binding.etGender.setThreshold(1);
         binding.etGender.setTextColor(Color.BLACK);//will start working from first character
@@ -539,7 +539,7 @@ public class ParentProfileActivity extends BaseActivity implements View.OnFocusC
                                 genderList.add(districtData);
 
                             }
-                         //   binding.etGender.setText(genderList.get(0).getTranslatedName());
+
                             addDropDownGender();
                         }
                         else
@@ -599,41 +599,38 @@ public class ParentProfileActivity extends BaseActivity implements View.OnFocusC
                                         binding.etGender.setText(gender);
                                         addDropDownGender();
                                     }
-//                            else{
-//                                getGender();
-//                            }
+
 
                                     binding.etState.setText(state);
                                     binding.etDistict.setText(district);
                                     exist_path = response.body().getResult().get(i).getProfile_pic().toString();
                                     if (exist_path.equals("") || exist_path.equals("null") || exist_path.isEmpty() || exist_path.equals(null)) {
                                         Glide.with(ParentProfileActivity.this)
-                                                .load(ParentProfileActivity.this.getResources().getIdentifier("my_drawable_image_name", "drawable", ParentProfileActivity.this.getPackageName())).apply(new RequestOptions()
+                                                .load(ParentProfileActivity.this.getResources().getIdentifier("my_drawable_image_name", "drawable", ParentProfileActivity.this.getPackageName()))
                                                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                                                .placeholder(R.drawable.circle_user_image)
-                                                .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL))
+                                                .placeholder(R.drawable.ic_user)
+                                                .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                                                 .into(binding.profileimage);
                                     } else {
                                         exist_path = response.body().getResult().get(i).getProfile_pic().toString();
-                                        Glide.with(getApplicationContext()).load(response.body().getResult().get(i).getProfile_pic()).apply(new RequestOptions().circleCrop()).into(binding.profileimage);
+                                        Glide.with(getApplicationContext()).load(response.body().getResult().get(i).getProfile_pic()).circleCrop().into(binding.profileimage);
 
                                     }
                                     if (!mainstateid.isEmpty() || !mainstateid.equals("")) {
                                         getAllDistrict(mainstateid);
                                     }
                                 }
-                                // addDropDownState(state_list);
+
 
 
                                 progress.dismiss();
                             } else {
-                              //  Toast.makeText(ParentProfileActivity.this, details.getInternetCheck(), Toast.LENGTH_SHORT).show();
                                 progress.dismiss();
                                 Log.d(TAG, "onResponser: " + response.message().toString());
                             }
-                        } catch (Exception e) {
+                        }
+                        catch (Exception e) {
                             progress.cancel();
-                          //  Toast.makeText(ParentProfileActivity.this, details.getInternetCheck(), Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -650,11 +647,8 @@ public class ParentProfileActivity extends BaseActivity implements View.OnFocusC
         String name = binding.etFullName.getText().toString();
         String gender = GenderName;
         String email = binding.etEmail.getText().toString();
-        String state = stateCode;
-        String distict = districtCode;
         String languageid = prefModel.getUserLanguageId();
         String userid = prefModel.getCheckUserResModel().getUserDetails().get(0).getUserId();
-        String username = prefModel.getCheckUserResModel().getUserDetails().get(0).getUserName();
 
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this, instanceIdResult -> {
             fbnewToken = instanceIdResult.getToken();
@@ -697,7 +691,7 @@ public class ParentProfileActivity extends BaseActivity implements View.OnFocusC
                                 if (status.equalsIgnoreCase("success"))
                                 {
                                     Toast.makeText(ParentProfileActivity.this, msg.toString(), Toast.LENGTH_SHORT).show();
-                                   // showSnackbarError(msg);
+
                                 }
                             }
                             else
@@ -788,11 +782,7 @@ public class ParentProfileActivity extends BaseActivity implements View.OnFocusC
             if (v.getId() == R.id.etGender) {
                 binding.etGender.showDropDown();
             }
-            /*else if (v.getId() == R.id.etState) {
-                binding.etState.showDropDown();
-
-                AppLogger.v("UpdatePradeep","onFocusChange state ");
-            }*/ else if (v.getId() == R.id.etDistict) {
+          else if (v.getId() == R.id.etDistict) {
                 binding.etDistict.showDropDown();
                 AppLogger.v("UpdatePradeep","onFocusChange distict ");
             }
@@ -801,15 +791,11 @@ public class ParentProfileActivity extends BaseActivity implements View.OnFocusC
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        // binding.etGender.showDropDown();
+
 
         if (v.getId() == R.id.etGender) {
             binding.etGender.showDropDown();
-        }/* else if (v.getId() == R.id.etState) {
-            binding.etState.showDropDown();
-            getAllStateList();
-            Log.d(TAG, "onTouch: Ankesh");
-        }*/ else if (v.getId() == R.id.etDistict) {
+        } else if (v.getId() == R.id.etDistict) {
             binding.etDistict.showDropDown();
         }
 
@@ -817,50 +803,7 @@ public class ParentProfileActivity extends BaseActivity implements View.OnFocusC
     }
 
 
-    public void callingStudentUpdateProfile() {
-        PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
-        String name = binding.etFullName.getText().toString();
-        String gender = binding.etGender.getText().toString();
-        String state = stateCode;
-        String distict = districtCode;
-        AppLogger.v("callingStudentUpdateProfile", state);
-        AppLogger.v("callingStudentUpdateProfile", distict);
 
-        studentProfileModel.setStudentName(name);
-        studentProfileModel.setGender(gender);
-        studentProfileModel.setUserId(prefModel.getStudentData().getUserId());
-        studentProfileModel.setStateId(stateCode);
-        studentProfileModel.setDistrictId(districtCode);
-        /*Device Detail*/
-        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this, instanceIdResult -> {
-            fbnewToken = instanceIdResult.getToken();
-            Log.e("newToken", fbnewToken);
-        });
-        studentProfileModel.setDeviceToken(fbnewToken);
-        studentProfileModel.setMobileVersion(DeviceUtil.getVersionName());
-        studentProfileModel.setMobileManufacturer(DeviceUtil.getManufacturer(this));
-        studentProfileModel.setMobileModel(DeviceUtil.getModelName(this));
-        studentProfileModel.setBuildVersion(AppUtil.getAppVersionName());
-        studentProfileModel.setIpAddress(AppUtil.getIpAdress());
-        studentProfileModel.setLanguage(ViewUtil.getLanguageId());
-        studentProfileModel.setSchoolName(SchoolName);
-        /*End of Device Detail*/
-        if (TextUtil.isEmpty(name)) {
-            showSnackbarError(prefModel.getLanguageMasterDynamic().getDetails().getPlease_enetr_the_name());//"Please enter the name"
-            return;
-        } else if (TextUtil.isEmpty(gender)) {
-            showSnackbarError(prefModel.getLanguageMasterDynamic().getDetails().getPlease_enter_the_gender());
-            return;
-        } else if (TextUtil.isEmpty(state) || state.contains("Please Select state")) {
-
-            showSnackbarError(prefModel.getLanguageMasterDynamic().getDetails().getPlease_enter_select_state());
-        } else if (TextUtil.isEmpty(distict) || distict.contains("Please select city")) {
-            showSnackbarError(prefModel.getLanguageMasterDynamic().getDetails().getPlease_enter_district());
-        } else {
-            handleProgress(0, "");
-            viewModel.sendStudentProfileInternet(studentProfileModel);
-        }
-    }
 
     private void handleProgress(int val, String message) {
         switch (val) {
@@ -884,291 +827,102 @@ public class ParentProfileActivity extends BaseActivity implements View.OnFocusC
 
     @Override
     public void onClick(View v) {
-        int id = v.getId();
-        if (id == R.id.editImage || id == R.id.profile_image) {
-            if (Build.VERSION.SDK_INT > 26) {
-                askPermission();
-            } else {
-                askPermission();
-                // askPermission();
-            }
-        } else if (id == R.id.skip_for_now) {
-            startDashboardActivity();
-        } else if (id == R.id.submitbutton) {
-            String email = binding.etEmail.getText().toString().trim();
-            String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-            try {
-                Details details = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
-                if (binding.etFullName.getText().toString().equals("") || binding.etFullName.getText().toString().isEmpty()) {
-                    Toast.makeText(this, details.getPlease_enter_your_name(), Toast.LENGTH_SHORT).show();
+        switch (v.getId()) {
+            case R.id.editImage:
+            case R.id.profile_image:
+                if (Build.VERSION.SDK_INT > 26) {
+                    askPermission();
+                }
+                else{
+                    askPermission();
+                    // askPermission();
+                }
+                break;
 
-                } else if (binding.etFullName.getText().toString().startsWith(" ")) {
-                    Toast.makeText(this, details.getEnter_space_name(), Toast.LENGTH_SHORT).show();
-                } else if (binding.etEmail.getText().toString().startsWith(" ") || binding.etEmail.getText().toString().endsWith(" ")) {
-                    Toast.makeText(this, details.getEnter_space_email(), Toast.LENGTH_SHORT).show();
-                } else if (binding.etGender.getText().toString().equals("") || binding.etGender.getText().toString().isEmpty() || binding.etGender.getText().toString().equals("Select Gender") || binding.etGender.getText().toString().equals("Gender") || genderList.get(0).getTranslatedName().equals(binding.etGender.getText().toString())) {
-                    Toast.makeText(this, details.getPlease_select_gender(), Toast.LENGTH_SHORT).show();
+            case R.id.skip_for_now:
+                startDashboardActivity();
+                break;
 
-                } else if (binding.etState.getText().toString().equals("") || binding.etState.getText().toString().isEmpty()) {
-                    Toast.makeText(this, details.getPlease_select_state(), Toast.LENGTH_SHORT).show();
+            case R.id.submitbutton:
+                String email = binding.etEmail.getText().toString().trim();
+                String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+                try{
+                    Details details = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
+                    if (binding.etFullName.getText().toString().equals("")||binding.etFullName.getText().toString().isEmpty()){
+                        Toast.makeText(this, details.getPlease_enter_your_name(), Toast.LENGTH_SHORT).show();
 
-                } else if (binding.etDistict.getText().toString().equals("") || binding.etDistict.getText().toString().isEmpty()) {
-                    Toast.makeText(this, details.getPlease_select_district(), Toast.LENGTH_SHORT).show();
+                    }
+                    else if (binding.etFullName.getText().toString().startsWith(" ")){
+                        Toast.makeText(this, details.getEnter_space_name(), Toast.LENGTH_SHORT).show();
+                    }
+                    else if (binding.etEmail.getText().toString().startsWith(" ")||binding.etEmail.getText().toString().endsWith(" ")){
+                        Toast.makeText(this, details.getEnter_space_email(), Toast.LENGTH_SHORT).show();
+                    }
+                    else if (binding.etGender.getText().toString().equals("")||binding.etGender.getText().toString().isEmpty()||binding.etGender.getText().toString().equals("Select Gender")||binding.etGender.getText().toString().equals("Gender")||genderList.get(0).getTranslatedName().equals(binding.etGender.getText().toString())){
+                        Toast.makeText(this, details.getPlease_select_gender(), Toast.LENGTH_SHORT).show();
 
-                } else if (!binding.etEmail.getText().toString().isEmpty() && !binding.etEmail.getText().toString().equals("") && !email.matches(emailPattern)) {
-                    Toast.makeText(this, details.getPlease_enter_valid_email(), Toast.LENGTH_SHORT).show();
+                    }
+                    else if (binding.etState.getText().toString().equals("")||binding.etState.getText().toString().isEmpty()){
+                        Toast.makeText(this, details.getPlease_select_state(), Toast.LENGTH_SHORT).show();
 
-                } else if (exist_path == null || exist_path.equals("null") || exist_path.equals("")) {
-                    if (image_path == null || image_path.equals("null") || image_path.equals("") || image_path.isEmpty()) {
-                        Toast.makeText(this, details.getUpload_your_photo(), Toast.LENGTH_SHORT).show();
-                    } else {
+                    }
+                    else if (binding.etDistict.getText().toString().equals("")||binding.etDistict.getText().toString().isEmpty()){
+                        Toast.makeText(this, details.getPlease_select_district(), Toast.LENGTH_SHORT).show();
+
+                    }
+                    else if (!binding.etEmail.getText().toString().isEmpty()&& !binding.etEmail.getText().toString().equals("")&& !email.matches(emailPattern)){
+                        Toast.makeText(this, details.getPlease_enter_valid_email(), Toast.LENGTH_SHORT).show();
+
+                    }
+                    else if (exist_path==null || exist_path.equals("null")|| exist_path.equals("")){
+                        if (image_path == null || image_path.equals("null") || image_path.equals("") || image_path.isEmpty()) {
+                            Toast.makeText(this, details.getUpload_your_photo(), Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            updateUser();
+                        }
+                    }
+
+
+
+
+                    else{
                         updateUser();
                     }
-                } else {
-                    updateUser();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, details.getInternetCheck(), Toast.LENGTH_SHORT).show();
                 }
 
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(this, details.getInternetCheck(), Toast.LENGTH_SHORT).show();
-            }
-
-            // callingStudentUpdateProfile();
-        } else if (id == R.id.switchProfile) {
-            openBottomSheetDialog();
+                // callingStudentUpdateProfile();
+                break;
+            case R.id.switchProfile:
+                openBottomSheetDialog();
+                break;
         }
 
     }
 
 
     private void askPermission() {
-//        String rationale = "For Upload Profile Picture. Camera and Storage Permission is Must.";
-//        Permissions.Options options = new Permissions.Options()
-//                .setRationaleDialogTitle("Info")
-//                .setSettingsDialogTitle("Warning");
-//        Permissions.check(this, PermissionUtil.mCameraPermissions, rationale, options, new PermissionHandler() {
-//            @Override
-//            public void onGranted() {
+
                 ImagePicker.with(ParentProfileActivity.this)
                         .crop()                    //Crop image(Optional), Check Customization for more option
                         .compress(1024)            //Final image size will be less than 1 MB(Optional)
                         .maxResultSize(1080, 1080)    //Final image resolution will be less than 1080 x 1080(Optional)
                         .start();
-//            }
-//
-//            @Override
-//            public void onDenied(Context context, ArrayList<String> deniedPermissions) {
-//                // permission denied, block the feature.
-//                ViewUtil.showSnackBar(binding.getRoot(), rationale);
-//            }
-//        });
+
     }
-    private void selectImage() {
-        final CharSequence[] options = { "Take Photo", "Choose from Gallery","Cancel" };
-        AlertDialog.Builder builder = new AlertDialog.Builder(ParentProfileActivity.this);
-        builder.setTitle("Add Photo!");
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-                if (options[item].equals("Take Photo"))
-                {
-
-                    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString());
-                    if (cameraIntent.resolveActivity(ParentProfileActivity.this.getPackageManager()) != null) {
-                        startActivityForResult(cameraIntent, 1);
-                    }
 
 
-                }
-                else if (options[item].equals("Choose from Gallery"))
-                {
-                    Intent intent = new   Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(intent, 2);
-                }
-                else if (options[item].equals("Cancel")) {
-                    dialog.dismiss();
-                }
-            }
-        });
-        builder.show();
-    }
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        AppLogger.e("StudentProfile", "fragment requestCode=" + requestCode);
-//        if (Build.VERSION.SDK_INT > 26) {
-//            if (requestCode == 2) {
-//
-//
-//                if (resultCode == RESULT_OK) {
-//                    try {
-//
-//
-//                        Uri uri = data.getData();
-//                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-//                        AppLogger.e("StudentProfile", "image path=" + uri.getPath());
-//                        image_path = uri.getPath();
-//
-//                        Uri selectedImage = data.getData();
-//                        String[] filePath = { MediaStore.Images.Media.DATA };
-//                        Cursor c = getContentResolver().query(selectedImage,filePath, null, null, null);
-//                        c.moveToFirst();
-//                        int columnIndex = c.getColumnIndex(filePath[0]);
-//                        String picturePath = c.getString(columnIndex);
-//                        c.close();
-//                        Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
-//                        loadimage(bitmap);
-//                        byte[] bytes = AppUtil.encodeToBase64(bitmap, 100);
-//                        long mb = AppUtil.bytesIntoHumanReadable(bytes.length);
-//                        int file_size = Integer.parseInt(String.valueOf(bytes.length / 1024));
-//                        if (file_size >= 500) {
-//                            Toast.makeText(this, "Image size is too large", Toast.LENGTH_SHORT).show();
-//
-//                            studentProfileModel.setImageBytes(AppUtil.encodeToBase64(bitmap, 50));
-//
-//                        } else {
-//
-//                            studentProfileModel.setImageBytes(bytes);
-//                        }
-//
-//
-//
-//
-//
-//                    } catch (Exception e) {
-//                        AppLogger.e("StudentProfile", "fragment exception=" + e.getMessage());
-//                    }
-//
-//                }
-//
-//            }
-//            else if (requestCode == 1 ) {
-//                if (Build.VERSION.SDK_INT > 26) {
-//                    Bitmap photo = (Bitmap) data.getExtras().get("data");
-//                    image_path = String.valueOf(data.getExtras().get("data"));
-//                    byte[] bytes = AppUtil.encodeToBase64(photo, 100);
-//                    long mb = AppUtil.bytesIntoHumanReadable(bytes.length);
-//                    int file_size = Integer.parseInt(String.valueOf(bytes.length / 1024));
-//
-//
-//                    if (file_size >= 500) {
-//                        Toast.makeText(this, "Image size is too large", Toast.LENGTH_SHORT).show();
-//
-//                        studentProfileModel.setImageBytes(AppUtil.encodeToBase64(photo, 50));
-//                    } else {
-//
-//                        studentProfileModel.setImageBytes(bytes);
-//                    }
-//                    loadimage(photo);
-//                }
-//                else{
-//                    if (resultCode == RESULT_OK) {
-//                        AppLogger.v("BigDes", "Sdk step 4");
-//                        try {
-//                            CropImages.ActivityResult result = CropImages.getActivityResult(data);
-//                            Uri resultUri = result.getUri();
-//                            image_path =  resultUri.getPath();
-//                            Bitmap picBitmap = BitmapFactory.decodeFile(resultUri.getPath());
-//                            byte[] bytes = AppUtil.encodeToBase64(picBitmap, 100);
-//                            long mb = AppUtil.bytesIntoHumanReadable(bytes.length);
-//                            int file_size = Integer.parseInt(String.valueOf(bytes.length / 1024));
-//
-//                            AppLogger.e("StudentProfile", "image size=" + resultUri.getPath());
-//                            if (file_size >= 500) {
-//                                Toast.makeText(this, "Image size is too large", Toast.LENGTH_SHORT).show();
-//
-//                                studentProfileModel.setImageBytes(AppUtil.encodeToBase64(picBitmap, 50));
-//                            } else {
-//                                studentProfileModel.setImageBytes(bytes);
-//                            }
-//
-//                            loadimage(picBitmap);
-//                        } catch (Exception e) {
-//
-//                        }
-//
-//                    }
-//                }
-//            }
-//        }
-//        else{
-//            if (requestCode == 2) {  //2404
-//
-//                if (resultCode == RESULT_OK) {
-//                    try {
-//
-//
-//                        Uri uri = data.getData();
-//                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-//                        AppLogger.e("StudentProfile", "image path=" + uri.getPath());
-//                        image_path = uri.getPath();
-//                        Bitmap picBitmap = BitmapFactory.decodeFile(uri.getPath());
-//                        byte[] bytes = AppUtil.encodeToBase64(bitmap, 100);
-//                        long mb = AppUtil.bytesIntoHumanReadable(bytes.length);
-//                        int file_size = Integer.parseInt(String.valueOf(bytes.length / 1024));
-//
-//                        AppLogger.e("StudentProfile", "image size=" + uri.getPath());
-//                        if (file_size >= 500) {
-//                            Toast.makeText(this, "Image size is too large", Toast.LENGTH_SHORT).show();
-//
-//                            studentProfileModel.setImageBytes(AppUtil.encodeToBase64(bitmap, 50));
-//                        } else {
-//
-//                            studentProfileModel.setImageBytes(bytes);
-//                        }
-//                        loadimage(bitmap);
-//                    } catch (Exception e) {
-//                        AppLogger.e("StudentProfile", "fragment exception=" + e.getMessage());
-//                    }
-//
-//                }
-//
-//
-//
-//
-//            }
-//            else if (requestCode == 1 ) {
-//
-//                if (requestCode == 1 && resultCode == Activity.RESULT_OK)
-//                {
-//                    Bitmap photo = (Bitmap) data.getExtras().get("data");
-//                    image_path = String.valueOf(data.getExtras().get("data"));
-//                    byte[] bytes = AppUtil.encodeToBase64(photo, 100);
-//                    long mb = AppUtil.bytesIntoHumanReadable(bytes.length);
-//                    int file_size = Integer.parseInt(String.valueOf(bytes.length / 1024));
-//                    // Toast.makeText(this, image_path.toString(), Toast.LENGTH_SHORT).show();
-//
-//                    if (file_size >= 500) {
-//                        Toast.makeText(this, "Image size is too large", Toast.LENGTH_SHORT).show();
-//
-//                        studentProfileModel.setImageBytes(AppUtil.encodeToBase64(photo, 50));
-//                    } else {
-//
-//                        studentProfileModel.setImageBytes(bytes);
-//                    }
-//                    loadimage(photo);
-//                }
-//
-//            }
-//        }
-//
-//
-//
-//
-//
-//
-//
-//
-//    }
 @Override
 public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     AppLogger.e("StudentProfile", "fragment requestCode=" + requestCode);
 
     if (requestCode == 2404) {
-        // CropImages.ActivityResult result = CropImages.getActivityResult(data);
+
         if (resultCode == RESULT_OK) {
             try {
 
@@ -1188,25 +942,7 @@ public void onActivityResult(int requestCode, int resultCode, @Nullable Intent d
                     studentProfileModel.setImageBytes(bytes);
                 }
 
-                //     new_file_size = Integer.parseInt(String.valueOf(studentProfileModel.getImageBytes().length / 1024));
-//                    AppLogger.d(TAG, "Image Path  new Size kb- " + mb + "-bytes-" + new_file_size);
 
-//                    Uri selectedImage = data.getData();
-//                    String[] filePath = { MediaStore.Images.Media.DATA };
-//                    Cursor c = getContentResolver().query(selectedImage,filePath, null, null, null);
-//                    c.moveToFirst();
-//                    int columnIndex = c.getColumnIndex(filePath[0]);
-//                    image_path = c.getString(columnIndex);
-//                    c.close();
-//                    Bitmap thumbnail = (BitmapFactory.decodeFile(image_path));
-//                    byte[] bytes = AppUtil.encodeToBase64(thumbnail, 100);
-//                    long mb = AppUtil.bytesIntoHumanReadable(bytes.length);
-//                    int file_size = Integer.parseInt(String.valueOf(bytes.length / 1024));
-//                    if (file_size >= 500) {
-//                        studentProfileModel.setImageBytes(AppUtil.encodeToBase64(thumbnail, 50));
-//                    } else {
-//                        studentProfileModel.setImageBytes(bytes);
-//                    }
                 loadimage(picBitmap);
             } catch (Exception e) {
                 AppLogger.e("StudentProfile", "fragment exception=" + e.getMessage());
@@ -1215,7 +951,6 @@ public void onActivityResult(int requestCode, int resultCode, @Nullable Intent d
         } else if (resultCode == ImagePicker.RESULT_ERROR) {
             showSnackbarError(ImagePicker.getError(data));
         } else {
-            // Toast.makeText(getActivity(), "Task Cancelled", Toast.LENGTH_SHORT).show();
         }
     }
     else if (requestCode == CAMERA_REQUEST ) {
@@ -1227,7 +962,6 @@ public void onActivityResult(int requestCode, int resultCode, @Nullable Intent d
             byte[] bytes = AppUtil.encodeToBase64(photo, 100);
             long mb = AppUtil.bytesIntoHumanReadable(bytes.length);
             int file_size = Integer.parseInt(String.valueOf(bytes.length / 1024));
-            //   Toast.makeText(ParentProfileActivity.this, image_path.toString(), Toast.LENGTH_SHORT).show();
 
             if (file_size >= 500) {
                 studentProfileModel.setImageBytes(AppUtil.encodeToBase64(photo, 50));
@@ -1238,34 +972,7 @@ public void onActivityResult(int requestCode, int resultCode, @Nullable Intent d
         }
 
 
-//            CropImages.ActivityResult result = CropImages.getActivityResult(data);
-//            if (resultCode == RESULT_OK) {
-//                AppLogger.v("BigDes", "Sdk step 4");
-//                try {
-//                    Uri resultUri = result.getUri();
-//                    image_path =  resultUri.getPath();
-//                    Bitmap picBitmap = BitmapFactory.decodeFile(resultUri.getPath());
-//                    byte[] bytes = AppUtil.encodeToBase64(picBitmap, 100);
-//                    long mb = AppUtil.bytesIntoHumanReadable(bytes.length);
-//                    int file_size = Integer.parseInt(String.valueOf(bytes.length / 1024));
-//
-//                    AppLogger.e("StudentProfile", "image size=" + resultUri.getPath());
-//                    if (file_size >= 500) {
-//                        studentProfileModel.setImageBytes(AppUtil.encodeToBase64(picBitmap, 50));
-//                    } else {
-//                        studentProfileModel.setImageBytes(bytes);
-//                    }
-//
-//                    loadimage(picBitmap);
-//                } catch (Exception e) {
-//
-//                }
-//
-//            }
-//            else if (resultCode == CropImages.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-//                Exception error = result.getError();
-//                AppLogger.e("chhonker", "Exception error=" + error.getMessage());
-//            }
+
     }
 }
     private void loadimage(Bitmap picBitmap) {
@@ -1342,6 +1049,9 @@ public void onActivityResult(int requestCode, int resultCode, @Nullable Intent d
         prefModel.setCurrentScreenFlag(setProfileScreen);
         prefModel.setLogin(true);
         AuroAppPref.INSTANCE.setPref(prefModel);
+        SharedPreferences.Editor editor = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
+        editor.putString("statuslogin", "true");
+        editor.apply();
     }
 
     private void getAddedChild(String user_name)
@@ -1368,7 +1078,7 @@ public void onActivityResult(int requestCode, int resultCode, @Nullable Intent d
                             }
                             else{
                                 binding.switchProfile.setVisibility(View.VISIBLE);
-                                binding.txtaddstudent.setVisibility(View.VISIBLE);
+                                binding.txtaddstudent.setVisibility(View.GONE);
                             }
 
 

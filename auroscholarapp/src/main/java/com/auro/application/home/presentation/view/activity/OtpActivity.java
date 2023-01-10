@@ -106,7 +106,7 @@ public class OtpActivity extends BaseActivity implements View.OnClickListener, C
     protected void init() {
         binding = DataBindingUtil.setContentView(this, getLayout());
         ((AuroApp) this.getApplication()).getAppComponent().doInjection(this);
-        //view model and handler setup
+
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(OtpScreenViewModel.class);
         binding.setLifecycleOwner(this);
         setCustomDialerAdapter();
@@ -120,7 +120,7 @@ public class OtpActivity extends BaseActivity implements View.OnClickListener, C
         binding.optOverCallTxt.setOnClickListener(this);
         binding.optOverCallTxt.setPaintFlags( binding.optOverCallTxt.getPaintFlags() |   Paint.UNDERLINE_TEXT_FLAG);
 
-        // forTestingUser();
+
     }
 
     void forTestingUser() {
@@ -232,7 +232,7 @@ public class OtpActivity extends BaseActivity implements View.OnClickListener, C
                             initRecordingTimer();
                             buttonSelect(false);
                             AppLogger.e(TAG, "Step 6");
-                            // otptext = String.valueOf(sendOtp.getOtp());
+
                         } else {
                             ViewUtil.showSnackBar(binding.getRoot(), sendOtp.getMessage());
                             AppLogger.e(TAG, "Step 7");
@@ -256,7 +256,7 @@ public class OtpActivity extends BaseActivity implements View.OnClickListener, C
                             initRecordingTimer();
                             buttonSelect(false);
                             AppLogger.e(TAG, "Step 6");
-                            // otptext = String.valueOf(sendOtp.getOtp());
+
                         } else {
                             ViewUtil.showSnackBar(binding.getRoot(), otpOverCallResModel.getMessage());
                             AppLogger.e(TAG, "Step 7");
@@ -266,8 +266,7 @@ public class OtpActivity extends BaseActivity implements View.OnClickListener, C
 
                 case NO_INTERNET:
                     AppLogger.e(TAG, "Step 8");
-                    // closeDialog();
-                    //   showSnackbarError((String) responseApi.data);
+
                     binding.progressbar.pgbar.setVisibility(View.GONE);
                     ViewUtil.showSnackBar(binding.getRoot(), (String) responseApi.data);
                     break;
@@ -336,20 +335,15 @@ public class OtpActivity extends BaseActivity implements View.OnClickListener, C
         }
         prefModel.setLogin(true);
         AuroAppPref.INSTANCE.setPref(prefModel);
+        SharedPreferences.Editor editor = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
+
+        editor.putString("statuslogin", "true");
+        editor.apply();
 
 
     }
 
-    private void checkForGradeScreen() {
-       /* PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
-        if (prefModel.getUserType() == AppConstant.userTypeLogin.STUDENT && prefModel.getStudentClass() > 0) {
-            startDashboardActivity();
-        } else if (prefModel.getUserType() == AppConstant.userTypeLogin.STUDENT && prefModel.getStudentClass() == 0) {
-            openChooseGradeActivity();
-        } else {
-            startDashboardActivity();
-        }*/
-    }
+
 
     private void openChooseGradeActivity() {
 
@@ -360,9 +354,7 @@ public class OtpActivity extends BaseActivity implements View.OnClickListener, C
     }
 
     private void openUserProfileActivity() {
-//        Intent newIntent = new Intent(this, ParentProfileActivity.class);
-//        startActivity(newIntent);
-//        finish();
+
         Intent newIntent = new Intent(this, DashBoardMainActivity.class);
         startActivity(newIntent);
         finish();
@@ -376,15 +368,22 @@ public class OtpActivity extends BaseActivity implements View.OnClickListener, C
 
     @Override
     public void onClick(View view) {
-        int id = view.getId();
-        if (id == R.id.resend_btn) {
-            startSMSListener();
-            sendOtpApiReqPass();
-        } else if (id == R.id.back_button) {
-            finish();
-        } else if (id == R.id.RPAccept) {
-        } else if (id == R.id.opt_over_call_txt) {
-            callOverOTPApi();
+        switch (view.getId()) {
+            case R.id.resend_btn:
+                startSMSListener();
+                sendOtpApiReqPass();
+
+                break;
+            case R.id.back_button:
+                finish();
+                break;
+
+            case R.id.RPAccept:
+                break;
+
+            case R.id.opt_over_call_txt:
+                callOverOTPApi();
+                break;
         }
 
     }
@@ -566,7 +565,7 @@ public class OtpActivity extends BaseActivity implements View.OnClickListener, C
     private void handleTeacherDashboardApiResponse() {
         if (AppUtil.myClassRoomResModel != null && !TextUtil.isEmpty(AppUtil.myClassRoomResModel.getTeacherResModel().getStateId()) && !TextUtil.isEmpty(AppUtil.myClassRoomResModel.getTeacherResModel().getDistrictId())) {
 
-            //setLogin();
+
             openTeacherActivity();
         } else {
             setLogin();
@@ -642,7 +641,7 @@ public class OtpActivity extends BaseActivity implements View.OnClickListener, C
         auroScholarDataModel.setSdkcallback(new SdkCallBack() {
             @Override
             public void callBack(String message) {
-                /*Api response here*/
+
 
             }
 
@@ -711,16 +710,16 @@ public class OtpActivity extends BaseActivity implements View.OnClickListener, C
 
     @Override
     public void onOTPReceived(String otp) {
-        // showToast("OTP Received: " + otp);
+
         String oneTimeCode = parseOneTimeCode(otp); // define this function
         otptext = oneTimeCode;
 
         AppLogger.v("autoPhone", "onOTPReceived" + otptext);
         verifyOtpRxApi();
-        // showToast(oneTimeCode);
+
         binding.otpView.setText(oneTimeCode);
         AppLogger.v("autoPhone", oneTimeCode);
-        // Toast.makeText(activity, "AutoPhone"+oneTimeCode, Toast.LENGTH_SHORT).show();
+
 
         if (smsReceiver != null) {
             unregisterReceiver(smsReceiver);
@@ -730,7 +729,7 @@ public class OtpActivity extends BaseActivity implements View.OnClickListener, C
 
     @Override
     public void onOTPTimeOut() {
-        // showToast("OTP Time out");
+
         AppLogger.v("autoPhone", "onOTPTimeOut" + otptext);
     }
 
@@ -756,7 +755,7 @@ public class OtpActivity extends BaseActivity implements View.OnClickListener, C
 
 
     private String parseOneTimeCode(String message) {
-        //simple number extractor
+
         String otpmessage = message.replaceAll("[^0-9]", "");
         return otpmessage.substring(0, 6);
     }
@@ -788,7 +787,7 @@ public class OtpActivity extends BaseActivity implements View.OnClickListener, C
 
         HashMap<String,String> map_data = new HashMap<>();
         map_data.put("user_id",userid);
-        //0000898904,123456
+
 
         RemoteApi.Companion.invoke().getStudentData(map_data)
                 .enqueue(new Callback<GetStudentUpdateProfile>()
@@ -857,6 +856,9 @@ public class OtpActivity extends BaseActivity implements View.OnClickListener, C
         prefModel.setLogin(true);
         prefModel.setTeacherProfileScreen(true);
         AuroAppPref.INSTANCE.setPref(prefModel);
+        SharedPreferences.Editor editor = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
+        editor.putString("statuslogin", "true");
+        editor.apply();
 
 
     }
@@ -886,14 +888,12 @@ public class OtpActivity extends BaseActivity implements View.OnClickListener, C
             PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
             prefModel.setCheckUserResModel(checkUserResModel);
             prefModel.setStudentData(resModel);
-            //prefModel.setStudentClass(ConversionUtil.INSTANCE.convertStringToInteger(resModel.getGrade()));
             prefModel.setStudentClasses(checkUserResModel.getClasses());
             AuroAppPref.INSTANCE.setPref(prefModel);
         } else {
             PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
             prefModel.setParentData(resModel);
             prefModel.setCheckUserResModel(checkUserResModel);
-            // prefModel.setStudentClass(ConversionUtil.INSTANCE.convertStringToInteger(resModel.getGrade()));
             prefModel.setStudentClasses(checkUserResModel.getClasses());
             AuroAppPref.INSTANCE.setPref(prefModel);
         }
@@ -906,39 +906,31 @@ public class OtpActivity extends BaseActivity implements View.OnClickListener, C
             AppLogger.e(TAG, "Step 1.1");
             if (isComingFrom != null && isComingFrom.equalsIgnoreCase(AppConstant.ComingFromStatus.COMING_FROM_PASSWORD_NOT_SET)) {
                 openSetPasswordActivity(AppConstant.FROM_FORGOT_PASSWORD);
-              //  Toast.makeText(this, "1", Toast.LENGTH_SHORT).show();
             }
             else if (isComingFrom != null && isComingFrom.equalsIgnoreCase(AppConstant.ComingFromStatus.COMING_FORM_PIN_FORGOT_PIN)) {
                 AppLogger.e(TAG, "Step 1.2");
-               // Toast.makeText(this, "2", Toast.LENGTH_SHORT).show();
                 openForgotPinActivity();
             }
             else if (AuroAppPref.INSTANCE.getModelInstance().isForgotPassword()) {
-             // Toast.makeText(this, "3", Toast.LENGTH_SHORT).show();
+
                 AppLogger.e(TAG, "Step 1.3");
                 openSetPasswordActivity(AppConstant.FROM_FORGOT_PASSWORD);
             }
             else if (isComingFrom != null && isComingFrom.equalsIgnoreCase(AppConstant.ComingFromStatus.COMING_FROM_LOGIN_WITH_OTP)) {
-              // Toast.makeText(this, "4", Toast.LENGTH_SHORT).show();
                 AppLogger.e(TAG, "Step 1.4");
                 if (AuroAppPref.INSTANCE.getModelInstance().getUserType() == AppConstant.UserType.TEACHER) {
-                  //  Toast.makeText(this, "5", Toast.LENGTH_SHORT).show();
                     AppLogger.e(TAG, "Step 1.5");
                     openTeacherActivity();
                 }
                 else if (AuroAppPref.INSTANCE.getModelInstance().getUserType() == AppConstant.UserType.STUDENT) {
-                  // Toast.makeText(this, "6", Toast.LENGTH_SHORT).show();
                         AppLogger.e(TAG, "Step 1.6");
 
-                     //  String studentClass = AuroAppPref.INSTANCE.getModelInstance().getStudentData().getGrade();
                     String studentClass = AuroAppPref.INSTANCE.getModelInstance().getCheckUserResModel().getUserDetails().get(1).getGrade();
                         if (studentClass == "0") {
-                          //  Toast.makeText(this, "7", Toast.LENGTH_SHORT).show();
                             AppLogger.e(TAG, "Step 1.7");
                             openChooseGradeActivity();
                         }
                         else {
-                        //    Toast.makeText(this, "8", Toast.LENGTH_SHORT).show();
                             AppLogger.e(TAG, "Step 1.8");
                             startDashboardActivity();
                         }
@@ -946,20 +938,17 @@ public class OtpActivity extends BaseActivity implements View.OnClickListener, C
                     }
                  else {
                     if (AuroAppPref.INSTANCE.getModelInstance().getParentData().getIsMaster() == AppConstant.UserType.USER_TYPE_PARENT) {
-                    //    Toast.makeText(this, "9", Toast.LENGTH_SHORT).show();
                         openUserProfileActivity();
                     }
                 }
             }
             else {
-               // Toast.makeText(this, "10", Toast.LENGTH_SHORT).show();
                 AppLogger.e(TAG, "Step 1.9");
                 callCheckUser();
             }
             AppLogger.e(TAG, "Step 2");
         }
         else {
-          //  Toast.makeText(this, "12", Toast.LENGTH_SHORT).show();
             AppLogger.e(TAG, "Step 3");
             setOTPEmpty();
             ViewUtil.showSnackBar(binding.getRoot(), verifyOtp.getMessage());

@@ -7,11 +7,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-/**
- * Created by AAK on 09-Mar-2019.
- * asif.abrar88@gmail.com
- * 9899982894, 9821900190 India.
- */
+
 @Module
 public class AppModule {
 

@@ -57,14 +57,14 @@ public class SetPinActivity extends BaseActivity implements View.OnClickListener
         init();
         setListener();
         details = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
-        //setContentView(R.layout.activity_set_pin);
+
     }
 
     @Override
     protected void init() {
         binding = DataBindingUtil.setContentView(this, getLayout());
         ((AuroApp) this.getApplication()).getAppComponent().doInjection(this);
-        //view model and handler setup
+
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(SetPinViewModel.class);
         binding.setLifecycleOwner(this);
         if (getIntent() != null) {
@@ -100,38 +100,54 @@ public class SetPinActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        int id = v.getId();
-        if (id == R.id.back_button) {
-            onBackPressed();
-        } else if (id == R.id.bt_done_new) {
-            AppLogger.e("onClick--", "step 1");
-            String pin = binding.pinView.getText().toString();
-            String confirmpin = binding.confirmPin.getText().toString();
-            Details details1 = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
+        switch (v.getId()) {
+            case R.id.back_button:
+                onBackPressed();
+                break;
 
-            if (binding.etUsername.getText().toString().isEmpty() || binding.etUsername.getText().toString().equals("")) {
-                Toast.makeText(this, details1.getEnter_user_name(), Toast.LENGTH_SHORT).show();
-            }
-            if (binding.etUsername.getText().toString().length() < 5) {
-                Toast.makeText(this, details1.getEnter_min_char(), Toast.LENGTH_SHORT).show();
-            } else if (binding.etUsername.getText().toString().startsWith(" ")) {
-                Toast.makeText(this, details1.getEnter_space_username(), Toast.LENGTH_SHORT).show();
+            case R.id.bt_done_new:
+                AppLogger.e("onClick--", "step 1");
+                String pin = binding.pinView.getText().toString();
+                String confirmpin = binding.confirmPin.getText().toString();
+                Details details1 = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
 
-            } else if (pin.isEmpty() || pin.equals("")) {
-                Toast.makeText(this, details1.getEnter_the_pin(), Toast.LENGTH_SHORT).show();
-            } else if (pin.length() < 4) {
-                Toast.makeText(this, details1.getEnter_pin_digit(), Toast.LENGTH_SHORT).show();
-            } else if (confirmpin.isEmpty() || confirmpin.equals("")) {
-                Toast.makeText(this, details1.getEnter_the_confirm_pin(), Toast.LENGTH_SHORT).show();
+if (binding.etUsername.getText().toString().isEmpty()||binding.etUsername.getText().toString().equals("")){
+    Toast.makeText(this, details1.getEnter_user_name(), Toast.LENGTH_SHORT).show();
+}
+if (binding.etUsername.getText().toString().length()<5){
+    Toast.makeText(this, details1.getEnter_min_char(), Toast.LENGTH_SHORT).show();
+}
+else if (binding.etUsername.getText().toString().startsWith(" ")){
+    Toast.makeText(this, details1.getEnter_space_username(), Toast.LENGTH_SHORT).show();
 
-            } else if (confirmpin.length() < 4) {
-                Toast.makeText(this, details1.getEnter_confirmpin_digit(), Toast.LENGTH_SHORT).show();
+}
+                else if(pin.isEmpty()||pin.equals("")){
+                    Toast.makeText(this, details1.getEnter_the_pin(), Toast.LENGTH_SHORT).show();
+                }
+                else if (pin.length()<4){
+    Toast.makeText(this, details1.getEnter_pin_digit(), Toast.LENGTH_SHORT).show();
+                }
+                else if (confirmpin.isEmpty()||confirmpin.equals("")){
+                    Toast.makeText(this, details1.getEnter_the_confirm_pin(), Toast.LENGTH_SHORT).show();
 
-            } else if (pin == confirmpin || pin.equals(confirmpin)) {
-                checkValidation();
-            } else {
-                Toast.makeText(this, details1.getPin_and_confirm_not_match(), Toast.LENGTH_SHORT).show();
-            }
+                }
+                else if (confirmpin.length()<4){
+                    Toast.makeText(this, details1.getEnter_confirmpin_digit(), Toast.LENGTH_SHORT).show();
+
+                }
+                else if (pin == confirmpin || pin.equals(confirmpin)){
+                    checkValidation();
+                }
+                else{
+                    Toast.makeText(this, details1.getPin_and_confirm_not_match(), Toast.LENGTH_SHORT).show();
+                }
+
+
+
+
+
+
+                break;
         }
     }
 
@@ -252,11 +268,7 @@ public class SetPinActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void openLoginActivity() {
-//        AuroAppPref.INSTANCE.clearPref();
-//        Intent newIntent = new Intent(this, SplashScreenAnimationActivity.class);
-//        newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        startActivity(newIntent);
+
         finish();
     }
 
@@ -367,7 +379,6 @@ public class SetPinActivity extends BaseActivity implements View.OnClickListener
             checkUserApiReqModel.setUserName(prefModel.getSrId());
         } else {
 
-//            checkUserApiReqModel.setUserName(AuroAppPref.INSTANCE.getModelInstance().getStudentData().getUserMobile());
             checkUserApiReqModel.setUserName(AuroAppPref.INSTANCE.getModelInstance().getCheckUserResModel().getUserDetails().get(1).getUserMobile());
 
         }
@@ -385,7 +396,7 @@ public class SetPinActivity extends BaseActivity implements View.OnClickListener
                 }
             }
         }
-        //if username is empty then dont need to call register api
+
         return true;
     }
 }

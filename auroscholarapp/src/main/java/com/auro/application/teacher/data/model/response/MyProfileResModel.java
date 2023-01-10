@@ -69,18 +69,51 @@ public class MyProfileResModel implements Parcelable {
     @SerializedName("teacher_profile_pic")
     @Expose
     private String teacherProfilePic;
-    @SerializedName("created_at")
-    @Expose
-    private String createdAt;
-    @SerializedName("updated_at")
-    @Expose
-    private String updatedAt;
-    @SerializedName("schools")
-    @Expose
-    private List<School> schools = null;
+//    @SerializedName("created_at")
+//    @Expose
+//    private String createdAt;
+//    @SerializedName("updated_at")
+//    @Expose
+//    private String updatedAt;
+//    @SerializedName("schools")
+//    @Expose
+//    private List<School> schools = null;
     @SerializedName("teacher_subject_grade_mappings")
     @Expose
     private List<Object> teacherSubjectGradeMappings = null;
+    @SerializedName("state_name")
+    @Expose
+    private String state_name;
+    @SerializedName("district_name")
+    @Expose
+    private String district_name;
+    @SerializedName("school_name")
+    @Expose
+    private String school_name;
+
+    public String getState_name() {
+        return state_name;
+    }
+
+    public void setState_name(String state_name) {
+        this.state_name = state_name;
+    }
+
+    public String getDistrict_name() {
+        return district_name;
+    }
+
+    public void setDistrict_name(String district_name) {
+        this.district_name = district_name;
+    }
+
+    public String getSchool_name() {
+        return school_name;
+    }
+
+    public void setSchool_name(String school_name) {
+        this.school_name = school_name;
+    }
 
     protected MyProfileResModel(Parcel in) {
         status = in.readString();
@@ -102,8 +135,11 @@ public class MyProfileResModel implements Parcelable {
         dateOfBirth = in.readString();
         deviceToken = in.readString();
         teacherProfilePic = in.readString();
-        createdAt = in.readString();
-        updatedAt = in.readString();
+        state_name = in.readString();
+        district_name = in.readString();
+        school_name = in.readString();
+
+
     }
 
     @Override
@@ -127,8 +163,10 @@ public class MyProfileResModel implements Parcelable {
         dest.writeString(dateOfBirth);
         dest.writeString(deviceToken);
         dest.writeString(teacherProfilePic);
-        dest.writeString(createdAt);
-        dest.writeString(updatedAt);
+        dest.writeString(state_name);
+        dest.writeString(district_name);
+        dest.writeString(school_name);
+
     }
 
     @Override
@@ -300,29 +338,13 @@ public class MyProfileResModel implements Parcelable {
         this.teacherProfilePic = teacherProfilePic;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public String getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public List<School> getSchools() {
-        return schools;
-    }
-
-    public void setSchools(List<School> schools) {
-        this.schools = schools;
-    }
+//    public List<School> getSchools() {
+//        return schools;
+//    }
+//
+//    public void setSchools(List<School> schools) {
+//        this.schools = schools;
+//    }
 
     public List<Object> getTeacherSubjectGradeMappings() {
         return teacherSubjectGradeMappings;

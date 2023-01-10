@@ -73,8 +73,8 @@ public class QuizDisclaimerDialog extends Dialog {
             binding.RPAccept.setText(details.getAcceptAndStartQuiz());
             binding.tvTitle.setText(details.getDisclaimer());
 
-            int leadWidth = activity.getResources().getDimensionPixelOffset(R.dimen._10sdp);
-            int gapWidth = activity.getResources().getDimensionPixelOffset(R.dimen._20sdp);
+            int leadWidth = activity.getResources().getDimensionPixelOffset(R.dimen.space_medium);
+            int gapWidth = activity.getResources().getDimensionPixelOffset(R.dimen.space_xlarge);
             leadWidth = 0;
             binding.tvMessage.setText(new Truss()
                     .appendln(details.getQuizDisclaimerTextOne(), new Snippety().bullet(leadWidth, gapWidth))
@@ -85,8 +85,8 @@ public class QuizDisclaimerDialog extends Dialog {
         {
             binding.RPAccept.setText(R.string.accept_and_start_quiz);
 
-            int leadWidth = activity.getResources().getDimensionPixelOffset(R.dimen._10sdp);
-            int gapWidth = activity.getResources().getDimensionPixelOffset(R.dimen._20sdp);
+            int leadWidth = activity.getResources().getDimensionPixelOffset(R.dimen.space_medium);
+            int gapWidth = activity.getResources().getDimensionPixelOffset(R.dimen.space_xlarge);
             leadWidth = 0;
             binding.tvMessage.setText(new Truss()
                     .appendln(activity.getResources().getString(R.string.quiz_disclaimer_text_one), new Snippety().bullet(leadWidth, gapWidth))

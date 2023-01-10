@@ -238,7 +238,7 @@ public class FriendsLeaderBoardAddFragment extends BaseFragment implements View.
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (getArguments() != null) {
-            // dashboardResModel = getArguments().getParcelable(AppConstant.DASHBOARD_RES_MODEL);
+
 
         }
         init();
@@ -251,7 +251,7 @@ public class FriendsLeaderBoardAddFragment extends BaseFragment implements View.
         super.onResume();
         setKeyListner();
         if (latitude == 0 && longitude == 0) {
-            //askPermission();
+
         }
     }
 
@@ -325,7 +325,7 @@ public class FriendsLeaderBoardAddFragment extends BaseFragment implements View.
     @Override
     public void onCameraIdle() {
         if (mMap != null) {
-//            radius = getMapVisibleRadius(mMap.getProjection().getVisibleRegion());
+
             getMapVisibleRadius(mMap.getProjection().getVisibleRegion());
             radius = 5;
             viewModel.findFriendData(mapPosotion.latitude, mapPosotion.longitude, radius);
@@ -335,11 +335,7 @@ public class FriendsLeaderBoardAddFragment extends BaseFragment implements View.
     @Override
     public void onCameraMove() {
         if (mMap != null) {
-//            radius = getMapVisibleRadius(mMap.getProjection().getVisibleRegion());
-//            mMap.clear();
-//            mMap.addMarker(new MarkerOptions()
-//                                   .position(mapPosotion)
-//                                   .icon(BitmapDescriptorFactory.fromResource(R.drawable.my_location)));
+
 
         }
     }

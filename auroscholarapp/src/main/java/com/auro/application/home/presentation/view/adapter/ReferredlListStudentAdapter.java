@@ -21,7 +21,6 @@ import com.auro.application.home.data.model.GetAllChildModel;
 import com.auro.application.home.data.model.response.GetAllReferChildDetailResModel;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 
 import org.jetbrains.annotations.NotNull;
@@ -55,38 +54,8 @@ public class ReferredlListStudentAdapter extends RecyclerView.Adapter<ReferredlL
     @Override
     public void onBindViewHolder(@NonNull ClassHolder Vholder, @SuppressLint("RecyclerView") int position) {
         Vholder.setData(mValues, position);
-        Vholder.binding.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                String userid = String.valueOf(mValues.get(position).getUser_id());
-
-//                SharedPreferences.Editor editor = mContext.getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
-//                editor.putString("usertype", "StudentLogin");
-//                editor.putString("studentuserid", userid);
-//                editor.putString("studentgradeid", gradeid);
-//                editor.apply();
-                   // checkUserResModel = AuroAppPref.INSTANCE.getModelInstance().getCheckUserResModel();
-                 int newposition = position+1;
 
 
-
-            }
-        });
-//        Vholder.binding.txtchangepin.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                String userid = String.valueOf(mValues.get(position).getUser_id());
-//                String gradeid = String.valueOf(mValues.get(position).getGrade());
-//                SharedPreferences.Editor editor = mContext.getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
-//                editor.putString("changepinstudentuserid", userid);
-//                editor.apply();
-//                checkUserResModel = AuroAppPref.INSTANCE.getModelInstance().getCheckUserResModel();
-//                int newposition = position+1;
-//
-//            }
-//        });
 
     }
 
@@ -109,10 +78,7 @@ public class ReferredlListStudentAdapter extends RecyclerView.Adapter<ReferredlL
         }
 
         public void setData(List<GetAllReferChildDetailResModel> mValues, int position) {
-//            if (mValues.size() - 1 == position) {
-//                binding.cardView.setVisibility(View.GONE);
-//                binding.cardViewButton.setVisibility(View.VISIBLE);
-//            } else {
+
 
 
             binding.tvStudentUserName.setVisibility(View.VISIBLE);
@@ -123,15 +89,14 @@ public class ReferredlListStudentAdapter extends RecyclerView.Adapter<ReferredlL
             if (mValues.get(position).getProfile_pic().equals("")||mValues.get(position).getProfile_pic().equals("null")||mValues.get(position).getProfile_pic().isEmpty()){
                 Glide.with(mContext)
                         .load(mContext.getResources().getIdentifier("my_drawable_image_name", "drawable",mContext.getPackageName()))
-                        .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                         .placeholder(R.drawable.account_circle)
-                        .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL))
+                        .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                         .into(binding.studentImage);
             }
             else {
 
-                Glide.with(mContext).load(mValues.get(position).getProfile_pic())
-                        .apply(new RequestOptions().circleCrop()).into(binding.studentImage);
+                Glide.with(mContext).load(mValues.get(position).getProfile_pic()).circleCrop().into(binding.studentImage);
             }
 
 

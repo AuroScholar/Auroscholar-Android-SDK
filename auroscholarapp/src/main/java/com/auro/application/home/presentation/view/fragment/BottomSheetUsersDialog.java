@@ -30,6 +30,7 @@ import com.auro.application.home.data.model.CheckUserResModel;
 import com.auro.application.home.data.model.Details;
 import com.auro.application.home.data.model.LanguageMasterDynamic;
 import com.auro.application.home.data.model.response.UserDetailResModel;
+import com.auro.application.home.presentation.view.activity.CompleteStudentProfileWithPinActivity;
 import com.auro.application.home.presentation.view.activity.DashBoardMainActivity;
 import com.auro.application.home.presentation.view.activity.EnterParentPinActivity;
 import com.auro.application.home.presentation.view.activity.EnterPinActivity;
@@ -54,8 +55,6 @@ public class BottomSheetUsersDialog extends BottomSheetDialogFragment implements
         binding = DataBindingUtil.inflate(inflater, R.layout.bottom_student_list, container, false);
         checkUserResModel = AuroAppPref.INSTANCE.getModelInstance().getCheckUserResModel();
         setAdapterAllListStudent(checkUserResModel.getUserDetails());
-
-
 
 
         LanguageMasterDynamic model = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic();
@@ -89,12 +88,7 @@ public class BottomSheetUsersDialog extends BottomSheetDialogFragment implements
             }
 
         }
-/*
-        if (AuroAppPref.INSTANCE.getModelInstance().isLogin()) {
-            UserDetailResModel model = new UserDetailResModel();
-            model.setStudentName("Add Student");
-            list.add(model);
-        }*/
+
         binding.btnparent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,6 +121,15 @@ public class BottomSheetUsersDialog extends BottomSheetDialogFragment implements
                 }
             }
         });
+        binding.btnaddstudent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BottomSheetAddUserDialog bottomSheet = new BottomSheetAddUserDialog();
+                bottomSheet.show(getActivity().getSupportFragmentManager(),
+                        "ModalBottomSheet");
+
+            }
+        });
         binding.studentList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, true));
        binding.studentList.setHasFixedSize(true);
        SelectYourChildAdapter studentListAdapter = new SelectYourChildAdapter(getActivity(), list, this);
@@ -138,6 +141,13 @@ public class BottomSheetUsersDialog extends BottomSheetDialogFragment implements
        SelectParentAdapter studentListAdapter2 = new SelectParentAdapter(getActivity(), plist, this);
        binding.parentList.setAdapter(studentListAdapter2);
 
+       if (list.size() == 5 || list.size() > 5){
+           binding.btnaddstudent.setVisibility(View.GONE);
+       }
+       else{
+           binding.btnaddstudent.setVisibility(View.VISIBLE);
+       }
+
     }
 
     @Override
@@ -147,49 +157,21 @@ public class BottomSheetUsersDialog extends BottomSheetDialogFragment implements
                 Intent i = new Intent(getActivity(), ParentProfileActivity.class);
                 i.putExtra(AppConstant.COMING_FROM, AppConstant.FROM_SET_PASSWORD);
               startActivity(i);
-//                UserDetailResModel resModel = (UserDetailResModel) commonDataModel.getObject();
-//                PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
-//                prefModel.setStudentData(resModel);
-//                AuroAppPref.INSTANCE.setPref(prefModel);
-//                openSetPinActivity((UserDetailResModel) commonDataModel.getObject());
+
                 break;
 
         case CLICK_CHILDPROFILE:
         Intent i1 = new Intent(getActivity(), DashBoardMainActivity.class);
         i1.putExtra(AppConstant.COMING_FROM, AppConstant.FROM_SET_PASSWORD);
         startActivity(i1);
-//                UserDetailResModel resModel = (UserDetailResModel) commonDataModel.getObject();
-//                PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
-//                prefModel.setStudentData(resModel);
-//                AuroAppPref.INSTANCE.setPref(prefModel);
-//                openSetPinActivity((UserDetailResModel) commonDataModel.getObject());
+
         break;
     }
 
     }
 
 
-    private void openSetPinActivity(UserDetailResModel resModel) {
-        if (!resModel.isUsername() && !resModel.getSetPin()) {
-            Intent intent = new Intent(getActivity(), SetPinActivity.class);
-            intent.putExtra(AppConstant.COMING_FROM, AppConstant.ComingFromStatus.COMING_FROM_BOTTOM_SHEET);
-            intent.putExtra(AppConstant.USER_PROFILE_DATA_MODEL, resModel);
-            startActivity(intent);
-            dismiss();
-        } if (!resModel.getSetPin()) {
-            Intent intent = new Intent(getActivity(), ForgotPinActivity.class);
-            intent.putExtra(AppConstant.USER_PROFILE_DATA_MODEL, resModel);
-            startActivity(intent);
-            dismiss();
-        }
-        else {
-            Intent intent = new Intent(getActivity(), EnterPinActivity.class);
-            intent.putExtra(AppConstant.USER_PROFILE_DATA_MODEL, resModel);
-            startActivity(intent);
-            dismiss();
-        }
 
-    }
 
 
 }

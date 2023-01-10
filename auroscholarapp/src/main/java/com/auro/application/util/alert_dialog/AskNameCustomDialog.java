@@ -59,11 +59,14 @@ public class AskNameCustomDialog extends Dialog implements View.OnClickListener 
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.btDone) {
-            dismiss();
-            if (commonCallBackListner != null) {
-                commonCallBackListner.commonEventListner(AppUtil.getCommonClickModel(0, Status.NAME_DONE_CLICK, binding.textName.getText().toString()));
-            }
+        switch (view.getId()) {
+            case R.id.btDone:
+                dismiss();
+                if (commonCallBackListner != null) {
+                    commonCallBackListner.commonEventListner(AppUtil.getCommonClickModel(0, Status.NAME_DONE_CLICK, binding.textName.getText().toString()));
+                }
+
+                break;
         }
 
     }

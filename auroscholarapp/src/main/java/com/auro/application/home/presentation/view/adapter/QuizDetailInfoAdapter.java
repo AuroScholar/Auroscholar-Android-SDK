@@ -2,6 +2,7 @@ package com.auro.application.home.presentation.view.adapter;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,11 +59,12 @@ public class QuizDetailInfoAdapter extends RecyclerView.Adapter<QuizDetailInfoAd
         public void setData(SlabModel resModel, int position) {
             AppLogger.e("GET_SLABS_API","QuizDetailInfoAdapter "+resModel.getDetails().size());
             binding.quizAmount.setText(AuroApp.getAppContext().getResources().getString(R.string.rs) + resModel.getPrice());
-            binding.levelName.setText("Level " + resModel.getLevel());
+            binding.levelName.setText(resModel.getLevelname());
             binding.totalQuizCount.setText(resModel.getDetails().size() + " Quiz Complete");
             if (resModel.getDetails().size() == 0) {
                 binding.downArrowIcon.setVisibility(View.GONE);
             }
+
             setAdapter(resModel);
             expand(binding.wonQuizList, 1000, resModel.isQuizOpen());
             binding.downArrowIcon.setOnClickListener(new View.OnClickListener() {
@@ -84,7 +86,7 @@ public class QuizDetailInfoAdapter extends RecyclerView.Adapter<QuizDetailInfoAd
 
 
     @Override
-    public void onBindViewHolder(ViewHolder Vholder, int position) {
+    public void onBindViewHolder(ViewHolder Vholder, @SuppressLint("RecyclerView") int position) {
         Vholder.setData(mValues.get(position), position);
 
         Vholder.itemView.setOnClickListener(new View.OnClickListener() {

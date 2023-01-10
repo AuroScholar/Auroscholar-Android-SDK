@@ -4,10 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -15,7 +13,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 
 import com.auro.application.BuildConfig;
 import com.auro.application.R;
@@ -41,7 +38,6 @@ import java.util.List;
  *
  * @author Cliff Ophalvens (Blogc.at)
  */
-@SuppressLint("AppCompatCustomView")
 public class ExpandableTextView extends TextView
 {
     private final List<OnExpandListener> onExpandListeners;
@@ -54,26 +50,23 @@ public class ExpandableTextView extends TextView
     private boolean expanded;
     private int collapsedHeight;
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public ExpandableTextView(final Context context)
     {
         this(context, null);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public ExpandableTextView(final Context context, @Nullable final AttributeSet attrs)
     {
         this(context, attrs, 0);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public ExpandableTextView(final Context context, @Nullable final AttributeSet attrs, final int defStyle)
     {
         super(context, attrs, defStyle);
 
         // read attributes
         final TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.ExpandableTextView, defStyle, 0);
-        this.animationDuration = attributes.getInt(R.styleable.ExpandableTextView_animation_duration, 750);
+        this.animationDuration = attributes.getInt(R.styleable.ExpandableTextView_animation_duration, BuildConfig.DEFAULT_ANIMATION_DURATION);
         attributes.recycle();
 
         // keep the original value of maxLines
@@ -106,7 +99,6 @@ public class ExpandableTextView extends TextView
      * Toggle the expanded state of this {@link ExpandableTextView}.
      * @return true if toggled, false otherwise.
      */
-    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     public boolean toggle()
     {
         return this.expanded
@@ -118,7 +110,6 @@ public class ExpandableTextView extends TextView
      * Expand this {@link ExpandableTextView}.
      * @return true if expanded, false otherwise.
      */
-    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     public boolean expand()
     {
         if (!this.expanded && !this.animating && this.maxLines >= 0)
@@ -201,7 +192,6 @@ public class ExpandableTextView extends TextView
      * Collapse this {@link TextView}.
      * @return true if collapsed, false otherwise.
      */
-    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     public boolean collapse()
     {
         if (this.expanded && !this.animating && this.maxLines >= 0)

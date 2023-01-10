@@ -41,7 +41,6 @@ import com.auro.application.home.presentation.view.activity.UpdateChildPinActivi
 import com.auro.application.util.RemoteApi;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 
 import org.jetbrains.annotations.NotNull;
@@ -58,7 +57,7 @@ import retrofit2.Response;
 public class SelectYourParentChildAdapter extends RecyclerView.Adapter<SelectYourParentChildAdapter.ClassHolder> {
     List<UserDetailResModel> mValues;
     Context mContext;
-  //  CheckUserResModel checkUserResModel;
+
     UserDetailResModel checkUserResModel;
     StudentUserLayoutBinding binding;
     CommonCallBackListner commonCallBackListner;
@@ -94,7 +93,7 @@ public class SelectYourParentChildAdapter extends RecyclerView.Adapter<SelectYou
                  editor.putString("studentuserid", userid);
                  editor.putString("studentgradeid", gradeid);
                  editor.apply();
-               //  notifyDataSetChanged();
+
                  PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
                  checkUserResModel = mValues.get(position);
                  prefModel.setUserDetailResModel(checkUserResModel);
@@ -165,10 +164,7 @@ public class SelectYourParentChildAdapter extends RecyclerView.Adapter<SelectYou
         }
 
         public void setData(List<UserDetailResModel> mValues, int position) {
-//            if (mValues.size() - 1 == position) {
-//                binding.cardView.setVisibility(View.GONE);
-//                binding.cardViewButton.setVisibility(View.VISIBLE);
-//            } else {
+
 
             String userwallet = details.getWallet()!=null ? details.getWallet() : AuroApp.getAppContext().getResources().getString(R.string.wallet);
             binding.txtchangepin.setText(details.getChange_pin()!=null ? details.getChange_pin() : "Change PIN");
@@ -178,14 +174,14 @@ public class SelectYourParentChildAdapter extends RecyclerView.Adapter<SelectYou
             if (mValues.get(position).getProfilepic().equals("")||mValues.get(position).getProfilepic().equals("null")||mValues.get(position).getProfilepic().isEmpty()){
                 Glide.with(mContext)
                         .load(mContext.getResources().getIdentifier("my_drawable_image_name", "drawable",mContext.getPackageName()))
-                        .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                         .placeholder(R.drawable.account_circle)
-                        .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL))
+                        .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                         .into(binding.studentImage);
             }
             else {
 
-                Glide.with(mContext).load(mValues.get(position).getProfilepic()).apply(new RequestOptions().circleCrop()).into(binding.studentImage);
+                Glide.with(mContext).load(mValues.get(position).getProfilepic()).circleCrop().into(binding.studentImage);
             }
 
             binding.tvStudentWallet.setVisibility(View.VISIBLE);
@@ -196,7 +192,7 @@ public class SelectYourParentChildAdapter extends RecyclerView.Adapter<SelectYou
             binding.tvStudentUserName.setText(userName+": " + mValues.get(position).getUserName());
             binding.tvStudentName.setText(name+": " + mValues.get(position).getStudentName());
             binding.tvStudentGrade.setText(grade+": " + mValues.get(position).getGrade());
-            //  }
+
 
 
                 if (mValues.get(position).getPin().isEmpty() || mValues.get(position).getPin().equals("") ||
@@ -214,24 +210,11 @@ public class SelectYourParentChildAdapter extends RecyclerView.Adapter<SelectYou
 
     void checkUserForOldStudentUser(UserDetailResModel checkUserResModel, int position) {
         if (checkUserResModel != null ) { //&& checkUserResModel.getUserDetails().size() == 1
-          //  UserDetailResModel resModel = checkUserResModel.getUserDetails().get(position);
-          //  if (checkUserResModel.getUserDetails().get(position).getIsMaster().equalsIgnoreCase(AppConstant.UserType.USER_TYPE_STUDENT)) {
                 setDatainPref(checkUserResModel);
-               // if (checkUserResModel.getUserDetails().size() > 0) {
+
                    String userid = mValues.get(position).getUserId();
                     getProfile(userid);
-              //  }
 
-//                   if (checkUserResModel.getUserDetails().size() != 0||checkUserResModel.getUserDetails().size() <0){
-//                       Intent i = new Intent(mContext, DashBoardMainActivity.class);
-//                       i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                       mContext.startActivity(i);
-//                   }
-//                if (checkUserResModel.getUserDetails().size()!=0){
-//                    Intent i = new Intent(mContext, DashBoardMainActivity.class);
-//                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                    mContext.startActivity(i);
-//                }
 
 
 
@@ -242,25 +225,14 @@ public class SelectYourParentChildAdapter extends RecyclerView.Adapter<SelectYou
 
     void checkUserForChangePinUser(UserDetailResModel checkUserResModel, int position) {
         if (checkUserResModel != null) { //&& checkUserResModel.getUserDetails().size() == 1
-         //   UserDetailResModel resModel = checkUserResModel.getUserDetails().get(position);
-       //     if (checkUserResModel.getUserDetails().get(position).getIsMaster().equalsIgnoreCase(AppConstant.UserType.USER_TYPE_STUDENT)) {
                 setDatainPref(checkUserResModel);
-             //   if (checkUserResModel.getUserDetails().size() != 0||checkUserResModel.getUserDetails().size() <0){
                     openEnterPinActivity(checkUserResModel);
-              //  }
+
             }
 
 
 
-//        if (checkUserResModel != null && !checkUserResModel.getUserDetails().isEmpty() ) { //&& checkUserResModel.getUserDetails().size() == 1
-//            UserDetailResModel resModel = checkUserResModel.getUserDetails().get(position);
-//            if (checkUserResModel.getUserDetails().get(position).getIsMaster().equalsIgnoreCase(AppConstant.UserType.USER_TYPE_STUDENT)) {
-//                setDatainPref(resModel);
-//                if (checkUserResModel.getUserDetails().size() != 0||checkUserResModel.getUserDetails().size() <0){
-//                    openEnterPinActivity(resModel);
-//                }
-//            }
-//        }
+
 
 
     }
@@ -270,7 +242,7 @@ public class SelectYourParentChildAdapter extends RecyclerView.Adapter<SelectYou
 
         HashMap<String,String> map_data = new HashMap<>();
         map_data.put("user_id",userid);
-        //0000898904,123456
+
 
         RemoteApi.Companion.invoke().getStudentData(map_data)
                 .enqueue(new Callback<GetStudentUpdateProfile>()
@@ -317,12 +289,12 @@ public class SelectYourParentChildAdapter extends RecyclerView.Adapter<SelectYou
         if (resModel.getIsMaster().equalsIgnoreCase(AppConstant.UserType.USER_TYPE_STUDENT)) {
             PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
             prefModel.setStudentData(resModel);
-           //   prefModel.setStudentClasses(checkUserResModel.getClasses());
+
             AuroAppPref.INSTANCE.setPref(prefModel);
         } else {
             PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
             prefModel.setParentData(resModel);
-          //  prefModel.setStudentClasses(checkUserResModel.getClasses());
+
             AuroAppPref.INSTANCE.setPref(prefModel);
         }
     }

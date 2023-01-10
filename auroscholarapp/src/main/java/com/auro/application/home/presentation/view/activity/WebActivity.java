@@ -58,7 +58,7 @@ public class WebActivity extends BaseActivity {
     private WebView webView;
     String webLink;
 
-    // Storage Permissions variables
+
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static final String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -84,9 +84,7 @@ public class WebActivity extends BaseActivity {
         if (getIntent() != null) {
             webLink = getIntent().getStringExtra(AppConstant.WEB_LINK);
         }
-  /*      if (webLink.contains("privacy")) {
 
-        }*/
         checkInternet();
     }
 
@@ -139,7 +137,7 @@ public class WebActivity extends BaseActivity {
     private void loadWeb(String webUrl) {
         webView = binding.webView;
         webSettings = webView.getSettings();
-        webSettings.setAppCacheEnabled(true);
+
         webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setLoadWithOverviewMode(true);
@@ -151,7 +149,6 @@ public class WebActivity extends BaseActivity {
         webSettings.setUserAgentString("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36");
         webView.setWebViewClient(new PQClient());
         webView.setWebChromeClient(new PQChromeClient());
-        //if SDK version is greater of 19 then activate hardware acceleration otherwise activate software acceleration
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -164,15 +161,14 @@ public class WebActivity extends BaseActivity {
 
     public class PQClient extends WebViewClient {
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            // If url contains mailto link then open Mail Intent
+
             if (url.contains("mailto:")) {
-                // Could be cleverer and use a regex
-                //Open links in new browser
+
                 view.getContext().startActivity(
                         new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
                 return true;
             } else {
-                //Stay within this webview and load url
+
                 view.loadUrl(url);
                 return true;
             }
@@ -187,7 +183,7 @@ public class WebActivity extends BaseActivity {
 
         }
 
-        // Called when all page resources loaded
+
         public void onPageFinished(WebView view, String url) {
             handleProgress(1, "");
             webView.loadUrl("javascript:(function(){ " +
@@ -205,7 +201,7 @@ public class WebActivity extends BaseActivity {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             super.onProgressChanged(view, newProgress);
-            // pbPageLoading.setProgress(newProgress);
+
         }
 
     }

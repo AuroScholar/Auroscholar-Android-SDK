@@ -8,6 +8,7 @@ import com.auro.application.home.data.model.KYCDocumentDatamodel;
 import com.auro.application.home.data.model.KYCInputModel;
 import com.auro.application.home.data.model.LanguageMasterReqModel;
 import com.auro.application.home.data.model.OtpOverCallReqModel;
+import com.auro.application.home.data.model.PartnerSDKLoginRequest;
 import com.auro.application.home.data.model.PartnersLoginReqModel;
 import com.auro.application.home.data.model.PendingKycDocsModel;
 import com.auro.application.home.data.model.RefferalReqModel;
@@ -59,6 +60,7 @@ public interface HomeRepo {
 
         Single<Response<JsonObject>> uploadProfileImage(List<KYCDocumentDatamodel> list, KYCInputModel kycInputModel);
 
+        Single<Response<JsonObject>> teacheruploadProfileImage(List<KYCDocumentDatamodel> list, KYCInputModel kycInputModel);
         Single<Response<JsonObject>> postDemographicData(GetStudentUpdateProfile demographicResModel);
 
         Single<Response<JsonObject>> getAssignmentId(AssignmentReqModel assignmentReqModel);
@@ -143,6 +145,8 @@ public interface HomeRepo {
 
         Single<Response<JsonObject>> getSlabsApi(UserSlabsRequest id);
 
+        // NEW SDK IMPLEMENTATION
+        Single<Response<JsonObject>> partnersLoginApi(PartnerSDKLoginRequest reqModel);
 
     }
 

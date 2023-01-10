@@ -2,9 +2,11 @@ package com.auro.application.home.presentation.view.fragment;
 
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -20,12 +22,14 @@ import com.auro.application.core.common.CommonCallBackListner;
 import com.auro.application.core.common.CommonDataModel;
 import com.auro.application.core.common.Status;
 import com.auro.application.core.database.AuroAppPref;
+import com.auro.application.core.database.PrefModel;
 import com.auro.application.databinding.FragmentWalletInfoDetailBinding;
 import com.auro.application.home.data.model.DashboardResModel;
 import com.auro.application.home.data.model.Details;
 import com.auro.application.home.data.model.LanguageMasterDynamic;
 import com.auro.application.home.data.model.SetPasswordReqModel;
 import com.auro.application.home.data.model.WalletResponseAmountResModel;
+import com.auro.application.home.data.model.response.StudentKycStatusResModel;
 import com.auro.application.home.data.model.response.StudentWalletResModel;
 
 import com.auro.application.home.presentation.view.activity.DashBoardMainActivity;
@@ -33,16 +37,22 @@ import com.auro.application.home.presentation.view.adapter.WalletAdapter;
 import com.auro.application.home.presentation.viewmodel.WalletAmountViewModel;
 import com.auro.application.payment.presentation.view.fragment.SendMoneyFragment;
 import com.auro.application.util.AppLogger;
+import com.auro.application.util.RemoteApi;
 import com.auro.application.util.TextUtil;
 import com.auro.application.util.ViewUtil;
 import com.auro.application.util.strings.AppStringDynamic;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class WalletInfoDetailFragment extends BaseFragment implements View.OnClickListener, CommonCallBackListner {
@@ -206,15 +216,23 @@ public class WalletInfoDetailFragment extends BaseFragment implements View.OnCli
     @Override
     public void onClick(View v) {
 
-        int id = v.getId();
-        if (id == R.id.cardView2) {
-            ((DashBoardMainActivity) getActivity()).openProfileFragment();
-            ((DashBoardMainActivity) getActivity()).closeItemMore();
-            ((DashBoardMainActivity) getActivity()).selectNavigationMenu(2);
-        } else if (id == R.id.language_layout) {
-            ((DashBoardMainActivity) getActivity()).openChangeLanguageDialog();
-        } else if (id == R.id.bt_transfer_money) {
-            openSendMoneyFragment();
+        switch (v.getId()) {
+            case R.id.cardView2:
+                ((DashBoardMainActivity) getActivity()).openProfileFragment();
+                ((DashBoardMainActivity) getActivity()).closeItemMore();
+                ((DashBoardMainActivity) getActivity()).selectNavigationMenu(2);
+
+
+                break;
+
+            case R.id.language_layout:
+                ((DashBoardMainActivity) getActivity()).openChangeLanguageDialog();
+                break;
+
+
+            case R.id.bt_transfer_money:
+                openSendMoneyFragment();
+                break;
         }
     }
 
@@ -226,6 +244,61 @@ public class WalletInfoDetailFragment extends BaseFragment implements View.OnCli
         bundle.putParcelable(AppConstant.DASHBOARD_RES_MODEL, studentWalletResModel);
         sendMoneyFragment.setArguments(bundle);
         openFragment(sendMoneyFragment);
+    }
+    private void getKYCStatus()
+    {
+        PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
+        String suserid =  AuroAppPref.INSTANCE.getModelInstance().getStudentData().getUserId();
+        HashMap<String,String> map_data = new HashMap<>();
+        map_data.put("user_id",suserid);
+
+        RemoteApi.Companion.invoke().getKYCStatus(map_data)
+                .enqueue(new Callback<StudentKycStatusResModel>()
+                {
+                    @Override
+                    public void onResponse(Call<StudentKycStatusResModel> call, Response<StudentKycStatusResModel> response)
+                    {
+                        if (response.isSuccessful())
+                        {
+
+                           String getkycstatus = response.body().getKycStatus();
+                            if (getkycstatus.equals("APPROVE")){
+                                openSendMoneyFragment();
+                            }
+                            else if (getkycstatus.equals("PENDING")){
+                                Toast.makeText(getActivity(), "Your KYC is pending. Please wait until KYC verified", Toast.LENGTH_SHORT).show();
+
+                            }
+                            else if (getkycstatus.equals("DISAPPROVE")){
+                                Toast.makeText(getActivity(), "Your KYC is disapprove", Toast.LENGTH_SHORT).show();
+
+                            }
+                            else if (getkycstatus.equals("INPROCESS")){
+                                Toast.makeText(getActivity(), "Your KYC is under verification", Toast.LENGTH_SHORT).show();
+
+                            }
+                            else if (getkycstatus.equals("REJECTED")){
+                                Toast.makeText(getActivity(), "Your KYC is rejected", Toast.LENGTH_SHORT).show();
+
+                            }
+
+
+                        }
+                        else
+                        {
+
+                            Toast.makeText(getActivity(), response.message().toString(), Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<StudentKycStatusResModel> call, Throwable t)
+                    {
+                        Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    }
+                });
     }
 
     private void openFragment(Fragment fragment) {

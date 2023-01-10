@@ -73,9 +73,7 @@ public class PassportQuizDetailAdapter extends RecyclerView.Adapter<PassportQuiz
 
     @Override
     public void onBindViewHolder(ViewHolder Vholder, @SuppressLint("RecyclerView") int position) {
-        //AppLogger.e("TransactionsFragment","Quiz detail Adpater size-"+mValues.size());
-       // AppLogger.e("TransactionsFragment","Quiz detail Adpater size-"+mValues.get(position).getQuizData());
-        //   Vholder.setData(mValues.get(position), position);
+
         binding.quizTitle.setText(mValues.get(position).getQuizHead());
         binding.quizData.setText(mValues.get(position).getQuizData());
         binding.quizData.setTextColor(mValues.get(position).getQuizColor());
@@ -99,18 +97,13 @@ public class PassportQuizDetailAdapter extends RecyclerView.Adapter<PassportQuiz
         SharedPreferences prefs = mContext.getSharedPreferences("My_Pref", MODE_PRIVATE);
         int allsize = prefs.getInt("allsize", 0);
         Log.d("allsize", String.valueOf(allsize));
-//        if (mValues.size() == 0){
+
             return mValues.size();
-//        }
-//        else{
-//            return mValues.size();
-//        }
+
 
 
     }
 
-    private void updateData() {
 
-    }
 
 }

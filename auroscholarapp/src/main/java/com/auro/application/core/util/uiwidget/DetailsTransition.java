@@ -12,9 +12,7 @@ public class DetailsTransition extends TransitionSet {
         init();
     }
 
-    /**
-     * This constructor allows us to use this transition in XML
-     */
+
     public DetailsTransition(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();

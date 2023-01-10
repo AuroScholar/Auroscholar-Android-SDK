@@ -59,9 +59,7 @@ public class OtpView extends LinearLayout {
     styles.recycle();
   }
 
-  /**
-   * Get an instance of the present otp
-   */
+
   private String makeOTP() {
     StringBuilder stringBuilder = new StringBuilder();
     for (EditText editText : editTexts) {
@@ -70,36 +68,22 @@ public class OtpView extends LinearLayout {
     return stringBuilder.toString();
   }
 
-  /**
-   * Checks if all four fields have been filled
-   *
-   * @return length of OTP
-   */
+
   public boolean hasValidOTP() {
     return makeOTP().length() == length;
   }
 
-  /**
-   * Returns the present otp entered by the user
-   *
-   * @return OTP
-   */
+
   public String getOTP() {
     return makeOTP();
   }
 
-  /**
-   * Sets the listener that will be used to call onOtpEntered when the user has completed entering the otp
-   */
+
   public void setListener(OtpListener otpListener) {
     this.otpListener = otpListener;
   }
 
-  /**
-   * Used to set the OTP. More of cosmetic value than functional value
-   *
-   * @param otp Send the four digit otp
-   */
+
   public void setOTP(String otp) {
     if (otp != null) {
       if (otp.length()!= length) {
@@ -125,11 +109,12 @@ public class OtpView extends LinearLayout {
     @Override
     public void onRtlPropertiesChanged(int layoutDirection) {
         super.onRtlPropertiesChanged(layoutDirection);
-       // styleEditTexts(TypedArray styles);
+
         this.layoutDirection = layoutDirection;
 
     }
 
+    @SuppressLint("SoonBlockedPrivateApi")
     private void generateViews(TypedArray styles) {
     if (length > 0) {
       int width = (int) styles.getDimension(R.styleable.OtpView_width, getPixels(60));
@@ -185,7 +170,7 @@ public class OtpView extends LinearLayout {
           e.printStackTrace();
         }
         editText.setTransformationMethod(new AsteriskPasswordTransformationMethod());
-       // editText.setHint(AuroApp.getAppContext().getString(R.string.otp_dot));
+
         editText.setHint(".");
         setFocusListener(editText);
         setOnTextChangeListener(editText);

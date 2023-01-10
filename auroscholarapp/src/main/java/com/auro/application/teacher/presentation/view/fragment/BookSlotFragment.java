@@ -29,7 +29,9 @@ import com.auro.application.core.common.CommonCallBackListner;
 import com.auro.application.core.common.CommonDataModel;
 import com.auro.application.core.common.FragmentUtil;
 import com.auro.application.core.common.Status;
+import com.auro.application.core.database.AuroAppPref;
 import com.auro.application.databinding.FragmentBookSlotBinding;
+import com.auro.application.home.data.model.Details;
 import com.auro.application.home.presentation.view.activity.HomeActivity;
 import com.auro.application.teacher.presentation.view.adapter.TeacherProgressAdapter;
 import com.auro.application.teacher.presentation.view.adapter.ViewPagerBookingAdapter;
@@ -59,7 +61,7 @@ public class BookSlotFragment extends BaseFragment implements CommonCallBackList
     CustomProgressDialog customProgressDialog;
     Resources resources;
     ViewPagerBookingAdapter viewPagerAdapter;
-
+    Details details;
     TeacherProgressAdapter mteacherProgressAdapter;
     View mIndicator;
     private int indicatorWidth;
@@ -89,6 +91,8 @@ public class BookSlotFragment extends BaseFragment implements CommonCallBackList
         binding.setLifecycleOwner(this);
         setRetainInstance(true);
         init();
+        details = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
+
         return binding.getRoot();
     }
 
@@ -228,8 +232,10 @@ public class BookSlotFragment extends BaseFragment implements CommonCallBackList
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.back_button) {
-            getActivity().onBackPressed();
+        switch (v.getId()) {
+            case R.id.back_button:
+                getActivity().onBackPressed();
+                break;
         }
     }
 
@@ -237,12 +243,16 @@ public class BookSlotFragment extends BaseFragment implements CommonCallBackList
     public void initialiseTabs() {
 
         setViewPagerAdapter();
+//        binding.bottomsheet.bookedTab.setText(details.getBooked_slots());
+//        binding.bottomsheet.comingSlotTab.setText(details.getUpcoming_slot());
         binding.bottomsheet.tab.setSelectedTabIndicatorHeight(0);
 
         binding.bottomsheet.tab.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 setSelectedTabText(tab.getPosition());
+//                binding.bottomsheet.bookedTab.setText(details.getBooked_slots());
+//                binding.bottomsheet.comingSlotTab.setText(details.getUpcoming_slot());
                 if (binding.bottomsheet.tab.getSelectedTabPosition() == 0) {
                     setTabBG(R.drawable.book_slot_tab_bg, R.drawable.tab_bg);
                 } else {
@@ -314,8 +324,17 @@ public class BookSlotFragment extends BaseFragment implements CommonCallBackList
 
     public List<String> getTabList() {
         List<String> tabList = new ArrayList<>();
-        tabList.add("Booked Slot");
-        tabList.add("Upcoming Slot");
+//            if (details.getBooked_slots() == null || details.getBooked_slots().equals("null") || details.getBooked_slots().equals("") || details.getBooked_slots().isEmpty()||
+//                    details.getUpcoming_slot() == null || details.getUpcoming_slot().equals("null") || details.getUpcoming_slot().equals("") || details.getUpcoming_slot().isEmpty()) {
+//                tabList.add("Booked Slots");
+//                tabList.add("Upcoming Slots");
+//        }
+//        else{
+//            tabList.add(details.getBooked_slots());
+//            tabList.add(details.getUpcoming_slot());
+//        }
+        tabList.add("Booked Slots");
+        tabList.add("Upcoming Slots");
         return tabList;
     }
 

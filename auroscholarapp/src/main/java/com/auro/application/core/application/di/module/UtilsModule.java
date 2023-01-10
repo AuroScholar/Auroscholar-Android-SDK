@@ -45,7 +45,7 @@ public class UtilsModule {
     @Singleton
     Gson provideGson() {
 
-        // set the field name policy as you want to send like with underscores, lowercase, with dases policy
+
         GsonBuilder builder = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.IDENTITY);
         return builder.setLenient().create();
     }
@@ -66,7 +66,7 @@ public class UtilsModule {
                       //  .header(AppConstant.DEVICE_ID, DeviceUtil.getDeviceId(AuroApp.getAppContext()))
                       //  .header(AppConstant.DEVICE_TYPE, AppConstant.PLATFORM_ANDROID)
                     //    .header(AppConstant.LANGUAGE, "EN")
-                       // .header("Authorization", Credentials.basic("bhanu", "123"))
+                        .header("Authorization", Credentials.basic("bhanu", "123"))
                         //.header(AUTH_TOKEN, AuroAppPref.INSTANCE.getModelInstance().getOtpRes().getAuthToken())
                         .header(AppConstant.LANG_CODE, AppConstant.LANGUAGE_ENG)
                         .header(AppConstant.SECRET_ID, AppConstant.SECRETE_ID_TOKEN)

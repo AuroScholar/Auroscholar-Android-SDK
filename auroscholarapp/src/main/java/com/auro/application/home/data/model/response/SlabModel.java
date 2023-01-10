@@ -25,14 +25,41 @@ public class SlabModel implements Parcelable {
     @Expose
     private String quizLog;
 
+
+
+    @SerializedName("total_quiz")
+    @Expose
+    private Integer totalquiz;
+    @SerializedName("level_name")
+    @Expose
+    private String levelname;
     @SerializedName("quiz_count")
     @Expose
     private Integer quizCount;
 
+    public Integer getQuizCount() {
+        return quizCount;
+    }
 
+    public void setQuizCount(Integer quizCount) {
+        this.quizCount = quizCount;
+    }
 
+    public String getLevelname() {
+        return levelname;
+    }
 
+    public void setLevelname(String levelname) {
+        this.levelname = levelname;
+    }
 
+    public Integer getTotalquiz() {
+        return totalquiz;
+    }
+
+    public void setTotalquiz(Integer totalquiz) {
+        this.totalquiz = totalquiz;
+    }
 
     @SerializedName("details")
     @Expose

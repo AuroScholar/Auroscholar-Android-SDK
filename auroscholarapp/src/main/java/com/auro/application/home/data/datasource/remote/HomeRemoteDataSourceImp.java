@@ -16,6 +16,7 @@ import com.auro.application.home.data.model.KYCDocumentDatamodel;
 import com.auro.application.home.data.model.KYCInputModel;
 import com.auro.application.home.data.model.LanguageMasterReqModel;
 import com.auro.application.home.data.model.OtpOverCallReqModel;
+import com.auro.application.home.data.model.PartnerSDKLoginRequest;
 import com.auro.application.home.data.model.PartnersLoginReqModel;
 import com.auro.application.home.data.model.PendingKycDocsModel;
 import com.auro.application.home.data.model.RefferalReqModel;
@@ -61,6 +62,12 @@ public class HomeRemoteDataSourceImp implements DashboardRemoteData {
         this.homeRemoteApi = homeRemoteApi;
     }
 
+    // NEW SDK IMPLEMENTATION
+    @Override
+    public Single<Response<JsonObject>> partnersLoginApi(PartnerSDKLoginRequest reqModel) {
+        return homeRemoteApi.partnersAutoLoginApi(reqModel);
+    }
+
     @Override
     public Single<Response<JsonObject>> getDashboardData(AuroScholarDataModel model) {
         Map<String, Object> params = new HashMap<String, Object>();
@@ -73,7 +80,7 @@ public class HomeRemoteDataSourceImp implements DashboardRemoteData {
         params.put(AppConstant.DashBoardParams.PARTNER_SOURCE, AppConstant.ParamsValue.PARTNER_SOURCE_VAL);
         params.put(AppConstant.DashBoardParams.LANGUAGE_VERSION, AppConstant.ParamsValue.LANGUAGE_VERSION_VAL);
         params.put(AppConstant.DashBoardParams.API_VERSION, AppConstant.ParamsValue.API_VERSION_VAL);
-        params.put(AppConstant.Language.USER_PREFERED_LANGUAGE,1);
+        params.put(AppConstant.Language.USER_PREFERED_LANGUAGE,Integer.parseInt(AuroAppPref.INSTANCE.getModelInstance().getUserLanguageId()));
         return homeRemoteApi.getDashboardSDKData(params);
     }
 
@@ -149,6 +156,42 @@ public class HomeRemoteDataSourceImp implements DashboardRemoteData {
 
 
     @Override
+    public Single<Response<JsonObject>> teacheruploadProfileImage(List<KYCDocumentDatamodel> list, KYCInputModel kycInputModel) {
+        RequestBody phonenumber = RequestBody.create(okhttp3.MultipartBody.FORM, kycInputModel.getUser_phone());
+        RequestBody aadhar_phone = RequestBody.create(okhttp3.MultipartBody.FORM, kycInputModel.getAadhar_phone());
+        RequestBody aadhar_dob = RequestBody.create(okhttp3.MultipartBody.FORM, kycInputModel.getAadhar_dob());
+        RequestBody aadhar_name = RequestBody.create(okhttp3.MultipartBody.FORM, kycInputModel.getAadhar_name());
+        RequestBody aadhar_no = RequestBody.create(okhttp3.MultipartBody.FORM, kycInputModel.getAadhar_no());
+        RequestBody school_phone = RequestBody.create(okhttp3.MultipartBody.FORM, kycInputModel.getSchool_phone());
+        RequestBody school_dob = RequestBody.create(okhttp3.MultipartBody.FORM, kycInputModel.getSchool_dob());
+        RequestBody user_id = RequestBody.create(okhttp3.MultipartBody.FORM, AuroAppPref.INSTANCE.getModelInstance().getStudentData().getUserId());
+        RequestBody langVersion = RequestBody.create(okhttp3.MultipartBody.FORM, AppConstant.ParamsValue.LANGUAGE_VERSION_VAL);
+        RequestBody apiVersion = RequestBody.create(okhttp3.MultipartBody.FORM, AppConstant.ParamsValue.API_VERSION_VAL);
+        RequestBody languageid = RequestBody.create(okhttp3.MultipartBody.FORM, AuroAppPref.INSTANCE.getModelInstance().getUserLanguageId());
+        MultipartBody.Part id_proof_front = ConversionUtil.INSTANCE.makeMultipartRequest(list.get(0));
+        MultipartBody.Part id_proof_back = ConversionUtil.INSTANCE.makeMultipartRequest(list.get(1));
+        MultipartBody.Part school_id_card = ConversionUtil.INSTANCE.makeMultipartRequest(list.get(2));
+        MultipartBody.Part student_photo = ConversionUtil.INSTANCE.makeMultipartRequest(list.get(3));
+
+        return homeRemoteApi.teacheruploadImage(phonenumber,
+                aadhar_name,
+                aadhar_dob,
+                aadhar_phone,
+                aadhar_no,
+                school_dob,
+                school_phone,
+                user_id,
+                langVersion,
+                apiVersion,
+                languageid,
+                id_proof_front,
+                id_proof_back,
+                school_id_card,
+                student_photo);
+    }
+
+
+    @Override
     public Single<Response<JsonObject>> studentUpdateProfile(GetStudentUpdateProfile model) {
 
         if (model.getDeviceToken() == null) {
@@ -156,59 +199,32 @@ public class HomeRemoteDataSourceImp implements DashboardRemoteData {
         }
         try {
             RequestBody buildVersion = RequestBody.create(okhttp3.MultipartBody.FORM, model.getBuildVersion());
-            AppLogger.e("update profile api-", "step 10 " + model.getBuildVersion());
             RequestBody partnersource = RequestBody.create(okhttp3.MultipartBody.FORM, "AURO3VE4j7");//model.getPartnerSource()
-            AppLogger.e("update profile api-", "step 11 - " + "AURO3VE4j7");
             RequestBody schoolName = RequestBody.create(okhttp3.MultipartBody.FORM, model.getSchoolName());
-            AppLogger.e("update profile api-", "step 12" + model.getSchoolName());
             RequestBody email = RequestBody.create(okhttp3.MultipartBody.FORM, model.getEmailId());
-            AppLogger.e("update profile api-", "step 13" + model.getEmailId());
             RequestBody boardType = RequestBody.create(okhttp3.MultipartBody.FORM, model.getBoardType());
-            AppLogger.e("update profile api-", "step 14" + model.getBoardType());
             RequestBody gender = RequestBody.create(okhttp3.MultipartBody.FORM, model.getGender());
-            AppLogger.e("update profile api-", "step 15" + model.getGender());
             RequestBody registrationSource = RequestBody.create(okhttp3.MultipartBody.FORM, "AuroScholar");
-            AppLogger.e("update profile api-", "step 16" + model.getRegitrationSource());
             RequestBody shareType = RequestBody.create(okhttp3.MultipartBody.FORM, "");
-            AppLogger.e("update profile api-", "step 17" + "");
             RequestBody deviceToken = RequestBody.create(okhttp3.MultipartBody.FORM, model.getDeviceToken());
-            AppLogger.e("update profile api-", "step 18" + model.getDeviceToken());
             RequestBody email_verified = RequestBody.create(okhttp3.MultipartBody.FORM, "N");
-            AppLogger.e("update profile api-", "step 19" + model.getEmailVerified());
             RequestBody shareIdentity = RequestBody.create(okhttp3.MultipartBody.FORM, "");
-            AppLogger.e("update profile api-", "step 20" + "");
             RequestBody userPartnerId = RequestBody.create(okhttp3.MultipartBody.FORM, "");
-            AppLogger.e("update profile api-", "step 21" + "");
             RequestBody ipAddress = RequestBody.create(okhttp3.MultipartBody.FORM, model.getIpAddress());
-            AppLogger.e("update profile api-", "step 22" + model.getIpAddress());
             RequestBody mobileVersion = RequestBody.create(okhttp3.MultipartBody.FORM, model.getMobileVersion());
-            AppLogger.e("update profile api-", "step 23" + model.getMobileVersion());
             RequestBody mobileModel = RequestBody.create(okhttp3.MultipartBody.FORM, model.getMobileModel());
-            AppLogger.e("update profile api-", "step 24" + model.getMobileModel());
             RequestBody privateTutionType = RequestBody.create(okhttp3.MultipartBody.FORM, model.getPrivateTutionType());
-            AppLogger.e("update profile api-", "step 25" + model.getPrivateTutionType());
             RequestBody isPrivateTutionType = RequestBody.create(okhttp3.MultipartBody.FORM, model.getIsPrivateTution());
-            AppLogger.e("update profile api-", "step 26" + model.getIsPrivateTution());
             RequestBody latitude = RequestBody.create(okhttp3.MultipartBody.FORM, model.getLatitude());
-            AppLogger.e("update profile api-", "step 27" + model.getLatitude());
             RequestBody longitude = RequestBody.create(okhttp3.MultipartBody.FORM, model.getLongitude());
-            AppLogger.e("update profile api-", "step 28" + model.getLongitude());
             RequestBody language = RequestBody.create(okhttp3.MultipartBody.FORM, model.getLanguage());
-            AppLogger.e("update profile api-", "step 29" + model.getLanguage());
             RequestBody manufacturer = RequestBody.create(okhttp3.MultipartBody.FORM, model.getMobileManufacturer());
-            AppLogger.e("update profile api-", "step 30" + model.getMobileManufacturer());
             RequestBody stateId = RequestBody.create(okhttp3.MultipartBody.FORM, model.getStateId());
-            AppLogger.e("update profile api-", "step 31" + model.getStateId());
             RequestBody districtId = RequestBody.create(okhttp3.MultipartBody.FORM, model.getDistrictId());
-            AppLogger.e("update profile api-", "step 32" + model.getDistrictId());
             RequestBody firstName = RequestBody.create(okhttp3.MultipartBody.FORM, model.getStudentName());
-            AppLogger.e("update profile api-", "step 33" + model.getStudentName());
             RequestBody userId = RequestBody.create(okhttp3.MultipartBody.FORM, model.getUserId());
-            AppLogger.e("update profile api-", "step 34" + model.getUserId());
             RequestBody schoolType = RequestBody.create(okhttp3.MultipartBody.FORM, model.getSchoolType());
-            AppLogger.e("update profile api-", "step 35" + model.getSchoolType());
             MultipartBody.Part profilePic = ConversionUtil.INSTANCE.makeMultipartRequestProfile(model.getImageBytes());
-            AppLogger.e("update profile api-", "step 36" + model.getImageBytes());
 
             RequestBody langVersion = RequestBody.create(okhttp3.MultipartBody.FORM, AppConstant.ParamsValue.LANGUAGE_VERSION_VAL);
             RequestBody apiVersion = RequestBody.create(okhttp3.MultipartBody.FORM, AppConstant.ParamsValue.API_VERSION_VAL);
@@ -274,11 +290,7 @@ public class HomeRemoteDataSourceImp implements DashboardRemoteData {
         }
         int userType = prefModel.getUserType();
         AppLogger.e("enter Number Activity --", "" + userType);
-       /* if (userType == AppConstant.UserType.TEACHER) {
-            return homeRemoteApi.oldSendOtpApi(params);
-        } else {
-            return homeRemoteApi.sendOTP(reqModel);
-        }*/
+
 
         params.put(AppConstant.Language.USER_PREFERED_LANGUAGE,Integer.parseInt(AuroAppPref.INSTANCE.getModelInstance().getUserLanguageId()));
         return homeRemoteApi.sendOTP(reqModel);
@@ -296,11 +308,7 @@ public class HomeRemoteDataSourceImp implements DashboardRemoteData {
         PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
         int userType = prefModel.getUserType();
         AppLogger.e("enter Number Activity --", "" + userType);
-      /*  if (userType == AppConstant.UserType.TEACHER) {
-            return homeRemoteApi.verifyOTP(params);
-        } else {
-            return homeRemoteApi.verifyOTP(reqModel);
-        }*/
+
 
 
         params.put(AppConstant.Language.USER_PREFERED_LANGUAGE,Integer.parseInt(AuroAppPref.INSTANCE.getModelInstance().getUserLanguageId()));
@@ -498,14 +506,7 @@ public class HomeRemoteDataSourceImp implements DashboardRemoteData {
         return homeRemoteApi.uploadImage(exam_id, registration_id, is_mobile, quiz_id, img_normal_path, img_path, userId, langVersion, apiVersion, student_photo);
     }
 
-   /* @Override
-    public Single<Response<JsonObject>> uploadStudentExamImage(SaveQuestionResModel saveQuestionResModel) {
-        RequestBody exam_id = RequestBody.create(okhttp3.MultipartBody.FORM,saveQuestionResModel.getExamAssignmentID());
-        MultipartBody.Part student_photo = ConversionUtil.INSTANCE.makeMultipartRequestForExamImage(saveQuestionResModel.getImageBytes());
-        return quizRemoteApi.uploadImage(exam_id,
-                student_photo);
-    }
-*/
+
 
     @Override
     public Single<Response<JsonObject>> passportApi(PassportReqModel reqModel) {

@@ -54,29 +54,19 @@ public class CongratulationsDialog extends BaseDialog implements View.OnClickLis
     public static String bundledashboardResModel = "dashboardResModel";
     public static String bundleassignmentReqModel = "assignmentReqModel";
 
-    private static final String commonCallBackListnerbundle = "commonCallBackListner";
-    private static final String dashboardResModelbundle = "dashboardResModel";
-    private static final String assignmentReqModelbundle = "assignmentReqModel";
-    Context mcontext;
+
     DashboardResModel dashboardResModel;
     AssignmentReqModel assignmentReqModel;
     static CommonCallBackListner commonCallBackListner;
     int marks;
     SubjectResModel subjectResModel;
     QuizResModel quizResModel;
-    int finishedTestPos;
+
 
 
     private static final String TAG = CongratulationsDialog.class.getSimpleName();
 
-/*
-    public CongratulationsDialog(Context mcontext, DashboardResModel dashboardResModel, AssignmentReqModel assignmentReqModel, CommonCallBackListner commonCallBackListner) {
-        this.mcontext = mcontext;
-        this.dashboardResModel = dashboardResModel;
-        this.assignmentReqModel = assignmentReqModel;
-        this.commonCallBackListner = commonCallBackListner;
-    }
-*/
+
 
     public CongratulationsDialog() {
     }
@@ -113,12 +103,9 @@ public class CongratulationsDialog extends BaseDialog implements View.OnClickLis
         AppStringDynamic.setCongratulationsDialogStrings(binding);
         Glide.with(this).load(R.raw.confetti_4).into(binding.backgroundSprincle11);
 
-        // create random object
+
         Random randomno = new Random();
-  /*      if (getArguments() != null) {
-            dashboardResModel = getArguments().getParcelable(dashboardResModelbundle);
-            assignmentReqModel = getArguments().getParcelable(assignmentReqModelbundle);
-        }*/
+
         binding.tickerView.setPreferredScrollingDirection(TickerView.ScrollingDirection.DOWN);
         binding.tickerView.setCharacterLists(TickerUtils.provideNumberList());
         quizResModel = AuroAppPref.INSTANCE.getModelInstance().getQuizResModel();
@@ -129,9 +116,7 @@ public class CongratulationsDialog extends BaseDialog implements View.OnClickLis
                 break;
             }
         }
-        //   subjectResModel = dashboardResModel.getSubjectResModelList().get(assignmentReqModel.getSubjectPos());
-        // finishedTestPos = ConversionUtil.INSTANCE.convertStringToInteger(assignmentReqModel.getExam_name());
-        //  quizResModel = subjectResModel.getChapter().get(finishedTestPos - 1);
+
         marks = assignmentReqModel.getActualScore() * 10;
 
         for (int i = 1; i <= marks; i++) {
@@ -227,7 +212,7 @@ public class CongratulationsDialog extends BaseDialog implements View.OnClickLis
 
 
     private void makeQuiz() {
-       // AppLogger.e("chhonker makeQuiz", "-lastPos--" + lastPos);
+
         for (int i = 0; i < subjectResModel.getChapter().size(); i++) {
             AppLogger.e("chhonker getChapter", "-i--" + i);
             AppLogger.e("chhonker getChapter name", "-i--" + subjectResModel.getChapter().get(i).getName());
@@ -238,13 +223,7 @@ public class CongratulationsDialog extends BaseDialog implements View.OnClickLis
                 sendClickCallBack(quizResModel);
                 break;
             }
-            /*if (quizResModel.getNumber() != (i+1)) {
-                if (subjectResModel.getChapter().get(i).getAttempt() < 3) {
-                    AppLogger.e("chhonker getAttempt", "-i--"+subjectResModel.getChapter().get(i).getAttempt());
-                    sendClickCallBack(subjectResModel.getChapter().get(i));
-                    break;
-                }
-            }*/
+
         }
     }
 

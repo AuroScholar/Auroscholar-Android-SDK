@@ -11,6 +11,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
 import android.text.method.TransformationMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -34,15 +35,24 @@ import com.auro.application.home.data.model.Details;
 import com.auro.application.home.data.model.SendOtpReqModel;
 import com.auro.application.home.data.model.SetPasswordReqModel;
 import com.auro.application.home.presentation.viewmodel.LoginScreenViewModel;
+import com.auro.application.teacher.data.model.response.MyProfileResModel;
+import com.auro.application.teacher.presentation.view.activity.TeacherProfileActivity;
 import com.auro.application.util.AppLogger;
 import com.auro.application.util.AppUtil;
 import com.auro.application.util.ConversionUtil;
+import com.auro.application.util.RemoteApi;
 import com.auro.application.util.TextUtil;
 import com.auro.application.util.ViewUtil;
 import com.auro.application.util.strings.AppStringDynamic;
 
+import java.util.HashMap;
+
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ResetPasswordActivity extends BaseActivity implements View.OnClickListener, CommonCallBackListner {
     private static String TAG = ResetPasswordActivity.class.getSimpleName();
@@ -63,13 +73,18 @@ public class ResetPasswordActivity extends BaseActivity implements View.OnClickL
         prefModel.setLogin(true);
         SharedPreferences.Editor editor = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
         editor.putString("statusparentprofile", "false");
+        editor.putString("isLogin","true");
         editor.putString("statusfillstudentprofile", "false");
         editor.putString("statussetpasswordscreen", "true");
         editor.putString("statuschoosegradescreen", "false");
         editor.putString("statussubjectpref","false");
+        editor.putString("statusopenprofileteacher", "false");
+        editor.putString("statusopendashboardteacher", "false");
         editor.putString("statuschoosedashboardscreen", "false");
         editor.putString("statusopenprofilewithoutpin", "false");
+        editor.putString("statuslogin", "true");
         editor.apply();
+
 
 
 
@@ -87,21 +102,20 @@ public class ResetPasswordActivity extends BaseActivity implements View.OnClickL
         binding.setLifecycleOwner(this);
         if (getIntent() != null) {
             comingFrom = getIntent().getStringExtra(AppConstant.COMING_FROM);
-          //  if (!comingFrom.equals("")||!comingFrom.equals("null")||comingFrom!=null){
-          //  if (comingFrom.equalsIgnoreCase(AppConstant.FROM_SET_PASSWORD)) {
+
                 binding.headText.setText(this.getString(R.string.set_a_new_password));
                 binding.RPAccept.setText(this.getString(R.string.set_password));
                 PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
                 prefModel.setCurrentScreenFlag(AppConstant.CurrentFlagStatus.SET_PASSWORD);
                 AuroAppPref.INSTANCE.setPref(prefModel);
-           // }
+
         }
         else {
             binding.headText.setText(this.getString(R.string.reset_password));
             binding.RPAccept.setText(this.getString(R.string.reset_password));
 
         }
-        // setCustomDialerAdapter();
+
         setListener();
         ViewUtil.customTextView(binding.termsCondition, this);
 
@@ -142,12 +156,12 @@ public class ResetPasswordActivity extends BaseActivity implements View.OnClickL
             switch (responseApi.status) {
 
                 case LOADING:
-                    /*Loading code here*/
+
                     break;
 
                 case SUCCESS:
                     binding.progressbar.pgbar.setVisibility(View.GONE);
-                    showSnackbarError(prefModel.getLanguageMasterDynamic().getDetails().getSet_password_sucessfully());//"Set Password Successfull !"
+                    Toast.makeText(this, prefModel.getLanguageMasterDynamic().getDetails().getSet_password_sucessfully(), Toast.LENGTH_SHORT).show();
                     checkForGradeScreen();
                     break;
 
@@ -176,32 +190,52 @@ public class ResetPasswordActivity extends BaseActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        int id = v.getId();
-        if (id == R.id.back_button) {
-            Intent intent = new Intent(ResetPasswordActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-        } else if (id == R.id.RPAccept) {
-            String password = binding.etPassword.getText().toString();
-            String confrimpass = binding.etconfirmPassword.getText().toString();
-            Details details = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
-            if (password.isEmpty() || password.equals("")) {
+        switch (v.getId()) {
+
+            case R.id.back_button:
+                Intent intent = new Intent(ResetPasswordActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+
+            case R.id.RPAccept:
+                String password = binding.etPassword.getText().toString();
+                String confrimpass = binding.etconfirmPassword.getText().toString();
+                Details details = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
+            if (password.isEmpty()||password.equals("")){
                 Toast.makeText(this, details.getPlease_enter_password(), Toast.LENGTH_SHORT).show();
-            } else if (confrimpass.isEmpty() || confrimpass.equals("")) {
-                Toast.makeText(this, details.getEnter_get_confirm_password(), Toast.LENGTH_SHORT).show();
-            } else if (password.equals(confrimpass) || password == confrimpass) {
-                setPasswordApi();
-            } else if (password.startsWith(" ")) {
-                Toast.makeText(this, details.getEnter_space_password(), Toast.LENGTH_SHORT).show();
-            } else if (confrimpass.startsWith(" ")) {
-                Toast.makeText(this, details.getEnter_space_confirmpassword(), Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, details.getPassword_confirm_password(), Toast.LENGTH_SHORT).show();
             }
-        } else if (id == R.id.passwordIcon) {
-            handleIconClickPassword(binding.etPassword, binding.passwordIcon);
-        } else if (id == R.id.confirmpasswordIcon) {
-            handleIconClickPassword(binding.etconfirmPassword, binding.confirmpasswordIcon);
+
+               else if (confrimpass.isEmpty()||confrimpass.equals("")){
+                    Toast.makeText(this, details.getEnter_get_confirm_password(), Toast.LENGTH_SHORT).show();
+                }
+
+
+                else if (password.equals(confrimpass) || password == confrimpass){
+                    setPasswordApi();
+                }
+                else if (password.startsWith(" ")){
+                Toast.makeText(this, details.getEnter_space_password(), Toast.LENGTH_SHORT).show();
+            }
+
+            else if (confrimpass.startsWith(" ")){
+                Toast.makeText(this, details.getEnter_space_confirmpassword(), Toast.LENGTH_SHORT).show();
+            }
+
+            else{
+                    Toast.makeText(this, details.getPassword_confirm_password(), Toast.LENGTH_SHORT).show();
+                }
+
+                break;
+
+            case R.id.passwordIcon:
+                handleIconClickPassword(binding.etPassword, binding.passwordIcon);
+                break;
+
+            case R.id.confirmpasswordIcon:
+                handleIconClickPassword(binding.etconfirmPassword, binding.confirmpasswordIcon);
+                break;
+
         }
     }
 
@@ -323,20 +357,12 @@ public class ResetPasswordActivity extends BaseActivity implements View.OnClickL
 
         AppLogger.e("setPasswordApi-","setPasswordApi step 1");
         if (checkUserResModel != null && !checkUserResModel.getUserDetails().isEmpty()) {
-          //  AppLogger.e("setPasswordApi-","setPasswordApi step 2" +prefModel.getParentData().getUserId());
-           // if (prefModel.getParentData() != null) {
                 reqmodel.setUserId(prefModel.getCheckUserResModel().getUserDetails().get(0).getUserId()); //prefModel.getParentData().getUserId()
-               // AppLogger.e("setPasswordApi-","setPasswordApi step 3" +prefModel.getParentData().getUserId());
                 viewModel.checkInternet(reqmodel, Status.SET_PASSWORD);
                 binding.progressbar.pgbar.setVisibility(View.VISIBLE);
-          //  }
-           // AppLogger.e("setPasswordApi-","setPasswordApi step 4" +prefModel.getParentData().getUserId());
         }
 
-//        else {
-//            PrefModel prefModel2 = AuroAppPref.INSTANCE.getModelInstance();
-//            reqmodel.setUserId(prefModel2.getCheckUserResModel().getUserDetails().get(0).getUserId());   //prefModel2.getStudentData().getUserId()
-//        }
+
 
 
 
@@ -369,8 +395,57 @@ public class ResetPasswordActivity extends BaseActivity implements View.OnClickL
 
     private void openTeacherHomeActivity() {
         setEmptyForCurrentFlag();
-        Intent i = new Intent(this, HomeActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(i);
+        getProfile();
+
+    }
+
+    private void getProfile()
+    {
+        String userid = AuroAppPref.INSTANCE.getModelInstance().getStudentData().getUserId();
+        PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
+        String userlangid = prefModel.getUserLanguageId();
+        HashMap<String,String> map_data = new HashMap<>();
+        map_data.put("user_id",userid);
+        map_data.put("user_prefered_language_id",userlangid);
+
+        RemoteApi.Companion.invoke().getTeacherData(map_data)
+                .enqueue(new Callback<MyProfileResModel>()
+                {
+                    @Override
+                    public void onResponse(Call<MyProfileResModel> call, Response<MyProfileResModel> response)
+                    {
+                        if (response.isSuccessful()) {
+                            String teachername = response.body().getTeacherName();
+                            String statename = response.body().getState_name();
+                            String districtname = response.body().getDistrict_name();
+                            String schoolname = response.body().getSchool_name();
+
+                            if (teachername == null || teachername.equals("null") || teachername.equals("") || teachername.isEmpty()||
+                                    statename == null || statename.equals("null") || statename.equals("") || statename.isEmpty()||
+                                    districtname == null || districtname.equals("null") || districtname.equals("") || districtname.isEmpty()||
+                                    schoolname == null || schoolname.equals("null") || schoolname.equals("") || schoolname.isEmpty()){
+                                Intent i = new Intent(ResetPasswordActivity.this, TeacherProfileActivity.class);
+                                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(i);
+                            }
+                            else{
+                                Intent i = new Intent(ResetPasswordActivity.this, HomeActivity.class);
+                                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(i);
+                            }
+
+                        }
+                        else
+                        {
+                            Log.d(TAG, "onResponser: "+response.message().toString());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<MyProfileResModel> call, Throwable t)
+                    {
+                        Log.d(TAG, "onFailure: "+t.getMessage());
+                    }
+                });
     }
 }

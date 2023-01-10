@@ -25,8 +25,7 @@ public class SubjectSelectAdapter extends RecyclerView.Adapter<SubjectSelectAdap
     List<SubjectResModel> list;
     CommonCallBackListner commonCallBackListner;
 
-    // if checkedPosition = -1, there is no default selection
-    // if checkedPosition = 0, 1st item is selected by default
+
     private final int checkedPosition = 0;
 
     public SubjectSelectAdapter(List<SubjectResModel> list, CommonCallBackListner commonCallBackListner) {

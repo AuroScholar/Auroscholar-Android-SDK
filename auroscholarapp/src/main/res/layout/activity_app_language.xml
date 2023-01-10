@@ -39,7 +39,7 @@
                 android:id="@+id/auro_scholar_logo"
                 android:layout_width="@dimen/_100sdp"
                 android:layout_height="@dimen/_45sdp"
-                android:layout_below="@+id/header_top_parent"
+
                 android:layout_centerHorizontal="true"
                 android:layout_marginStart="@dimen/_5sdp"
                 android:layout_marginTop="@dimen/_15sdp"

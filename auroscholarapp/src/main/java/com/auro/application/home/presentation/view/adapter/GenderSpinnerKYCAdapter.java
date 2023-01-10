@@ -36,10 +36,7 @@ public class GenderSpinnerKYCAdapter extends ArrayAdapter {
 
     }
 
-/*    public StateSpinnerUserAdapter(List<StateDataModel> list) {
-        super(c);
 
-    }*/
 
     @Override
     public int getCount() {
@@ -62,16 +59,7 @@ public class GenderSpinnerKYCAdapter extends ArrayAdapter {
                 R.layout.state_spinner_item, parent, false);
         binding.stateTitle.setText(list.get(position).getTranslatedName());
 
-//        binding.StateList.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (onItemClickState != null) {
-//                    onItemClickState.commonEventListner(AppUtil.getCommonClickModel(position, Status.GENDER, list.get(position)));
-//                }
-//               // onItemClickState.onItemClick(list.get(position ).getState_name());
-//                // onItemClickState.onItemClick(list.get(position ).getState_name());
-//            }
-//        });
+
         return binding.getRoot();
 
     }

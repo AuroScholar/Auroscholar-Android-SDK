@@ -33,31 +33,7 @@ public class NetworkUtil {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
- /*   public static Single<Boolean> hasOtpInternetConnection() {
 
-        Single<Boolean> tSingle = new SingleOnSubscribe<Boolean>() {
-
-            @Override
-            public void subscribe(SingleEmitter<Boolean> emitter) throws Exception {
-
-                Socket socket = new Socket();
-                try {
-                    int timeoutMs = 1500;
-                    SocketAddress socketAddress = new InetSocketAddress("8.8.8.8", 53);
-                    socket.connect(socketAddress, timeoutMs);
-                    return true;
-                } catch (Exception e) {
-                    socket.close();
-                    return false;
-                } finally {
-                    socket.close();
-                }
-
-            }
-        }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-        return tSingle;
-    }
-*/
 
     public static boolean hasInternet(Context context) {
         boolean flag = false;
@@ -73,22 +49,6 @@ public class NetworkUtil {
         return flag;
     }
 
-   /* public static Single<Boolean> hasInternet() {
 
-        return Single.fromCallable(() -> {
-            Socket socket = new Socket();
-            try {
-                int timeoutMs = 1500;
-                SocketAddress socketAddress = new InetSocketAddress("8.8.8.8", 53);
-                socket.connect(socketAddress, timeoutMs);
-                return true;
-            } catch (Exception e) {
-                return false;
-            } finally {
-                socket.close();
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-    }
-*/
 
 }

@@ -93,7 +93,7 @@ public class TeacherKycInfoFragment extends BaseFragment implements CommonCallBa
         init();
         setListener();
         setToolbar();
-
+       // callTeacherKycStatusApi();
         return binding.getRoot();
     }
 
@@ -114,6 +114,7 @@ public class TeacherKycInfoFragment extends BaseFragment implements CommonCallBa
         startAnimation();
         //ViewUtil.setTeacherProfilePic(binding.profileImage);
         //ViewUtil.setLanguageonUi(getActivity());
+        callTeacherKycStatusApi();
         AppStringTeacherDynamic.setTeacherKycInfoFragmentStrings(binding);
 
     }
@@ -294,7 +295,7 @@ public class TeacherKycInfoFragment extends BaseFragment implements CommonCallBa
         handleProgress(0, "");
         FetchStudentPrefReqModel reqModel = new FetchStudentPrefReqModel();
         reqModel.setUserId(AuroAppPref.INSTANCE.getModelInstance().getStudentData().getUserId());
-        // reqModel.setUserId("576232");
+        //  reqModel.setUserId("576232");
         kycViewModel.checkInternet(Status.TEACHER_KYC_STATUS_API, reqModel);
     }
 

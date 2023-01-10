@@ -2,14 +2,12 @@ package com.auro.application.util.alert_dialog.disclaimer;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 
-import androidx.annotation.RequiresApi;
 import androidx.databinding.DataBindingUtil;
 
 import com.auro.application.R;
@@ -56,7 +54,6 @@ public class LoginDisclaimerDialog extends Dialog {
         prefModel = AuroAppPref.INSTANCE.getModelInstance();
         binding.closeBt.setVisibility(View.GONE);
         binding.closeBt.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
                 if (prefModel.isPreLoginDisclaimer()) {
@@ -89,8 +86,8 @@ public class LoginDisclaimerDialog extends Dialog {
             Details details = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
             binding.tvTitle.setText(details.getDisclaimer());
             binding.RPAccept.setText(details.getAcceptAndUseTheApp());
-            int leadWidth = activity.getResources().getDimensionPixelOffset(R.dimen._10sdp);
-            int gapWidth = activity.getResources().getDimensionPixelOffset(R.dimen._20sdp);
+            int leadWidth = activity.getResources().getDimensionPixelOffset(R.dimen.space_medium);
+            int gapWidth = activity.getResources().getDimensionPixelOffset(R.dimen.space_xlarge);
             leadWidth = 0;
             binding.tvMessage.setText(new Truss()
                     .appendln(details.getCheckDiscalimerFirstText(), new Snippety().bullet(leadWidth, gapWidth))
@@ -109,8 +106,8 @@ public class LoginDisclaimerDialog extends Dialog {
 
 
     void setData() {
-        int leadWidth = activity.getResources().getDimensionPixelOffset(R.dimen._10sdp);
-        int gapWidth = activity.getResources().getDimensionPixelOffset(R.dimen._20sdp);
+        int leadWidth = activity.getResources().getDimensionPixelOffset(R.dimen.space_medium);
+        int gapWidth = activity.getResources().getDimensionPixelOffset(R.dimen.space_xlarge);
         leadWidth = 0;
         binding.tvMessage.setText(new Truss()
                 .appendln(activity.getResources().getString(R.string.check_discalimer_first_text), new Snippety().bullet(leadWidth, gapWidth))

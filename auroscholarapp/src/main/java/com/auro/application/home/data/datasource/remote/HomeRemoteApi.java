@@ -5,6 +5,7 @@ import com.auro.application.core.network.URLConstant;
 
 import com.auro.application.home.data.model.CheckUserApiReqModel;
 import com.auro.application.home.data.model.OtpOverCallReqModel;
+import com.auro.application.home.data.model.PartnerSDKLoginRequest;
 import com.auro.application.home.data.model.RefferalReqModel;
 import com.auro.application.home.data.model.SendOtpReqModel;
 import com.auro.application.home.data.model.SetPasswordReqModel;
@@ -100,7 +101,23 @@ public interface HomeRemoteApi {
                                              @Part MultipartBody.Part id_back,
                                              @Part MultipartBody.Part student_id,
                                              @Part MultipartBody.Part student_photo);
-
+    @Multipart
+    @POST(URLConstant.TEACHER_KYC_API)
+    Single<Response<JsonObject>> teacheruploadImage(@Part(AppConstant.MOBILE_NUMBER) RequestBody description,
+                                             @Part(AppConstant.DocumentType.AADHAR_NAME) RequestBody aadhar_name,
+                                             @Part(AppConstant.DocumentType.AADHAR_DOB) RequestBody aadhar_dob,
+                                             @Part(AppConstant.DocumentType.AADHAR_PHONE) RequestBody aadhar_phone,
+                                             @Part(AppConstant.DocumentType.AADHAR_NO) RequestBody aadhar_no,
+                                             @Part(AppConstant.DocumentType.SCHOOL_DOB) RequestBody school_dob,
+                                             @Part(AppConstant.DocumentType.SCHOOL_PHONE) RequestBody schhol_phone,
+                                             @Part(AppConstant.DashBoardParams.USER_ID) RequestBody user_id,
+                                             @Part(AppConstant.DashBoardParams.LANGUAGE_VERSION) RequestBody langVersion,
+                                             @Part(AppConstant.DashBoardParams.API_VERSION) RequestBody apiVersion,
+                                             @Part(AppConstant.Language.USER_PREFERED_LANGUAGE) RequestBody langid,
+                                             @Part MultipartBody.Part id_proof,
+                                             @Part MultipartBody.Part id_proof_back,
+                                             @Part MultipartBody.Part school_id_card,
+                                             @Part MultipartBody.Part teacher_photo);
 
     @POST(URLConstant.UPDATE_STUDENT_PROFILE)
     @Multipart
@@ -225,7 +242,6 @@ public interface HomeRemoteApi {
     Single<Response<JsonObject>> partnersLoginApi(@Body Map<String, Object> params);
 
 
-
     @POST(URLConstant.GET_PROFILE_UPDATE_API)
     @FormUrlEncoded
     Single<Response<JsonObject>> getTeacherDashboardApi(@FieldMap Map<String, String> params);
@@ -241,7 +257,6 @@ public interface HomeRemoteApi {
 
     @GET(URLConstant.LANGUAGE_LIST)
     Single<Response<JsonObject>> getLanguageList();
-
 
     @POST(URLConstant.GET_USER_PROFILE)
     @FormUrlEncoded
@@ -286,5 +301,9 @@ public interface HomeRemoteApi {
 
     @POST(URLConstant.GET_SLABS_API)
     Single<Response<JsonObject>> getSlabApi(@Body Map<String, Object> params);
+
+    // NEW SDK IMPLEMENTATION
+    @POST(URLConstant.PARTNER_AUTO_LOGIN_API)
+    Single<Response<JsonObject>> partnersAutoLoginApi(@Body PartnerSDKLoginRequest params);
 
 }

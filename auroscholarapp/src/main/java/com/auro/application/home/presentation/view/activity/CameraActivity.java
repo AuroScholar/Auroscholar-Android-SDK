@@ -139,31 +139,10 @@ public class CameraActivity extends BaseActivity implements View.OnClickListener
 
     }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        switch (requestCode) {
-//            case 123: {
-//                if (grantResults.length > 0
-//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    //If user presses allow
-//                    createCameraSource(cameraID);
-//                } else {
-//                    //If user presses deny
-//                }
-//                break;
-//            }
-//        }
-//    }
+
 
     private void askPermission() {
-//        String rationale = "Please provide location permission so that you can ...";
-//        Permissions.Options options = new Permissions.Options()
-//                .setRationaleDialogTitle("Info")
-//                .setSettingsDialogTitle("Warning");
-//        Permissions.check(this, PermissionUtil.mCameraPermissions, rationale, options, new PermissionHandler() {
-//            @Override
-//            public void onGranted() {
+
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
         {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, 100);
@@ -174,16 +153,6 @@ public class CameraActivity extends BaseActivity implements View.OnClickListener
         }
 
 
-
-
-//            }
-//
-//            @Override
-//            public void onDenied(Context context, ArrayList<String> deniedPermissions) {
-//                // permission denied, block the feature.
-//                finish();
-//            }
-//        });
     }
 
     @Override
@@ -418,7 +387,7 @@ public class CameraActivity extends BaseActivity implements View.OnClickListener
                             ));
 
 
-                    //loadImageFromStorage(saveToInternalStorage(loadedImage));
+
 
 
                 } catch (Exception e) {
@@ -488,16 +457,7 @@ public class CameraActivity extends BaseActivity implements View.OnClickListener
 
 
 
-    private void loadImageFromStorage(String path) {
-        try {
 
-            File f = new File(path, "profile.jpg");
-            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
-            this.getSupportFragmentManager().popBackStack();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
 
     private boolean hasFrontCamera() {
         Camera.CameraInfo cameraInfo = new Camera.CameraInfo();

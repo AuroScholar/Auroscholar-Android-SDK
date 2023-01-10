@@ -146,6 +146,21 @@ public class KYCViewModel extends ViewModel {
 
     }
 
+    public void teacheruploadProfileImage(List<KYCDocumentDatamodel> list, KYCInputModel kycInputModel) {
+
+        Disposable disposable = homeRemoteUseCase.isAvailInternet().subscribe(hasInternet -> {
+            if (hasInternet) {
+                AppLogger.e("chhonker uploadAllDocApi", "step 2");
+                teachercallUploadImageApi(list, kycInputModel);
+            } else {
+                serviceLiveData.setValue(new ResponseApi(Status.NO_INTERNET, AuroApp.getAppContext().getString(R.string.internet_check), Status.NO_INTERNET));
+            }
+
+        });
+        getCompositeDisposable().add(disposable);
+
+    }
+
 
     private CompositeDisposable getCompositeDisposable() {
         if (compositeDisposable == null) {
@@ -178,6 +193,33 @@ public class KYCViewModel extends ViewModel {
                                 serviceLiveData.setValue(new ResponseApi(Status.FAIL, AuroApp.getAppContext().getResources().getString(R.string.default_error), UPLOAD_PROFILE_IMAGE));
                             }
                         }));
+
+    }
+
+    private void teachercallUploadImageApi(List<KYCDocumentDatamodel> list, KYCInputModel kycInputModel) {
+        AppLogger.e("chhonker uploadAllDocApi", "step 5");
+        getCompositeDisposable().add(homeRemoteUseCase.teacheruploadProfileImage(list, kycInputModel).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).doOnSubscribe(new Consumer<Disposable>() {
+            @Override
+            public void accept(Disposable __) throws Exception {
+                // serviceLiveData.setValue(ResponseApi.loading(UPLOAD_PROFILE_IMAGE));
+            }
+        }).subscribe(
+                new Consumer<ResponseApi>() {
+                    @Override
+                    public void accept(ResponseApi checkUpdate) throws Exception {
+                        AppLogger.e("chhonker uploadAllDocApi", "step 3");
+                        serviceLiveData.setValue(checkUpdate);
+
+                    }
+                },
+
+                new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        AppLogger.e("chhonker uploadAllDocApi", "step 4");
+                        serviceLiveData.setValue(new ResponseApi(Status.FAIL, AuroApp.getAppContext().getResources().getString(R.string.default_error), UPLOAD_PROFILE_IMAGE));
+                    }
+                }));
 
     }
 

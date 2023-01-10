@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -74,12 +75,16 @@ public class QuizLevelInfoSheetDialog extends BottomSheetDialogFragment implemen
 
     public void setAdapter() {
 
-        AppLogger.e("GET_SLABS_API","QuizLevelInfoSheetDialog - "+slabsResModel.getSlabs());
         binding.recyclerview.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         binding.recyclerview.setHasFixedSize(true);
         binding.recyclerview.setNestedScrollingEnabled(false);
-        QuizDetailInfoAdapter adapter = new QuizDetailInfoAdapter(getActivity(), slabsResModel.getSlabs(), this);
-        binding.recyclerview.setAdapter(adapter);
+        if (slabsResModel.getSlabs()!=null){
+            QuizDetailInfoAdapter adapter = new QuizDetailInfoAdapter(getActivity(), slabsResModel.getSlabs(), this);
+            binding.recyclerview.setAdapter(adapter);
+        }
+
+
+
 
         //setListner();
     }

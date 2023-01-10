@@ -60,7 +60,7 @@ public class ValidateStudentActivity extends BaseActivity implements View.OnClic
     protected void init() {
         binding = DataBindingUtil.setContentView(this, getLayout());
         ((AuroApp) this.getApplication()).getAppComponent().doInjection(this);
-        //view model and handler setup
+
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(LoginScreenViewModel.class);
         binding.setLifecycleOwner(this);
 
@@ -98,11 +98,14 @@ public class ValidateStudentActivity extends BaseActivity implements View.OnClic
 
     @Override
     public void onClick(View view) {
-        int id = view.getId();
-        if (id == R.id.RPButtonSendOtp) {
-            checkValidation();
-        } else if (id == R.id.back_button) {
-            finish();
+        switch (view.getId()) {
+            case R.id.RPButtonSendOtp:
+                checkValidation();
+                break;
+
+            case R.id.back_button:
+                finish();
+                break;
         }
     }
 
@@ -118,7 +121,7 @@ public class ValidateStudentActivity extends BaseActivity implements View.OnClic
             showSnackbarError("Please enter the valid new number");
         } else {
             sendOtpApiReqPass();
-            //callCheckUser();
+
         }
     }
 
@@ -222,7 +225,7 @@ public class ValidateStudentActivity extends BaseActivity implements View.OnClic
             switch (responseApi.status) {
 
                 case LOADING:
-                    /*Loading code here*/
+
                     break;
 
                 case SUCCESS:
@@ -238,8 +241,7 @@ public class ValidateStudentActivity extends BaseActivity implements View.OnClic
                     break;
 
                 case NO_INTERNET:
-                    // closeDialog();
-                    //   showSnackbarError((String) responseApi.data);
+
                     ViewUtil.showSnackBar(binding.getRoot(), (String) responseApi.data);
                     binding.progressbar.pgbar.setVisibility(View.GONE);
                     break;
@@ -248,16 +250,13 @@ public class ValidateStudentActivity extends BaseActivity implements View.OnClic
                     binding.progressbar.pgbar.setVisibility(View.GONE);
                     break;
                 case FAIL_400:
-// When Authrization is fail
-                    // closeDialog();
-                    // showSnackbarError((String) responseApi.data);
+
                     binding.progressbar.pgbar.setVisibility(View.GONE);
                     ViewUtil.showSnackBar(binding.getRoot(), (String) responseApi.data);
                     break;
 
                 default:
-                    //closeDialog();
-                    //showSnackbarError((String) responseApi.data);
+
                     binding.progressbar.pgbar.setVisibility(View.GONE);
                     ViewUtil.showSnackBar(binding.getRoot(), (String) responseApi.data);
                     break;
@@ -286,15 +285,7 @@ public class ValidateStudentActivity extends BaseActivity implements View.OnClic
     }
 
     private void handleResponseCode(CheckUserResModel checkUserResModel) {
-    /*    AppLogger.e(TAG, "--" + checkUserResModel.getCode());
-        AppLogger.e(TAG, "--" + checkUserResModel.getStudentName());
-        PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
-        prefModel.setUserMobile(checkUserResModel.getUserMobile());
-        prefModel.setStatusUserCode(checkUserResModel.getCode());
-        prefModel.setStudentClasses(checkUserResModel.getClasses());
-        prefModel.setStudentName(checkUserResModel.getStudentName());
-        prefModel.setStudentData(checkUserResModel.get);
-        AuroAppPref.INSTANCE.setPref(prefModel);*/
+
         this.checkUserResModel=checkUserResModel;
         checkUserForOldUser();
 
@@ -333,13 +324,11 @@ public class ValidateStudentActivity extends BaseActivity implements View.OnClic
         if (resModel.getIsMaster().equalsIgnoreCase(AppConstant.UserType.USER_TYPE_STUDENT)) {
             PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
             prefModel.setStudentData(resModel);
-            //prefModel.setStudentClass(ConversionUtil.INSTANCE.convertStringToInteger(resModel.getGrade()));
             prefModel.setStudentClasses(checkUserResModel.getClasses());
             AuroAppPref.INSTANCE.setPref(prefModel);
         } else {
             PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
             prefModel.setParentData(resModel);
-            // prefModel.setStudentClass(ConversionUtil.INSTANCE.convertStringToInteger(resModel.getGrade()));
             prefModel.setStudentClasses(checkUserResModel.getClasses());
             AuroAppPref.INSTANCE.setPref(prefModel);
         }

@@ -30,8 +30,7 @@ public class ChapterSelectAdapter extends RecyclerView.Adapter<ChapterSelectAdap
     CommonCallBackListner commonCallBackListner;
     Context mcontext;
 
-    // if checkedPosition = -1, there is no default selection
-    // if checkedPosition = 0, 1st item is selected by default
+
     private final int checkedPosition = 0;
 
     public ChapterSelectAdapter(Context mcontext, List<QuizResModel> list, CommonCallBackListner commonCallBackListner) {

@@ -43,6 +43,7 @@ import com.auro.application.databinding.QuizTestNativeLayoutBinding;
 import com.auro.application.databinding.SendMoneyFragmentLayoutBinding;
 import com.auro.application.databinding.StudentKycInfoLayoutBinding;
 import com.auro.application.databinding.SubjectPrefLayoutBinding;
+import com.auro.application.databinding.TeacherBuddyViewpagerFragmentLayoutBinding;
 import com.auro.application.databinding.UpiFragmentLayoutBinding;
 import com.auro.application.databinding.UserNotRegisteredDialogLayoutBinding;
 import com.auro.application.home.data.model.Details;
@@ -143,7 +144,7 @@ public enum AppStringDynamic {
                binding.tvStep.setText(details.getStep());
                binding.tvStep2.setText(details.getStep());
                binding.tvStepDesc2.setText(details.getAddStudent());
-            //   binding.tvStepDesc.setText(details.getSet_your_pin());
+               binding.tvStepDesc.setText(details.getSet_your_pin());
             }
         } catch (Exception e) {
             AppLogger.e(TAG, e.getMessage());
@@ -560,6 +561,18 @@ public enum AppStringDynamic {
             if (model != null) {
                 binding.RPTextView9.setText(details.getScholarshipTransfer());
 
+            }
+        } catch (Exception e) {
+            AppLogger.e(TAG, e.getMessage());
+        }
+    }
+
+    public static void setTeacherBuddyViewPagerStrings(TeacherBuddyViewpagerFragmentLayoutBinding binding) {
+        try {
+            LanguageMasterDynamic model = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic();
+            Details details = model.getDetails();
+            if (model != null) {
+                binding.RPTextView9.setText(details.getTeacher_buddy() != null ? details.getTeacher_buddy() :  "Teacher Buddies");
             }
         } catch (Exception e) {
             AppLogger.e(TAG, e.getMessage());

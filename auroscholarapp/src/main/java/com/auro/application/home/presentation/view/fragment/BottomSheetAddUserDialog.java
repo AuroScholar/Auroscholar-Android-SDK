@@ -89,8 +89,7 @@ public class BottomSheetAddUserDialog extends BottomSheetDialogFragment implemen
         getProfile(parentusername);
         binding.studentList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         binding.studentList.setHasFixedSize(true);
-//        studentListAdapter = new StepsAddChildAdapter(getActivity(),list, this);
-//        binding.studentList.setAdapter(studentListAdapter);
+
 
 
         if (AuroAppPref.INSTANCE.getModelInstance().getCheckUserResModel().getUserDetails().size()>2){
@@ -110,12 +109,7 @@ public class BottomSheetAddUserDialog extends BottomSheetDialogFragment implemen
                 PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
                 Intent intent = new Intent(getActivity(), CompleteStudentProfileWithPinActivity.class);
                 startActivity(intent);
-//                Bundle bundle = new Bundle();
-//                bundle.putParcelable(AppConstant.DASHBOARD_RES_MODEL, prefModel.getDashboardResModel());
-//                bundle.putString(AppConstant.COMING_FROM, AppConstant.SENDING_DATA.STUDENT_PROFILE);
-//                StudentProfileFragment bottomSheet = new StudentProfileFragment();
-//                bottomSheet.setArguments(bundle);
-//                bottomSheet.getActivity().getFragmentManager();
+
 
 
 
@@ -166,12 +160,7 @@ public class BottomSheetAddUserDialog extends BottomSheetDialogFragment implemen
         UserDetailResModel userDetailResModel = AuroAppPref.INSTANCE.getModelInstance().getParentData();
         String parentusername = AuroAppPref.INSTANCE.getModelInstance().getCheckUserResModel().getUserDetails().get(0).getUserName();
         getProfile(parentusername);
-//        UserDetailResModel userDetailResModel = AuroAppPref.INSTANCE.getModelInstance().getStudentData();
-//        if (userDetailResModel.isUsername()) {
-//            list.get(0).setStatus(true);
-//        }
-//        studentListAdapter.setData(list);
-//        AppLogger.e("BottomSheetAddUserDialog", "BottomSheetAddUserDialog onresume caliing..");
+
     }
 
 
@@ -199,12 +188,6 @@ public class BottomSheetAddUserDialog extends BottomSheetDialogFragment implemen
                                         binding.mainLayout.setVisibility(View.GONE);
                                         binding.mainLayout2.setVisibility(View.VISIBLE);
                                     }
-
-
-
-
-
-
 
 
                         }

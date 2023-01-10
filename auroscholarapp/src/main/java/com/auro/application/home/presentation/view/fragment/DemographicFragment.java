@@ -99,7 +99,7 @@ public class DemographicFragment extends BaseFragment implements CommonCallBackL
 
     LocationHandler locationHandlerUpdate;
     GetStudentUpdateProfile demographicResModel = new GetStudentUpdateProfile();
-   // DemographicResModel demographicResModel = new DemographicResModel();
+
    PrefModel prefModel;
    Details details;
 
@@ -120,7 +120,7 @@ public class DemographicFragment extends BaseFragment implements CommonCallBackL
         setRetainInstance(true);
         ViewUtil.setLanguageonUi(getActivity());
         AppStringDynamic.setDemoGraphicStrings(binding);
-      //  getSchoolmedium();
+
         return binding.getRoot();
     }
 
@@ -130,7 +130,7 @@ public class DemographicFragment extends BaseFragment implements CommonCallBackL
         binding.toolbarLayout.backArrow.setVisibility(View.VISIBLE);
         setKeyListner();
         if (TextUtil.isEmpty(dashboardResModel.getLatitude()) && TextUtil.isEmpty(dashboardResModel.getLongitude())) {
-            /*askPermission();*/
+
         }
 
         if (!TextUtil.isEmpty(dashboardResModel.getIsPrivateTution())) {
@@ -141,7 +141,7 @@ public class DemographicFragment extends BaseFragment implements CommonCallBackL
             demographicResModel.setPrivateTutionType("");
         }
 
-        // Spinner Drop down Gender
+
         genderLines = Arrays.asList(getResources().getStringArray(R.array.genderlist));
         spinnermethodcall(genderLines, binding.SpinnerGender);
         for (int i = 0; i < genderLines.size(); i++) {
@@ -152,7 +152,7 @@ public class DemographicFragment extends BaseFragment implements CommonCallBackL
             }
         }
 
-        // Spinner Drop down schooltype
+
         schooltypeLines = Arrays.asList(getResources().getStringArray(R.array.schooltypelist));
         spinnermethodcall(schooltypeLines, binding.SpinnerSchoolType);
         for (int i = 0; i < schooltypeLines.size(); i++) {
@@ -163,7 +163,7 @@ public class DemographicFragment extends BaseFragment implements CommonCallBackL
             }
         }
 
-        // Spinner Drop down boardlist
+
         boardLines = Arrays.asList(getResources().getStringArray(R.array.boardlist));
         spinnermethodcall(boardLines, binding.SpinnerBoard);
         for (int i = 0; i < boardLines.size(); i++) {
@@ -174,7 +174,7 @@ public class DemographicFragment extends BaseFragment implements CommonCallBackL
             }
         }
 
-        // Spinner Drop down language
+
         languageLines = Arrays.asList(getResources().getStringArray(R.array.languagelist));
         spinnermethodcall(languageLines, binding.SpinnerLanguageMedium);
         for (int i = 0; i < languageLines.size(); i++) {
@@ -185,7 +185,7 @@ public class DemographicFragment extends BaseFragment implements CommonCallBackL
             }
         }
 
-        // Spinner Drop down tution
+
         privateTutionList = Arrays.asList(getResources().getStringArray(R.array.privateTutionList));
         spinnermethodcall(privateTutionList, binding.spinnerPrivateTution);
         for (int i = 0; i < privateTutionList.size(); i++) {
@@ -196,7 +196,7 @@ public class DemographicFragment extends BaseFragment implements CommonCallBackL
             }
         }
 
-        // Spinner Drop down tution  Type
+
         privateTutionTypeList = Arrays.asList(getResources().getStringArray(R.array.privateTypeList));
         spinnermethodcall(privateTutionTypeList, binding.spinnerPrivateType);
         for (int i = 0; i < privateTutionTypeList.size(); i++) {
@@ -224,13 +224,7 @@ public class DemographicFragment extends BaseFragment implements CommonCallBackL
             observeServiceResponse();
         }
 
-       /* PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
-        if (prefModel.getUserLanguage().equalsIgnoreCase(AppConstant.LANGUAGE_EN)) {
-            setLanguageText(AppConstant.HINDI);
-        } else {
-            setLanguageText(AppConstant.ENGLISH);
-        }*/
-        //askPermission();
+
     }
 
     private void setLanguageText(String text) {
@@ -238,24 +232,24 @@ public class DemographicFragment extends BaseFragment implements CommonCallBackL
     }
 
     public void spinnermethodcall(List<String> languageLines, AppCompatSpinner spinner) {
-        // Creating adapter for spinner
+
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, languageLines);
 
-        // Drop down layout style - list view with radio button
+
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        // attaching data adapter to spinner
+
         spinner.setAdapter(dataAdapter);
 
     }
     public void spinnermethodcallLanguage(List<SchoolLangData> languageLines, AppCompatSpinner spinner) {
-        // Creating adapter for spinner
+
         ArrayAdapter<SchoolLangData> dataAdapter = new ArrayAdapter<SchoolLangData>(getActivity(), android.R.layout.simple_spinner_item, languageLines);
 
-        // Drop down layout style - list view with radio button
+
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        // attaching data adapter to spinner
+
         spinner.setAdapter(dataAdapter);
 
     }
@@ -426,7 +420,7 @@ public class DemographicFragment extends BaseFragment implements CommonCallBackL
                     break;
 
                 case NO_INTERNET:
-//On fail
+
                     handleProgress(2, (String) responseApi.data);
                     break;
 
@@ -490,27 +484,7 @@ public class DemographicFragment extends BaseFragment implements CommonCallBackL
         ft.detach(this).attach(this).commit();
     }
 
-    private void askPermission() {
-        String rationale = "Please give location permission for provide you the better service.";
-        Permissions.Options options = new Permissions.Options()
-                .setRationaleDialogTitle("Info")
-                .setSettingsDialogTitle("Warning");
-        Permissions.check(getActivity(), PermissionUtil.mLocationPermission, rationale, options, new PermissionHandler() {
-            @Override
-            public void onGranted() {
-                getCurrentLocation();
-                AppLogger.e(TAG, "Location Permission Granted");
-            }
 
-            @Override
-            public void onDenied(Context context, ArrayList<String> deniedPermissions) {
-                // permission denied, block the feature.
-                //getActivity().getSupportFragmentManager().popBackStack();
-                AppLogger.e(TAG, "Location Permission Denied");
-
-            }
-        });
-    }
 
 
     @Override
@@ -526,7 +500,7 @@ public class DemographicFragment extends BaseFragment implements CommonCallBackL
                     AppLogger.e(TAG, "GPS on Denied");
                     break;
                 default:
-                    // do nothing here
+
                     break;
 
             }
@@ -597,45 +571,7 @@ public class DemographicFragment extends BaseFragment implements CommonCallBackL
         });
     }
 
-    private void getSchoolmedium()
-    {
-        prefModel =  AuroAppPref.INSTANCE.getModelInstance();
-        String langiduser = prefModel.getUserLanguageId();
-        mediumlist.clear();
-        HashMap<String,String> map_data = new HashMap<>();
-        map_data.put("language_id", langiduser);
-        RemoteApi.Companion.invoke().getSchoolmedium(map_data)
-                .enqueue(new Callback<SchoolMediumLangDataModel>() {
-                    @Override
-                    public void onResponse(Call<SchoolMediumLangDataModel> call, Response<SchoolMediumLangDataModel> response)
-                    {
-                        if (response.isSuccessful())
-                        {
-                            Log.d(TAG, "onDistrictResponse: "+response.message());
-                            for ( int i=0 ;i < response.body().getResult().size();i++)
-                            {
-                                int city_id = response.body().getResult().get(i).getLanguage_id();
-                                String city_name = response.body().getResult().get(i).getTranslated_language();
-                                String lang_name = response.body().getResult().get(i).getLanguage_name();
 
-                                SchoolLangData districtData = new  SchoolLangData(city_id,city_name,lang_name);
-                                mediumlist.add(districtData);
-
-                            }
-                            spinnermethodcallLanguage(mediumlist, binding.SpinnerLanguageMedium);
-
-                        }
-
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<com.auro.application.home.data.model.SchoolMediumLangDataModel> call, Throwable t)
-                    {
-                        Log.d(TAG, "onDistrictFailure: "+t.getMessage());
-                    }
-                });
-    }
 
 
 }

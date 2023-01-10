@@ -52,7 +52,7 @@
             android:layout_marginTop="@dimen/_10sdp"
             android:layout_marginBottom="@dimen/_10sdp"
             android:layout_marginLeft="@dimen/_20sdp"
-            android:text="Score :10"
+            android:text="Score :0"
             app:Font="ArticulatCF-Medium.otf"/>
 
 

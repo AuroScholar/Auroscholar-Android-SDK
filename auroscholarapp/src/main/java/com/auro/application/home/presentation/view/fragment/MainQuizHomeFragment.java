@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.auro.application.ChatActivity;
 import com.auro.application.R;
 import com.auro.application.RealTimeFaceDetection.CameraxActivity;
 import com.auro.application.core.application.AuroApp;
@@ -40,6 +41,7 @@ import com.auro.application.core.common.AppConstant;
 import com.auro.application.core.common.CommonCallBackListner;
 import com.auro.application.core.common.CommonDataModel;
 import com.auro.application.core.common.ResponseApi;
+import com.auro.application.core.common.Status;
 import com.auro.application.core.database.AuroAppPref;
 import com.auro.application.core.database.PrefModel;
 import com.auro.application.core.network.URLConstant;
@@ -58,8 +60,10 @@ import com.auro.application.home.data.model.response.FetchStudentPrefResModel;
 import com.auro.application.home.data.model.response.GetStudentUpdateProfile;
 import com.auro.application.home.data.model.response.InstructionsResModel;
 import com.auro.application.home.data.model.response.SlabsResModel;
+import com.auro.application.home.data.model.response.StudentKycStatusResModel;
 import com.auro.application.home.data.model.signupmodel.InstructionModel;
 import com.auro.application.home.data.model.signupmodel.InstructionModel;
+import com.auro.application.home.data.model.signupmodel.UserSlabsRequest;
 import com.auro.application.home.presentation.view.activity.CameraActivity;
 import com.auro.application.home.presentation.view.activity.WebActivity;
 import com.auro.application.home.presentation.view.activity.DashBoardMainActivity;
@@ -68,6 +72,7 @@ import com.auro.application.home.presentation.view.adapter.LevelInfoAdapter;
 import com.auro.application.home.presentation.view.adapter.SubjectSelectAdapter;
 import com.auro.application.home.presentation.viewmodel.QuizViewModel;
 import com.auro.application.quiz.presentation.view.fragment.QuizTestNativeFragment;
+import com.auro.application.teacher.data.model.response.AddNewSchoolResModel;
 import com.auro.application.util.AppLogger;
 import com.auro.application.util.AppUtil;
 import com.auro.application.util.ConversionUtil;
@@ -109,6 +114,9 @@ import static android.content.Context.MODE_PRIVATE;
 import static com.auro.application.core.common.Status.ASSIGNMENT_STUDENT_DATA_API;
 import static com.auro.application.core.common.Status.DASHBOARD_API;
 import static com.auro.application.core.common.Status.GET_INSTRUCTIONS_API;
+import static com.auro.application.core.common.Status.GET_SLABS_API;
+import static com.auro.application.core.common.Status.LISTNER_FAIL;
+import static com.auro.application.home.presentation.view.fragment.CongratulationsDialog.commonCallBackListner;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -135,7 +143,7 @@ public class MainQuizHomeFragment extends BaseFragment implements CommonCallBack
     QuizResModel quizResModel;
     AssignmentReqModel assignmentReqModel;
     AssignmentResModel testAssignmentResModel;
-
+   String getkycstatus;
     ProgressDialog quizProgressDialog;
     InstructionDialog customDialog;
     SlabsResModel slabsResModel;
@@ -170,9 +178,13 @@ public class MainQuizHomeFragment extends BaseFragment implements CommonCallBack
         binding.setLifecycleOwner(this);
         binding.setQuizViewModel(quizViewModel);
         setRetainInstance(true);
-        //getKYCChecked();
+        getKYCChecked();
         init();
+       // ((DashBoardMainActivity) getActivity()).callSlabsApi(); //Slab Changes
+
         setListener();
+       // callSlabsApi();
+       // getSlabLevel();  //for staging
         return binding.getRoot();
     }
 
@@ -184,7 +196,8 @@ public class MainQuizHomeFragment extends BaseFragment implements CommonCallBack
 
     @Override
     protected void init() {
-     prefModel = AuroAppPref.INSTANCE.getModelInstance();
+        prefModel = AuroAppPref.INSTANCE.getModelInstance();
+        details = prefModel.getLanguageMasterDynamic().getDetails();
         try {
             AppLogger.e(TAG, DateUtil.getMonthName());
             binding.RPTextView9.setText(DateUtil.getMonthName() + " " + getActivity().getResources().getString(R.string.scholarship));
@@ -196,27 +209,30 @@ public class MainQuizHomeFragment extends BaseFragment implements CommonCallBack
             AppLogger.e(TAG, e.getMessage());
         }
 
-      //  dashboardResModel = prefModel.getDashboardResModel();
+        dashboardResModel = prefModel.getDashboardResModel();
         checkScreenPreferences();
         AppLogger.e("chhonker main quiz Fragment -- grade change--", "" + prefModel.isDashboardaApiNeedToCall());
         if (dashboardResModel != null && !prefModel.isDashboardaApiNeedToCall()) {
             onApiSuccess();
-        } else {
+        }
+        else {
             AppLogger.e("chhonker --", "Api calling callDasboardApi");
             callDasboardApi();
         }
+
+
         AppStringDynamic.setMainQuizHometrings(binding);
        // ((DashBoardMainActivity) getActivity()).callSlabsApi(); //Slab Changes
        /* if (slabsResModel == null) {
             slabsResModel = getDummyJson();
         }*/
-       // makeQuizInfoAdapter();
+        // makeQuizInfoAdapter();
     }
 
     void checkScreenPreferences() {
         PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
         AppLogger.e("checkScreenPreferences --", "" + prefModel.getStudentClass());
-        int studentClass = 2;
+        int studentClass = ConversionUtil.INSTANCE.convertStringToInteger(prefModel.getStudentData().getGrade());
         AppLogger.e("checkScreenPreferences --", "" + studentClass);
         if (studentClass > 10) {
             FetchStudentPrefResModel fetchStudentPrefResModel = prefModel.getFetchStudentPrefResModel();
@@ -232,6 +248,8 @@ public class MainQuizHomeFragment extends BaseFragment implements CommonCallBack
     @Override
     public void onResume() {
         super.onResume();
+        //((DashBoardMainActivity) getActivity()).callSlabsApi(); //Slab Changes
+
     }
 
     @Override
@@ -275,7 +293,7 @@ public class MainQuizHomeFragment extends BaseFragment implements CommonCallBack
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener(this);
-        binding.slabLayout.quizInfoImg.setOnClickListener(this);
+        binding.quizInfoImg.setOnClickListener(this);
 
     }
 
@@ -320,12 +338,12 @@ public class MainQuizHomeFragment extends BaseFragment implements CommonCallBack
                 SharedPreferences prefs = getActivity().getSharedPreferences("My_Pref", MODE_PRIVATE);
                 String checkkycstatus = prefs.getString("checkkycstatus", "");
                 String checkkycstatusmessage = prefs.getString("checkkycstatusmessage","");
-               if (checkkycstatus.equals("true")||checkkycstatus.equals(true)){
-                   setAdapterChapter((SubjectResModel) commonDataModel.getObject());
-               }
-               else{
-                   ViewUtil.showSnackBar(binding.getRoot(),checkkycstatusmessage);
-               }
+                if (checkkycstatus.equals("true")||checkkycstatus.equals(true)){
+                    setAdapterChapter((SubjectResModel) commonDataModel.getObject());
+                }
+                else{
+                    ViewUtil.showSnackBar(binding.getRoot(),checkkycstatusmessage);
+                }
 
 
                 break;
@@ -370,6 +388,7 @@ public class MainQuizHomeFragment extends BaseFragment implements CommonCallBack
                 break;
 
             case GET_SLABS_API:
+
                 AppLogger.e("GET_SLABS_API", "step 1.5--");
                 slabsResModel = (SlabsResModel) commonDataModel.getObject();
                 AppLogger.e("GET_SLABS_API-", slabsResModel.getMessage());
@@ -400,6 +419,7 @@ public class MainQuizHomeFragment extends BaseFragment implements CommonCallBack
                                 String message = jsonObject.getString("message");
                                 //Toast.makeText(getActivity(),message, Toast.LENGTH_SHORT).show();
                                 SharedPreferences.Editor editor = getActivity().getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
+
                                 editor.putString("checkkycstatus", "false");
                                 editor.putString("checkkycstatusmessage", message);
                                 editor.apply();
@@ -408,21 +428,21 @@ public class MainQuizHomeFragment extends BaseFragment implements CommonCallBack
                             }
                         }
 
-                       else if (response.isSuccessful())
+                        else if (response.isSuccessful())
                         {
-                         String success = response.body().getStatus();
-                         String message = response.body().getMessage();
-                         if (success.equals("success")){
-                             SharedPreferences.Editor editor = getActivity().getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
-                             editor.putString("checkkycstatus", "true");
-                             editor.apply();
-                         }
-                         else{
-                             SharedPreferences.Editor editor = getActivity().getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
-                             editor.putString("checkkycstatus", "false");
-                             editor.putString("checkkycstatusmessage", message);
-                             editor.apply();
-                         }
+                            String success = response.body().getStatus();
+                            String message = response.body().getMessage();
+                            if (success.equals("success")){
+                                SharedPreferences.Editor editor = getActivity().getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
+                                editor.putString("checkkycstatus", "true");
+                                editor.apply();
+                            }
+                            else{
+                                SharedPreferences.Editor editor = getActivity().getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
+                                editor.putString("checkkycstatus", "false");
+                                editor.putString("checkkycstatusmessage", message);
+                                editor.apply();
+                            }
 
 
 
@@ -451,9 +471,9 @@ public class MainQuizHomeFragment extends BaseFragment implements CommonCallBack
 //        Permissions.check(getActivity(), PermissionUtil.mCameraPermissions, rationale, options, new PermissionHandler() {
 //            @Override
 //            public void onGranted() {
-                PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
-                callStartQuizActionApi();
-              //   openCameraPhotoFragment();
+        PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
+        callStartQuizActionApi();
+        //   openCameraPhotoFragment();
               /*  if (prefModel.isPreQuizDisclaimer()) {  for one time open
 
                 } else {
@@ -521,32 +541,49 @@ public class MainQuizHomeFragment extends BaseFragment implements CommonCallBack
         if (v.getId() == R.id.sheet_layout_quiz) {
             AppLogger.e(TAG, "On click called sheet_layout 1");
         }
-        int id = v.getId();
-        if (id == R.id.sheet_layout_quiz) {
-            AppLogger.e(TAG, "On click called sheet_layout");
-        } else if (id == R.id.language_layout) {
-            ((DashBoardMainActivity) getActivity()).openChangeLanguageDialog();
-        } else if (id == R.id.cardView2) {
-            ((DashBoardMainActivity) getActivity()).openProfileFragment();
-        } else if (id == R.id.walleticon) {
-            openWalletInfoFragment();
+        switch (v.getId()) {
+            case R.id.sheet_layout_quiz:
+                AppLogger.e(TAG, "On click called sheet_layout");
+                break;
+
+            case R.id.language_layout:
+                ((DashBoardMainActivity) getActivity()).openChangeLanguageDialog();
+                break;
+
+            case R.id.cardView2:
+                ((DashBoardMainActivity) getActivity()).openProfileFragment();
+                break;
+
+            case R.id.walleticon:
+              getKYCStatus();
                /* if (quizViewModel.homeUseCase.checkKycStatus(dashboardResModel)) {
                     ((DashBoardMainActivity) getActivity()).openKYCViewFragment(dashboardResModel, 0);
                 } else {
                     ((DashBoardMainActivity) getActivity()).openKYCFragment(dashboardResModel, 0);
                 }*/
-        }
-        else if (id == R.id.float_chat) {
-          //  startActivity(new Intent(getContext(), MainActivity.class));
-        }
-        else if (id == R.id.privacy_policy) {
-            openWebActivty(URLConstant.PRIVACY_POLICY);
-        } else if (id == R.id.terms_of_use) {
-            openWebActivty(URLConstant.TERM_CONDITION);
-        } else if (id == R.id.imageChat) {
-            openYuboChatActivty();
-        } else if (id == R.id.quiz_info_img) {
-            openQuizBottomSheetDialog();
+                break;
+
+            case R.id.float_chat:
+                // openYuboChatActivty();
+                startActivity(new Intent(getContext(), ChatActivity.class));
+
+                //  Toast.makeText(getContext(),"clicked",Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.privacy_policy:
+                openWebActivty(URLConstant.PRIVACY_POLICY);
+                break;
+
+            case R.id.terms_of_use:
+                openWebActivty(URLConstant.TERM_CONDITION);
+                break;
+            case R.id.imageChat:
+                openYuboChatActivty();
+                break;
+
+            case R.id.quiz_info_img:
+                openQuizBottomSheetDialog();
+                break;
         }
 
     }
@@ -564,6 +601,76 @@ public class MainQuizHomeFragment extends BaseFragment implements CommonCallBack
                 .addToBackStack(null)
                 .commitAllowingStateLoss();
     }
+
+    private void getKYCStatus()
+    {
+        PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
+        String suserid =  AuroAppPref.INSTANCE.getModelInstance().getStudentData().getUserId();
+        HashMap<String,String> map_data = new HashMap<>();
+        map_data.put("user_id",suserid);
+
+        RemoteApi.Companion.invoke().getKYCStatus(map_data)
+                .enqueue(new Callback<StudentKycStatusResModel>()
+                {
+                    @Override
+                    public void onResponse(Call<StudentKycStatusResModel> call, Response<StudentKycStatusResModel> response)
+                    {
+                        if (response.isSuccessful())
+                        {
+                            getkycstatus = response.body().getKycStatus();
+                             String uploadedornot = response.body().getIsKycUploaded();
+                             if (uploadedornot.equals("NO")||uploadedornot=="NO"){
+                                // Toast.makeText(getActivity(), "Please upload you KYC", Toast.LENGTH_SHORT).show();
+                                 ViewUtil.showSnackBar(binding.getRoot(),"Please upload your KYC");
+                             }
+                             else if (uploadedornot.equals("YES")||uploadedornot=="YES"){
+                                 if (getkycstatus.equals("APPROVE")){
+                                     openWalletInfoFragment();
+                                 }
+                                 else if (getkycstatus.equals("PENDING")){
+                                    // Toast.makeText(getActivity(), "Your KYC is pending. Please wait until KYC verified", Toast.LENGTH_SHORT).show();
+                                     ViewUtil.showSnackBar(binding.getRoot(),"Your KYC verification is pending, wait till it gets verified");
+
+                                 }
+                                 else if (getkycstatus.equals("DISAPPROVE")){
+                                    // Toast.makeText(getActivity(), "Your KYC is disapprove", Toast.LENGTH_SHORT).show();
+                                     ViewUtil.showSnackBar(binding.getRoot(),"Your KYC verification has been disapprove, please reupload documents");
+
+                                 }
+                                 else if (getkycstatus.equals("INPROCESS")){
+                                  //   Toast.makeText(getActivity(), "Your KYC is under verification", Toast.LENGTH_SHORT).show();
+                                     ViewUtil.showSnackBar(binding.getRoot(),"Your KYC verification is in progress, wait till it gets verified");
+
+                                 }
+                                 else if (getkycstatus.equals("REJECTED")){
+                                   //  Toast.makeText(getActivity(), "Your KYC is rejected", Toast.LENGTH_SHORT).show();
+                                     ViewUtil.showSnackBar(binding.getRoot(),"Your KYC verification has been rejected, please reupload documents");
+
+                                 }
+                                 else{
+                                     ViewUtil.showSnackBar(binding.getRoot(),"Your KYC verification is pending, wait till it gets verified");
+
+                                 }
+                             }
+
+
+                        }
+                        else
+                        {
+
+                            Log.d(TAG, "onResponser: "+response.message().toString());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<StudentKycStatusResModel> call, Throwable t)
+                    {
+                        Log.d(TAG, "onFailure: "+t.getMessage());
+                    }
+                });
+    }
+
+
 
 
     private void observeServiceResponse() {
@@ -592,7 +699,8 @@ public class MainQuizHomeFragment extends BaseFragment implements CommonCallBack
                             ViewUtil.showSnackBar(binding.getRoot(), testAssignmentResModel.getMessage());
                         }
 
-                    } else if (responseApi.apiTypeStatus == GET_INSTRUCTIONS_API) {
+                    }
+                    else if (responseApi.apiTypeStatus == GET_INSTRUCTIONS_API) {
                         if (quizProgressDialog != null) {
                             quizProgressDialog.dismiss();
                         }
@@ -603,6 +711,32 @@ public class MainQuizHomeFragment extends BaseFragment implements CommonCallBack
                             askPermission();
                             AppLogger.e("GET_INSTRUCTIONS_API", "else part");
                         }
+                    }
+                    else if (responseApi.apiTypeStatus == Status.GET_SLABS_API) {
+                        AppLogger.e("GET_SLABS_API", "step 1");
+                        SlabsResModel slabsResModel=new SlabsResModel();
+                        try {
+                            slabsResModel = (SlabsResModel) responseApi.data;
+                            AppLogger.e("GET_SLABS_API", "step 1.1");
+                        }catch (Exception e)
+                        {
+                            AppLogger.e("GET_SLABS_API", "step 1.2--"+e.getMessage());
+                        }
+
+                        if (!slabsResModel.getError()) {
+
+                            if (commonCallBackListner != null) {
+                                AppLogger.e("GET_SLABS_API", "step 1.3--");
+                                commonCallBackListner.commonEventListner(AppUtil.getCommonClickModel(0, GET_SLABS_API,  responseApi.data));
+                            }
+                        } else {
+                            if (commonCallBackListner != null) {
+                                AppLogger.e("GET_SLABS_API", "step 1.4--");
+                                commonCallBackListner.commonEventListner(AppUtil.getCommonClickModel(0, LISTNER_FAIL, (String) responseApi.data));
+                            }
+                        }
+
+
                     }
                     break;
 
@@ -630,7 +764,13 @@ public class MainQuizHomeFragment extends BaseFragment implements CommonCallBack
 
         });
     }
-
+    public void callSlabsApi() {
+        UserSlabsRequest userSlabsRequest = new UserSlabsRequest();
+        userSlabsRequest.setUserId(AuroAppPref.INSTANCE.getModelInstance().getStudentData().getUserId());  //13899
+        userSlabsRequest.setUserPreferedLanguageId(Integer.parseInt(prefModel.getUserLanguageId()));
+        userSlabsRequest.setExamMonth(DateUtil.getcurrentMonthYear()); //202205
+        quizViewModel.checkInternet(Status.GET_SLABS_API, userSlabsRequest);
+    }
 
     private void openQuizInstructionDialog(InstructionsResModel instructionsResModel) {
         if (getContext() != null) {
@@ -662,13 +802,24 @@ public class MainQuizHomeFragment extends BaseFragment implements CommonCallBack
             binding.imageChat.setVisibility(View.GONE);
             binding.shimmerViewQuiz.setVisibility(View.VISIBLE);
             binding.shimmerViewQuiz.startShimmer();
-        } else if (value == 1) {
-            binding.errorConstraint.setVisibility(View.VISIBLE);
-            binding.mainParentLayout.setVisibility(View.GONE);
+        }
+        else if (value == 1) {
+//            ((DashBoardMainActivity) getActivity()).callFetchUserPreference();
+//            callDasboardApi();
+
+            binding.errorConstraint.setVisibility(View.GONE);
+            binding.mainParentLayout.setVisibility(View.VISIBLE);
             binding.shimmerViewQuiz.setVisibility(View.GONE);
             binding.shimmerViewQuiz.stopShimmer();
+            binding.imageChat.setVisibility(View.VISIBLE);
+
+
+//            binding.errorConstraint.setVisibility(View.GONE);
+//            binding.mainParentLayout.setVisibility(View.GONE);
+//            binding.shimmerViewQuiz.setVisibility(View.GONE);
+//            binding.shimmerViewQuiz.stopShimmer();
             binding.errorLayout.textError.setText(message);
-            binding.imageChat.setVisibility(View.GONE);
+          //  binding.imageChat.setVisibility(View.GONE);
             binding.errorLayout.btRetry.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -677,7 +828,8 @@ public class MainQuizHomeFragment extends BaseFragment implements CommonCallBack
 
                 }
             });
-        } else if (value == 2) {
+        }
+        else if (value == 2) {
             binding.errorConstraint.setVisibility(View.GONE);
             binding.mainParentLayout.setVisibility(View.VISIBLE);
             binding.shimmerViewQuiz.setVisibility(View.GONE);
@@ -685,12 +837,9 @@ public class MainQuizHomeFragment extends BaseFragment implements CommonCallBack
             binding.imageChat.setVisibility(View.VISIBLE);
 
         }
-
     }
 
-
     private void onApiSuccess() {
-
         handleProgress(1, "");
         updateList(dashboardResModel);
         AppUtil.setDashboardResModelToPref(dashboardResModel);
@@ -890,6 +1039,7 @@ public class MainQuizHomeFragment extends BaseFragment implements CommonCallBack
                     AppLogger.e("chhonker-", "QuizTestFragment  setp 1");
                     //loadImageFromStorage(path);
                 } catch (Exception e) {
+                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -1054,11 +1204,11 @@ public class MainQuizHomeFragment extends BaseFragment implements CommonCallBack
     private void makeQuizInfoAdapter() {//pradeep
         // slabsResModel = getDummyJson();
         AppLogger.e("GET_SLABS_API","MainQuizHomeFragment - "+slabsResModel.getSlabs());
-        binding.slabLayout.quizLevelRecycleview.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        binding.slabLayout.quizLevelRecycleview.setHasFixedSize(true);
-        binding.slabLayout.quizLevelRecycleview.setNestedScrollingEnabled(false);
+        binding.quizLevelRecycleview.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        binding.quizLevelRecycleview.setHasFixedSize(true);
+        binding.quizLevelRecycleview.setNestedScrollingEnabled(false);
         LevelInfoAdapter adapter = new LevelInfoAdapter(getActivity(), slabsResModel.getSlabs(), this);
-        binding.slabLayout.quizLevelRecycleview.setAdapter(adapter);
+        binding.quizLevelRecycleview.setAdapter(adapter);
         setDataOnSeekBar();
     }
 
@@ -1089,31 +1239,32 @@ public class MainQuizHomeFragment extends BaseFragment implements CommonCallBack
     }
 
     void setDataOnSeekBar() {
+
         level = quizViewModel.getCurrentLevel(slabsResModel);
 
-        try {
-            binding.slabLayout.seekbarWithIntervals.setIntervals(getIntervals());
-            binding.slabLayout.seekbarWithIntervals.setProgress(level);
-            binding.slabLayout.seekbarWithIntervals.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    binding.slabLayout.seekbarWithIntervals.setProgress(level);
-                }
-
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
-                    binding.slabLayout.seekbarWithIntervals.setProgress(level);
-                }
-
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-                    binding.slabLayout.seekbarWithIntervals.setProgress(level);
-                }
-            });
-        } catch (Exception e) {
-            AppLogger.e("setDataOnSeekBar", "exception--" + e.getMessage());
-        }
-        binding.slabLayout.levelText.setText("Level\n" + level);
+//        try {
+//            binding.slabLayout.seekbarWithIntervals.setIntervals(getIntervals());
+//            binding.slabLayout.seekbarWithIntervals.setProgress(level);
+//            binding.slabLayout.seekbarWithIntervals.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//                @Override
+//                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                    binding.slabLayout.seekbarWithIntervals.setProgress(level);
+//                }
+//
+//                @Override
+//                public void onStartTrackingTouch(SeekBar seekBar) {
+//                    binding.slabLayout.seekbarWithIntervals.setProgress(level);
+//                }
+//
+//                @Override
+//                public void onStopTrackingTouch(SeekBar seekBar) {
+//                    binding.slabLayout.seekbarWithIntervals.setProgress(level);
+//                }
+//            });
+//        } catch (Exception e) {
+//            AppLogger.e("setDataOnSeekBar", "exception--" + e.getMessage());
+//        }
+        binding.levelText.setText("Level\n" + level);
 
     }
 
@@ -1131,5 +1282,46 @@ public class MainQuizHomeFragment extends BaseFragment implements CommonCallBack
         }};
     }
 
+    private void getSlabLevel()
+    {
+        PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
+        String suserid =  AuroAppPref.INSTANCE.getModelInstance().getStudentData().getUserId();
+        HashMap<String,String> map_data = new HashMap<>();
+        map_data.put("user_id",suserid);
+        map_data.put("modules","details,wallet,quizes");
+
+        RemoteApi.Companion.invoke().getStatusForInsta(map_data)
+                .enqueue(new Callback<DashboardResponselDataModel>()
+                {
+                    @Override
+                    public void onResponse(Call<DashboardResponselDataModel> call, Response<DashboardResponselDataModel> response)
+                    {
+                        if (response.isSuccessful())
+                        {
+
+                            String slab = response.body().getSlab();
+                            String slablevel = response.body().getSlabLevel();
+                            if (slab.equals(true)||slab.equals("true")){
+                                binding.slabdashLayout.setVisibility(View.VISIBLE);
+                            }
+                            if (slablevel.equals(true)||slablevel.equals("true")){
+                                binding.quizLevelRecycleview.setVisibility(View.VISIBLE);
+                            }
+
+                        }
+                        else
+                        {
+
+                            Log.d(TAG, "onResponser: "+response.message().toString());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<DashboardResponselDataModel> call, Throwable t)
+                    {
+                        Log.d(TAG, "onFailure: "+t.getMessage());
+                    }
+                });
+    }
 
 }

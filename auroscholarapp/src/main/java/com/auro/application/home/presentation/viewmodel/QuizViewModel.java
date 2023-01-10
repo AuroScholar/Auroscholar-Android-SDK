@@ -11,14 +11,23 @@ import com.auro.application.core.common.ResponseApi;
 import com.auro.application.core.common.Status;
 import com.auro.application.home.data.model.AssignmentReqModel;
 import com.auro.application.home.data.model.AuroScholarDataModel;
+import com.auro.application.home.data.model.AuroScholarInputModel;
+import com.auro.application.home.data.model.FetchStudentPrefReqModel;
+import com.auro.application.home.data.model.OtpOverCallReqModel;
 import com.auro.application.home.data.model.PartnersLoginReqModel;
+import com.auro.application.home.data.model.PendingKycDocsModel;
+import com.auro.application.home.data.model.RefferalReqModel;
+import com.auro.application.home.data.model.SendOtpReqModel;
 import com.auro.application.home.data.model.StudentProfileModel;
+import com.auro.application.home.data.model.VerifyOtpReqModel;
+import com.auro.application.home.data.model.response.DynamiclinkResModel;
 import com.auro.application.home.data.model.response.GetStudentUpdateProfile;
 import com.auro.application.home.data.model.signupmodel.InstructionModel;
 import com.auro.application.home.data.model.response.SlabDetailResModel;
 import com.auro.application.home.data.model.response.SlabModel;
 import com.auro.application.home.data.model.response.SlabsResModel;
 import com.auro.application.home.data.model.signupmodel.InstructionModel;
+import com.auro.application.home.data.model.signupmodel.UserSlabsRequest;
 import com.auro.application.home.domain.usecase.HomeDbUseCase;
 import com.auro.application.home.domain.usecase.HomeRemoteUseCase;
 import com.auro.application.home.domain.usecase.HomeUseCase;
@@ -39,13 +48,17 @@ import static com.auro.application.core.common.Status.ASSIGNMENT_STUDENT_DATA_AP
 import static com.auro.application.core.common.Status.AZURE_API;
 import static com.auro.application.core.common.Status.DASHBOARD_API;
 import static com.auro.application.core.common.Status.GET_INSTRUCTIONS_API;
+import static com.auro.application.core.common.Status.GET_SLABS_API;
 import static com.auro.application.core.common.Status.GRADE_UPGRADE;
 import static com.auro.application.core.common.Status.PARTNERS_API;
 import static com.auro.application.core.common.Status.PARTNERS_LOGIN_API;
 import static com.auro.application.core.common.Status.UPDATE_STUDENT;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
+import android.widget.Toast;
 
 
 public class QuizViewModel extends ViewModel {
@@ -83,6 +96,47 @@ public class QuizViewModel extends ViewModel {
             }
         });
         getCompositeDisposable().add(disposable);
+    }
+
+    public void checkInternet(Status status, Object reqmodel) {
+        AppLogger.v("QuizNew", "Dashboard step 3");
+        Disposable disposable = homeRemoteUseCase.isAvailInternet().subscribe(hasInternet -> {
+            if (hasInternet) {
+                switch (status) {
+
+
+                    case GET_SLABS_API:
+                        AppLogger.e("GET_SLABS_API", "step 2");
+                        getSlabsApi((UserSlabsRequest) reqmodel);
+                        break;
+
+                }
+            } else {
+                // please check your internet
+                serviceLiveData.setValue(new ResponseApi(Status.NO_INTERNET, AuroApp.getAppContext().getResources().getString(R.string.internet_check), Status.NO_INTERNET));
+            }
+
+        });
+        getCompositeDisposable().add(disposable);
+
+    }
+    private void getSlabsApi(UserSlabsRequest id) {
+        getCompositeDisposable().add(homeRemoteUseCase.getSlabsApi(id).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseApi>() {
+                               @Override
+                               public void accept(ResponseApi responseApi) throws Exception {
+                                   AppLogger.e("GET_SLABS_API", "step 3");
+                                   serviceLiveData.setValue(responseApi);
+                               }
+                           },
+                        new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                AppLogger.e("GET_SLABS_API", "step 4");
+                                defaultError(GET_SLABS_API);
+                            }
+                        }));
     }
 
 
@@ -419,12 +473,26 @@ public class QuizViewModel extends ViewModel {
 
    public  int getCurrentLevel(SlabsResModel slabsResModel) {
         int count = 0;
-        for (SlabModel resModel : slabsResModel.getSlabs()) {
-            int log = ConversionUtil.INSTANCE.convertStringToInteger(resModel.getQuizLog());
-            if (log == 2) {
-                count++;
+      for (SlabModel resModel : slabsResModel.getSlabs()) {
+          int slabcount = slabsResModel.getSlabs().size();
+            for(int i=0; i<=resModel.getTotalquiz(); i++){
+
+                int log = ConversionUtil.INSTANCE.convertStringToInteger(slabsResModel.getSlabs().get(i).getQuizLog());
+                if (log == 1){
+
+                    count = i+1;
+                    Log.d("logtag", "number" + log + " "+ count);
+                }
+//                if (log == 2) {
+//                    count++;
+//                }
+
             }
-        }
+//            int log = ConversionUtil.INSTANCE.convertStringToInteger(resModel.getQuizLog());
+//            if (log == 2) {
+//                count++;
+//            }
+       }
         return count;
     }
 

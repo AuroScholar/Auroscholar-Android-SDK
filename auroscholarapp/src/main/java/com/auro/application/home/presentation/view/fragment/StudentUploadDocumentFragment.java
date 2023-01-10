@@ -203,25 +203,33 @@ public class StudentUploadDocumentFragment extends BaseDialog implements View.On
 
     @Override
     public void onClick(View v) {
-        int id = v.getId();
-        if (id == R.id.upload_icon) {
-            if (kycDocumentDatamodel.getDocumentName().equals("Upload Your Photo")) {
-                if (Build.VERSION.SDK_INT > 26) {
-                    askPermissionCamera();
-                } else {
-                    askPermissionCamera();
+        switch (v.getId()) {
+            case R.id.upload_icon:
+                if(kycDocumentDatamodel.getDocumentName().equals("Upload Your Photo")){
+                    if (Build.VERSION.SDK_INT > 26) {
+                        askPermissionCamera();
+                    }
+                    else{
+                        askPermissionCamera();
+                    }
+                }else{
+                    if (Build.VERSION.SDK_INT > 26) {
+                        askPermission();
+                    }
+                    else{
+                        askPermission();
+                        // askPermission();
+                    }
                 }
-            } else {
-                if (Build.VERSION.SDK_INT > 26) {
-                    askPermission();
-                } else {
-                    askPermission();
-                    // askPermission();
-                }
-            }
-        } else if (id == R.id.parentLayout) {/*Nothing*/
-        } else if (id == R.id.closeButton) {
-            dismiss();
+
+                break;
+            case R.id.parentLayout:
+                /*Nothing*/
+                break;
+
+            case R.id.closeButton:
+                dismiss();
+                break;
         }
     }
 
@@ -492,9 +500,6 @@ public class StudentUploadDocumentFragment extends BaseDialog implements View.On
 
     }
 
-
-
-
 //    @Override
 //    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 //        super.onActivityResult(requestCode, resultCode, data);
@@ -748,9 +753,9 @@ public class StudentUploadDocumentFragment extends BaseDialog implements View.On
 
                                                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                                                        Calendar newDate = Calendar.getInstance();
-                                                       newDate.set(year, monthOfYear, dayOfMonth);
+                                                       newCalendar.set(year, monthOfYear, dayOfMonth);
                                                        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
-                                                       final Date startDate = newDate.getTime();
+                                                       final Date startDate = newCalendar.getTime();
                                                        String fdate = sd.format(startDate);
 
                                                        txtdob.setText(fdate);
@@ -765,76 +770,107 @@ public class StudentUploadDocumentFragment extends BaseDialog implements View.On
                                     buttonrej.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            String userid = AuroAppPref.INSTANCE.getModelInstance().getStudentData().getUserId();
-                                            PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
-                                            String langid = prefModel.getUserLanguageId();
+                                            if (txtdob.getText().toString().isEmpty()){
+                                                Toast.makeText(builder.getContext(), "Please enter your dob", Toast.LENGTH_SHORT).show();
+                                            }
+                                            else if (txtadhar.getText().toString().isEmpty()){
+                                                Toast.makeText(builder.getContext(), "Please enter your adhaar no.", Toast.LENGTH_SHORT).show();
 
-                                            HashMap<String,String> map_data = new HashMap<>();
-                                            map_data.put("user_id",userid);
-                                            map_data.put("dob", txtdob.getText().toString());
-                                            map_data.put("dob_fetched",((KYCResListModel) responseApi.data).getDetails().get(0).getDob());
-                                            map_data.put("aadhaar_no",txtadhar.getText().toString());
-                                            map_data.put("aadhaar_no_fetched",((KYCResListModel) responseApi.data).getDetails().get(0).getAadhaar_no());
-                                            map_data.put("address",txtaddress.getText().toString());
-                                            map_data.put("address_fetched",((KYCResListModel) responseApi.data).getDetails().get(0).getAddress());
-                                            map_data.put("gender",etGender.getText().toString());
-                                            map_data.put("gender_fetched",((KYCResListModel) responseApi.data).getDetails().get(0).getGender());
-                                            map_data.put("aadhaar_name",txtname.getText().toString());
-                                            map_data.put("aadhaar_name_fetched",((KYCResListModel) responseApi.data).getDetails().get(0).getStudent_name());
-                                            map_data.put("pincode",txtpin.getText().toString());
-                                            map_data.put("pincode_fetched",((KYCResListModel) responseApi.data).getDetails().get(0).getPincode());
-                                            map_data.put("confidence",((KYCResListModel) responseApi.data).getCompare().get(0).getConfidence());
-                                            map_data.put("user_prefered_language_id",prefModel.getUserLanguageId());
+                                            }
 
-                                            RemoteApi.Companion.invoke().setComparedoc(map_data)
-                                                    .enqueue(new Callback<UpdateParentProfileResModel>()
-                                                    {
-                                                        @Override
-                                                        public void onResponse(Call<UpdateParentProfileResModel> call, Response<UpdateParentProfileResModel> response) {
-                                                           try {
+                                            else if (txtadhar.getText().toString().length() < 12 || txtadhar.getText().toString().length() > 12){
+                                                Toast.makeText(builder.getContext(), "Please enter valid adhaar no.", Toast.LENGTH_SHORT).show();
+                                            }
+                                            else if (etGender.getText().toString().isEmpty() || genderList.get(0).equals(etGender.getText().toString())){
+                                                Toast.makeText(builder.getContext(), details.getPlease_select_gender(), Toast.LENGTH_SHORT).show();
 
-                                                               if (response.code()==400){
-                                                                   JSONObject jsonObject = null;
-                                                                   try {
-                                                                       jsonObject = new JSONObject(response.errorBody().string());
-                                                                       String message = jsonObject.getString("message");
-                                                                       Toast.makeText(getActivity(),message, Toast.LENGTH_SHORT).show();
+                                            }
+                                            else if (txtname.getText().toString().isEmpty()){
+                                                Toast.makeText(builder.getContext(), details.getPlease_enetr_the_name(), Toast.LENGTH_SHORT).show();
 
-                                                                   } catch (JSONException | IOException e) {
-                                                                       e.printStackTrace();
-                                                                   }
+                                            }
+                                            else if (txtname.getText().toString().startsWith(" ")){
+                                                Toast.makeText(builder.getContext(), details.getEnter_space_name(), Toast.LENGTH_SHORT).show();
 
-                                                               }
-                                                              else  if (response.isSuccessful()) {
-                                                                   alertDialog.dismiss();
-                                                                    String msg = response.body().getMessage();
+                                            }
+                                            else if (txtpin.getText().toString().isEmpty()){
+                                                Toast.makeText(builder.getContext(), details.getEnterPin(), Toast.LENGTH_SHORT).show();
+                                            }
+                                            else if (txtpin.getText().toString().length() < 6){
+                                                Toast.makeText(builder.getContext(), details.getInvalid_pin(), Toast.LENGTH_SHORT).show();
+                                            }
+//                                            else if (isValidPinCode(txtpin.getText().toString()) == false){
+//                                                Toast.makeText(builder.getContext(), "Please enter valid Pincode", Toast.LENGTH_SHORT).show();
+//                                            }
+                                           else{
+                                                String userid = AuroAppPref.INSTANCE.getModelInstance().getStudentData().getUserId();
+                                                PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
+                                                String langid = prefModel.getUserLanguageId();
+                                                HashMap<String,String> map_data = new HashMap<>();
+                                                map_data.put("user_id",userid);
+                                                map_data.put("dob", txtdob.getText().toString());
+                                                map_data.put("dob_fetched",((KYCResListModel) responseApi.data).getDetails().get(0).getDob());
+                                                map_data.put("aadhaar_no",txtadhar.getText().toString());
+                                                map_data.put("aadhaar_no_fetched",((KYCResListModel) responseApi.data).getDetails().get(0).getAadhaar_no());
+                                                map_data.put("address",txtaddress.getText().toString());
+                                                map_data.put("address_fetched",((KYCResListModel) responseApi.data).getDetails().get(0).getAddress());
+                                                map_data.put("gender",etGender.getText().toString());
+                                                map_data.put("gender_fetched",((KYCResListModel) responseApi.data).getDetails().get(0).getGender());
+                                                map_data.put("aadhaar_name",txtname.getText().toString());
+                                                map_data.put("aadhaar_name_fetched",((KYCResListModel) responseApi.data).getDetails().get(0).getStudent_name());
+                                                map_data.put("pincode",txtpin.getText().toString());
+                                                map_data.put("pincode_fetched",((KYCResListModel) responseApi.data).getDetails().get(0).getPincode());
+                                                map_data.put("confidence",((KYCResListModel) responseApi.data).getCompare().get(0).getConfidence());
+                                                map_data.put("user_prefered_language_id",prefModel.getUserLanguageId());
 
-
-                                                                   Toast.makeText(builder.getContext(), msg, Toast.LENGTH_SHORT).show();
-
-                                                                }
-                                                              else {
-                                                                    alertDialog.dismiss();
-                                                                    Toast.makeText(builder.getContext(), response.message(), Toast.LENGTH_SHORT).show();
-                                                                }
-                                                            }
-                                                            catch (Exception e) {
-                                                                alertDialog.dismiss();
-                                                                Toast.makeText(builder.getContext(), response.message(), Toast.LENGTH_SHORT).show();
-
-                                                                // Toast.makeText(requireActivity(), details.getInternetCheck(), Toast.LENGTH_SHORT).show();
-                                                            }
-                                                        }
-
-                                                        @Override
-                                                        public void onFailure(Call<UpdateParentProfileResModel> call, Throwable t)
+                                                RemoteApi.Companion.invoke().setComparedoc(map_data)
+                                                        .enqueue(new Callback<UpdateParentProfileResModel>()
                                                         {
-                                                            alertDialog.dismiss();
-                                                            Toast.makeText(builder.getContext(), details.getSuccess_fully_save(), Toast.LENGTH_SHORT).show();
+                                                            @Override
+                                                            public void onResponse(Call<UpdateParentProfileResModel> call, Response<UpdateParentProfileResModel> response) {
+                                                                try {
 
-                                                            //  Toast.makeText(requireActivity(), details.getInternetCheck(), Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    });
+                                                                    if (response.code()==400){
+                                                                        JSONObject jsonObject = null;
+                                                                        try {
+                                                                            jsonObject = new JSONObject(response.errorBody().string());
+                                                                            String message = jsonObject.getString("message");
+                                                                            Toast.makeText(builder.getContext(),message, Toast.LENGTH_SHORT).show();
+
+                                                                        } catch (JSONException | IOException e) {
+                                                                            e.printStackTrace();
+                                                                        }
+
+                                                                    }
+                                                                    else  if (response.isSuccessful()) {
+                                                                        alertDialog.dismiss();
+                                                                        String msg = response.body().getMessage();
+                                                                        Toast.makeText(builder.getContext(), msg, Toast.LENGTH_SHORT).show();
+
+                                                                    }
+                                                                    else {
+                                                                        alertDialog.dismiss();
+                                                                        Toast.makeText(builder.getContext(), response.message(), Toast.LENGTH_SHORT).show();
+                                                                    }
+                                                                }
+                                                                catch (Exception e) {
+                                                                    alertDialog.dismiss();
+                                                                    Toast.makeText(builder.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                                    // Toast.makeText(requireActivity(), details.getInternetCheck(), Toast.LENGTH_SHORT).show();
+                                                                }
+                                                            }
+
+                                                            @Override
+                                                            public void onFailure(Call<UpdateParentProfileResModel> call, Throwable t)
+                                                            {
+                                                                alertDialog.dismiss();
+                                                                Toast.makeText(builder.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+
+                                                                //  Toast.makeText(requireActivity(), details.getInternetCheck(), Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        });
+                                            }
+
                                         }
                                     });
 
@@ -893,7 +929,35 @@ public class StudentUploadDocumentFragment extends BaseDialog implements View.On
         }
     }
 
+    public static boolean isValidPinCode(String pinCode)
+    {
 
+        String regex
+                = "^[1-9]{1}[0-9]{2}\\s{0,1}[0-9]{3}$";
+        Pattern p = Pattern.compile(regex);
+
+        if (pinCode == null) {
+            return false;
+        }
+
+        Matcher m = p.matcher(pinCode);
+
+        return m.matches();
+    }
+
+    public static boolean isValidAadhaarNumber(String str)
+    {
+        String regex
+                = "^[2-9]{1}[0-9]{3}\\s[0-9]{4}\\s[0-9]{4}$";
+
+        // Compile the ReGex
+        Pattern p = Pattern.compile(regex);
+        if (str == null) {
+            return false;
+        }
+        Matcher m = p.matcher(str);
+        return m.matches();
+    }
 
     private void updateKYCList(String path) {
         try {

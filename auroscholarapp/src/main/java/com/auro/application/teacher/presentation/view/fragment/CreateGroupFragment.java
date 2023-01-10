@@ -98,7 +98,7 @@ public class CreateGroupFragment extends BaseFragment implements CommonCallBackL
 
         setListener();
         TeacherUserIdReq teacherUserIdReq = new TeacherUserIdReq();
-       // teacherUserIdReq.setUserId("652597");
+        // teacherUserIdReq.setUserId("652597");
         teacherUserIdReq.setUserId(AuroAppPref.INSTANCE.getModelInstance().getStudentData().getUserId());
         viewModel.checkInternet(teacherUserIdReq, Status.TEACHER_CLASSROOM);
         handleProgress(0, "");
@@ -204,7 +204,7 @@ public class CreateGroupFragment extends BaseFragment implements CommonCallBackL
     }
 
     private void callTeacher() {
-       String groupName = binding.etGroupName.getText().toString();
+        String groupName = binding.etGroupName.getText().toString();
         if(!TextUtil.isEmpty(groupName)){
             TeacherCreateGroupReqModel reqModel = new TeacherCreateGroupReqModel();
             //reqModel.setUserId("652597");
@@ -221,21 +221,23 @@ public class CreateGroupFragment extends BaseFragment implements CommonCallBackL
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.backgroundSprincle_11) {
-            if (teacherCreateGroupResModel == null) {
-                AppLogger.v("SizeAuro", " callTeacher  true  " + totalStudentResModelList.size() + "-----");
-                if (totalStudentResModelList.size() != 0) {
-                    callTeacher();
-                } else {
-                    ViewUtil.showSnackBar(binding.getRoot(), "Please add student in the group");
+        switch (v.getId()) {
+            case R.id.backgroundSprincle_11:
+                if(teacherCreateGroupResModel == null){
+                    AppLogger.v("SizeAuro", " callTeacher  true  " +totalStudentResModelList.size()+"-----");
+                    if(totalStudentResModelList.size() != 0){
+                        callTeacher();
+                    }else{
+                        ViewUtil.showSnackBar(binding.getRoot(), "Please add student in the group");
+                    }
+
+
+                }else{
+                    AppLogger.v("SizeAuro", " callTeacher  false  " +totalStudentResModelList.size()+"-----");
+                    //
+                    ViewUtil.showSnackBar(binding.getRoot(), "Please enter the group name");
                 }
-
-
-            } else {
-                AppLogger.v("SizeAuro", " callTeacher  false  " + totalStudentResModelList.size() + "-----");
-                //
-                ViewUtil.showSnackBar(binding.getRoot(), "Please enter the group name");
-            }
+                break;
         }
     }
 
@@ -261,9 +263,9 @@ public class CreateGroupFragment extends BaseFragment implements CommonCallBackL
                         CommonDataResModel commonDataResModel = (CommonDataResModel) responseApi.data;
                         handleProgress(1, "");
                         ViewUtil.showSnackBar(binding.getRoot(), commonDataResModel.getMessage());
-                        ((HomeActivity) getActivity()).onBackPressed();
+                        ((HomeActivity) getActivity()).openFragment(new MyClassRoomGroupFragment());
                         AppLogger.v("InfoScreen", " step 6 ");
-                     }else if(responseApi.apiTypeStatus == Status.TEACHER_CLASSROOM){
+                    }else if(responseApi.apiTypeStatus == Status.TEACHER_CLASSROOM){
 
                         AppLogger.v("InfoScreen", " step 7 ");
                         teacherClassRoomResModel  = (TeacherClassRoomResModel) responseApi.data;
@@ -347,9 +349,9 @@ public class CreateGroupFragment extends BaseFragment implements CommonCallBackL
 
         List<TotalStudentResModel> teacher = new ArrayList<>();
         for(TotalStudentResModel model:modelNew.getTotalStudentList()){
-            if(model.getGroupId().isEmpty()){
+          //  if(model.getGroupId().isEmpty()){
                 teacher.add(model);
-            }
+          //  }
         }
 
         teacherClassRoomResModel.setTotalStudentList(teacher);

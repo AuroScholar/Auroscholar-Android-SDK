@@ -117,11 +117,7 @@ public class ConsgratuationLessScoreDialog extends BaseDialog implements View.On
                 .setTopLeftCorner(CornerFamily.ROUNDED, radius)
                 .build());
         binding.tickerView.setCharacterLists(TickerUtils.provideNumberList());
-/*        if (getArguments() != null) {
 
-            dashboardResModel = getArguments().getParcelable(getActivity().getResources().getString(R.string.bundledashboardresmodel));
-            assignmentReqModel = getArguments().getParcelable(getActivity().getResources().getString(R.string.bundleassignmentreqmodel));
-        }*/
 
        AppLogger.e("chhonker check dialog 1","step 1");
          quizResModel = AuroAppPref.INSTANCE.getModelInstance().getQuizResModel();
@@ -137,9 +133,7 @@ public class ConsgratuationLessScoreDialog extends BaseDialog implements View.On
             AppLogger.e("chhonker check dialog 4","subject a -"+model.getSubject()+"----"+quizResModel.getCoreSubjectName());
 
         }
-       // subjectResModel = dashboardResModel.getSubjectResModelList().get(assignmentReqModel.getSubjectPos());
-       // finishedTestPos = ConversionUtil.INSTANCE.convertStringToInteger(assignmentReqModel.getExam_name());
-       // quizResModel = subjectResModel.getChapter().get(finishedTestPos - 1);
+
         marks = assignmentReqModel.getActualScore() * 10;
         for (int i = 0; i <= marks; i++) {
             binding.tickerView.setText(i + "%");

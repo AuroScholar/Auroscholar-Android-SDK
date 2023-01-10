@@ -19,7 +19,7 @@ public abstract class AppDatabase extends RoomDatabase {
     private static final String DB_NAME = "passengerhmi_database";
     public abstract TeacherModelDao teacherModelDao();
 
-   // public abstract OutletModelDao outletModelDao();
+
 
 
 
