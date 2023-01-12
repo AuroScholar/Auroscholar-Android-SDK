@@ -86,16 +86,13 @@ public class UpdateCustomDialog extends Dialog implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.btn_yes:
-                try{
-                    dismiss();
-                    context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.auro.application")));
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                }
-
-                break;
+        if (view.getId() == R.id.btn_yes) {
+            try {
+                dismiss();
+                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.auro.application")));
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+            }
         }
 
     }

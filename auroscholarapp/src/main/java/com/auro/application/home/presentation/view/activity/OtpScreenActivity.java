@@ -138,29 +138,24 @@ public class OtpScreenActivity extends BaseActivity implements OTPListener, View
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.RPButtonConfirm:
-                if (!otptext.isEmpty() && otptext.length() == 6) {
-                    binding.otpView.showSuccess();
-                    ViewUtil.hideKeyboard(this);
-                    verifyOtpRxApi();
+        int id = view.getId();
+        if (id == R.id.RPButtonConfirm) {
+            if (!otptext.isEmpty() && otptext.length() == 6) {
+                binding.otpView.showSuccess();
+                ViewUtil.hideKeyboard(this);
+                verifyOtpRxApi();
 
-                } else {
-                    otptext = "";
-                    binding.otpView.showError();
-                    showSnackbarError(this.getString(R.string.enter_otp_txt));
+            } else {
+                otptext = "";
+                binding.otpView.showError();
+                showSnackbarError(this.getString(R.string.enter_otp_txt));
 
-                }
-                break;
-
-            case R.id.resendText:
-                startSMSListener();
-                sendOtpApiReqPass();
-                break;
-
-            case R.id.code_editMobileno:
-                onBackPressed();
-                break;
+            }
+        } else if (id == R.id.resendText) {
+            startSMSListener();
+            sendOtpApiReqPass();
+        } else if (id == R.id.code_editMobileno) {
+            onBackPressed();
         }
 
     }

@@ -724,132 +724,136 @@ public class CompleteStudentProfileWithPinActivity extends BaseActivity implemen
     @Override
     public void onClick(View v) {
 
-        switch (v.getId()) {
+        int id = v.getId();
+        if (id == R.id.editImage) {
+            if (Build.VERSION.SDK_INT > 26) {
+                askPermission();
+            } else {
+                askPermission();
+            }
+        } else if (id == R.id.btdonenew) {
+            String pin = binding.pinView.getText().toString();
+            String confirmpin = binding.confirmPin.getText().toString();
 
 
-
-
-            case R.id.editImage:
-                if (Build.VERSION.SDK_INT > 26) {
-                    askPermission();
-                }
-                else{
-                    askPermission();
-                }
-                break;
-            case R.id.btdonenew:
-                String pin = binding.pinView.getText().toString();
-                String confirmpin = binding.confirmPin.getText().toString();
-
-
-                Details details = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
-  if (binding.etUsername.getText().toString().isEmpty()||binding.etUsername.getText().toString().equals("")){
+            Details details = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
+            if (binding.etUsername.getText().toString().isEmpty() || binding.etUsername.getText().toString().equals("")) {
                 Toast.makeText(this, details.getEnter_user_name(), Toast.LENGTH_SHORT).show();
-            }
-  else if (binding.etUsername.getText().toString().length() < 5){
-      Toast.makeText(this, details.getEnter_min_char(), Toast.LENGTH_SHORT).show();
+            } else if (binding.etUsername.getText().toString().length() < 5) {
+                Toast.makeText(this, details.getEnter_min_char(), Toast.LENGTH_SHORT).show();
 
-  }
-  else if (binding.etUsername.getText().toString().startsWith(" ")){
-      Toast.makeText(this, details.getEnter_space_username(), Toast.LENGTH_SHORT).show();
-  }
-                  else if (binding.pinView.getText().toString().isEmpty()||binding.pinView.getText().toString().equals("")){
+            } else if (binding.etUsername.getText().toString().startsWith(" ")) {
+                Toast.makeText(this, details.getEnter_space_username(), Toast.LENGTH_SHORT).show();
+            } else if (binding.pinView.getText().toString().isEmpty() || binding.pinView.getText().toString().equals("")) {
                 Toast.makeText(this, details.getEnter_the_pin(), Toast.LENGTH_SHORT).show();
+            } else if (pin.length() < 4) {
+                Toast.makeText(this, details.getEnter_pin_digit(), Toast.LENGTH_SHORT).show();
+            } else if (binding.confirmPin.getText().toString().isEmpty() || binding.confirmPin.getText().toString().equals("")) {
+                Toast.makeText(this, details.getEnter_the_confirm_pin(), Toast.LENGTH_SHORT).show();
+            } else if (confirmpin.length() < 4) {
+                Toast.makeText(this, details.getEnter_confirmpin_digit(), Toast.LENGTH_SHORT).show();
+            } else if (pin.startsWith(" ")) {
+                Toast.makeText(this, details.getEnter_space_pin(), Toast.LENGTH_SHORT).show();
+
+            } else if (confirmpin.startsWith(" ")) {
+                Toast.makeText(this, details.getEnter_space_confirmpin(), Toast.LENGTH_SHORT).show();
+
+            } else if (pin == confirmpin || pin.equals(confirmpin)) {
+
+                alreadyExist();
+
+            } else {
+                Toast.makeText(this, details.getPin_and_confirm_not_match(), Toast.LENGTH_SHORT).show();
             }
-  else  if (pin.length() < 4){
-      Toast.makeText(this, details.getEnter_pin_digit(), Toast.LENGTH_SHORT).show();
-  }
-  else if (binding.confirmPin.getText().toString().isEmpty()||binding.confirmPin.getText().toString().equals("")){
-      Toast.makeText(this, details.getEnter_the_confirm_pin(), Toast.LENGTH_SHORT).show();
-  }
 
 
-                else if (confirmpin.length()<4){
-                    Toast.makeText(this, details.getEnter_confirmpin_digit(), Toast.LENGTH_SHORT).show();
-                }
-                else if (pin.startsWith(" ")){
-      Toast.makeText(this, details.getEnter_space_pin(), Toast.LENGTH_SHORT).show();
+            String email = binding.editemail.getText().toString().trim();
+            String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+            Details details1 = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
 
-  }
-                else if (confirmpin.startsWith(" ")){
-      Toast.makeText(this, details.getEnter_space_confirmpin(), Toast.LENGTH_SHORT).show();
+            if (binding.mainParentLayout.getVisibility() == View.VISIBLE) {
 
-  }
-                else if (pin==confirmpin||pin.equals(confirmpin)){
+                if (binding.edtusername.getText().toString().equals("") || binding.edtusername.getText().toString().isEmpty()) {
+                    Toast.makeText(this, details1.getPlease_enetr_the_name(), Toast.LENGTH_SHORT).show();
+                } else if (binding.etStudentGender.getText().toString().equals("Student Gender") || binding.etStudentGender.getText().toString().equals("Select Gender") || binding.etStudentGender.getText().toString().equals("") || binding.etStudentGender.getText().toString().isEmpty() || genderList.get(0).getTranslatedName().equals(binding.etStudentGender.getText().toString())) {
+                    Toast.makeText(this, details1.getPlease_select_gender(), Toast.LENGTH_SHORT).show();
 
-      alreadyExist();
+                } else if (binding.etstate.getText().toString().equals("State") || binding.etstate.getText().toString().equals("") || binding.etstate.getText().toString().isEmpty()) {
+                    Toast.makeText(this, details1.getPlease_enter_select_state(), Toast.LENGTH_SHORT).show();
 
-                }
-                else{
-                    Toast.makeText(this, details.getPin_and_confirm_not_match(), Toast.LENGTH_SHORT).show();
-                }
+                } else if (binding.etdistrict.getText().toString().equals("District") || binding.etdistrict.getText().toString().equals("City") || binding.etdistrict.getText().toString().equals("") || binding.etdistrict.getText().toString().isEmpty()) {
+                    Toast.makeText(this, details1.getPlease_select_district(), Toast.LENGTH_SHORT).show();
 
+                } else if (binding.etschool.getText().toString().equals("Select School") || binding.etschool.getText().toString().equals("School Name") || binding.etschool.getText().toString().equals("School Your School") || binding.etschool.getText().toString().isEmpty() || binding.etschool.getText().toString().equals("")) {
+                    Toast.makeText(this, details1.getPlease_select_school(), Toast.LENGTH_SHORT).show();
 
-            case R.id.submitbutton:
-                String email = binding.editemail.getText().toString().trim();
-                String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-                Details details1 = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
+                } else if (binding.etgrade.getText().toString().equals("Select Your Grade") || binding.etgrade.getText().toString().equals("") || binding.etgrade.getText().toString().isEmpty()) {
+                    Toast.makeText(this, details1.getSelectYourGrade(), Toast.LENGTH_SHORT).show();
 
-                if (binding.mainParentLayout.getVisibility() ==  View.VISIBLE){
+                } else if (image_path == null || image_path.equals("null") || image_path.equals("") || image_path.isEmpty()) {
+                    Toast.makeText(this, details1.getUploadProfilePic(), Toast.LENGTH_SHORT).show();
 
-                    if (binding.edtusername.getText().toString().equals("")||binding.edtusername.getText().toString().isEmpty()){
-                        Toast.makeText(this, details1.getPlease_enetr_the_name(), Toast.LENGTH_SHORT).show();
-                    }
+                } else if (!binding.editemail.getText().toString().isEmpty() && !binding.editemail.getText().toString().equals("") && !email.matches(emailPattern)) {
 
-                    else if (binding.etStudentGender.getText().toString().equals("Student Gender")||binding.etStudentGender.getText().toString().equals("Select Gender")||binding.etStudentGender.getText().toString().equals("")||binding.etStudentGender.getText().toString().isEmpty()||genderList.get(0).getTranslatedName().equals(binding.etStudentGender.getText().toString())){
-                        Toast.makeText(this, details1.getPlease_select_gender(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CompleteStudentProfileWithPinActivity.this, details1.getPlease_enter_valid_email(), Toast.LENGTH_SHORT).show();
 
-                    }
+                } else if (binding.edtusername.getText().toString().startsWith(" ")) {
+                    Toast.makeText(this, details1.getEnter_space_name(), Toast.LENGTH_SHORT).show();
+                } else if (binding.editemail.getText().toString().startsWith(" ") || binding.editemail.getText().toString().endsWith(" ")) {
+                    Toast.makeText(this, details1.getEnter_space_email(), Toast.LENGTH_SHORT).show();
+                } else {
 
-                    else if (binding.etstate.getText().toString().equals("State")||binding.etstate.getText().toString().equals("")||binding.etstate.getText().toString().isEmpty()){
-                        Toast.makeText(this, details1.getPlease_enter_select_state(), Toast.LENGTH_SHORT).show();
-
-                    }
-                    else if (binding.etdistrict.getText().toString().equals("District")||binding.etdistrict.getText().toString().equals("City")||binding.etdistrict.getText().toString().equals("")||binding.etdistrict.getText().toString().isEmpty()){
-                        Toast.makeText(this, details1.getPlease_select_district(), Toast.LENGTH_SHORT).show();
-
-                    }
-                    else if (binding.etschool.getText().toString().equals("Select School")||binding.etschool.getText().toString().equals("School Name")||binding.etschool.getText().toString().equals("School Your School")||binding.etschool.getText().toString().isEmpty()||binding.etschool.getText().toString().equals("")){
-                        Toast.makeText(this, details1.getPlease_select_school(), Toast.LENGTH_SHORT).show();
-
-                    }
-
-                    else if (binding.etgrade.getText().toString().equals("Select Your Grade")||binding.etgrade.getText().toString().equals("")||binding.etgrade.getText().toString().isEmpty()){
-                        Toast.makeText(this, details1.getSelectYourGrade(), Toast.LENGTH_SHORT).show();
-
-                    }
-
-                    else if (image_path == null || image_path.equals("null") || image_path.equals("") || image_path.isEmpty()) {
-                        Toast.makeText(this, details1.getUploadProfilePic(), Toast.LENGTH_SHORT).show();
-
-                    }
-
-
-                    else if (!binding.editemail.getText().toString().isEmpty()&&!binding.editemail.getText().toString().equals("") && !email.matches(emailPattern)){
-
-                            Toast.makeText(CompleteStudentProfileWithPinActivity.this, details1.getPlease_enter_valid_email(), Toast.LENGTH_SHORT).show();
-
-                    }
-                    else if (binding.edtusername.getText().toString().startsWith(" ")){
-                        Toast.makeText(this, details1.getEnter_space_name(), Toast.LENGTH_SHORT).show();
-                    }
-                    else if (binding.editemail.getText().toString().startsWith(" ")||binding.editemail.getText().toString().endsWith(" ")){
-                        Toast.makeText(this, details1.getEnter_space_email(), Toast.LENGTH_SHORT).show();
-                    }
-
-                    else{
-
-                        updateChild();
-
-                    }
-
-                }
-                else{
+                    updateChild();
 
                 }
 
-                break;
+            } else {
 
+            }
+        } else if (id == R.id.submitbutton) {
+            String email = binding.editemail.getText().toString().trim();
+            String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+            Details details1 = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
+
+            if (binding.mainParentLayout.getVisibility() == View.VISIBLE) {
+
+                if (binding.edtusername.getText().toString().equals("") || binding.edtusername.getText().toString().isEmpty()) {
+                    Toast.makeText(this, details1.getPlease_enetr_the_name(), Toast.LENGTH_SHORT).show();
+                } else if (binding.etStudentGender.getText().toString().equals("Student Gender") || binding.etStudentGender.getText().toString().equals("Select Gender") || binding.etStudentGender.getText().toString().equals("") || binding.etStudentGender.getText().toString().isEmpty() || genderList.get(0).getTranslatedName().equals(binding.etStudentGender.getText().toString())) {
+                    Toast.makeText(this, details1.getPlease_select_gender(), Toast.LENGTH_SHORT).show();
+
+                } else if (binding.etstate.getText().toString().equals("State") || binding.etstate.getText().toString().equals("") || binding.etstate.getText().toString().isEmpty()) {
+                    Toast.makeText(this, details1.getPlease_enter_select_state(), Toast.LENGTH_SHORT).show();
+
+                } else if (binding.etdistrict.getText().toString().equals("District") || binding.etdistrict.getText().toString().equals("City") || binding.etdistrict.getText().toString().equals("") || binding.etdistrict.getText().toString().isEmpty()) {
+                    Toast.makeText(this, details1.getPlease_select_district(), Toast.LENGTH_SHORT).show();
+
+                } else if (binding.etschool.getText().toString().equals("Select School") || binding.etschool.getText().toString().equals("School Name") || binding.etschool.getText().toString().equals("School Your School") || binding.etschool.getText().toString().isEmpty() || binding.etschool.getText().toString().equals("")) {
+                    Toast.makeText(this, details1.getPlease_select_school(), Toast.LENGTH_SHORT).show();
+
+                } else if (binding.etgrade.getText().toString().equals("Select Your Grade") || binding.etgrade.getText().toString().equals("") || binding.etgrade.getText().toString().isEmpty()) {
+                    Toast.makeText(this, details1.getSelectYourGrade(), Toast.LENGTH_SHORT).show();
+
+                } else if (image_path == null || image_path.equals("null") || image_path.equals("") || image_path.isEmpty()) {
+                    Toast.makeText(this, details1.getUploadProfilePic(), Toast.LENGTH_SHORT).show();
+
+                } else if (!binding.editemail.getText().toString().isEmpty() && !binding.editemail.getText().toString().equals("") && !email.matches(emailPattern)) {
+
+                    Toast.makeText(CompleteStudentProfileWithPinActivity.this, details1.getPlease_enter_valid_email(), Toast.LENGTH_SHORT).show();
+
+                } else if (binding.edtusername.getText().toString().startsWith(" ")) {
+                    Toast.makeText(this, details1.getEnter_space_name(), Toast.LENGTH_SHORT).show();
+                } else if (binding.editemail.getText().toString().startsWith(" ") || binding.editemail.getText().toString().endsWith(" ")) {
+                    Toast.makeText(this, details1.getEnter_space_email(), Toast.LENGTH_SHORT).show();
+                } else {
+
+                    updateChild();
+
+                }
+
+            } else {
+
+            }
         }
     }
 

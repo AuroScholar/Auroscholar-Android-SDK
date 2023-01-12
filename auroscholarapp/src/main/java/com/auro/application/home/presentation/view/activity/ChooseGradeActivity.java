@@ -116,18 +116,15 @@ public class ChooseGradeActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.buttonSelect:
-                //change comment here
-                setClassInPref(grade);
-                if (grade == 0) {
-                    ViewUtil.showSnackBar(binding.getRoot(), prefModel.getLanguageMasterDynamic().getDetails().getPlease_select_the_grade());
-                } else {
+        if (view.getId() == R.id.buttonSelect) {//change comment here
+            setClassInPref(grade);
+            if (grade == 0) {
+                ViewUtil.showSnackBar(binding.getRoot(), prefModel.getLanguageMasterDynamic().getDetails().getPlease_select_the_grade());
+            } else {
 
-                    callChangeGradeApi();
+                callChangeGradeApi();
 
-                }
-                break;
+            }
         }
     }
 

@@ -882,71 +882,47 @@ public class DashBoardMainActivity extends BaseActivity implements GradeChangeFr
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
-        switch (menuItem.getItemId()) {
-            case R.id.item_home:
+        int itemId = menuItem.getItemId();
+        if (itemId == R.id.item_home) {
+            selectNavigationMenu(0);
 
+            auroStudentscholarSdk(0);
+        } else if (itemId == R.id.item_passport) {
+            funnelPassportScreen();
+            selectNavigationMenu(3);
+            openTransactionsFragment();
+        } else if (itemId == R.id.item_profile) {
+            funnelStudentProfileScreen();
+            selectNavigationMenu(2);
+            openProfileFragment();
+        } else if (itemId == R.id.item_more) {
+            openitemMore();
+        } else if (itemId == R.id.item_back) {
+            closeItemMore();
+            if (!isBackNormal) {
                 selectNavigationMenu(0);
-
                 auroStudentscholarSdk(0);
-                break;
-
-            case R.id.item_passport:
-                funnelPassportScreen();
-                selectNavigationMenu(3);
-                openTransactionsFragment();
-                break;
-
-            case R.id.item_profile:
-                funnelStudentProfileScreen();
-                selectNavigationMenu(2);
-                openProfileFragment();
-                break;
-            case R.id.item_more:
-
-                openitemMore();
-                break;
-
-            case R.id.item_back:
-                closeItemMore();
-                if (!isBackNormal) {
-                    selectNavigationMenu(0);
-                    auroStudentscholarSdk(0);
-                    isBackNormal = true;
-                }
-
-                break;
-
-            case R.id.item_partner:
-                selectNavigationMenu(1);
-                handlePartnertabClick();
-                funnelPartnerApp();
-                break;
-
-            case R.id.item_logout:
-                openLogoutDialog();
-
-                break;
-
-            case R.id.item_aurofriend:
-                isBackNormal = false;
-                funnelStudentleaderBoardScreen();
-                openFriendLeaderBoardFragment();
-                selectMoreNavigationMenu(1);
-                break;
-
-            case R.id.item_kyc:
-                openStudentKycInfoFragment();
-                selectMoreNavigationMenu(2);
-                isBackNormal = false;
-
-                break;
-
-            case R.id.item_privacy_policy:
-                isBackNormal = false;
-                selectMoreNavigationMenu(3);
-                handlePrivacyPolicytabClick();
-                break;
-
+                isBackNormal = true;
+            }
+        } else if (itemId == R.id.item_partner) {
+            selectNavigationMenu(1);
+            handlePartnertabClick();
+            funnelPartnerApp();
+        } else if (itemId == R.id.item_logout) {
+            openLogoutDialog();
+        } else if (itemId == R.id.item_aurofriend) {
+            isBackNormal = false;
+            funnelStudentleaderBoardScreen();
+            openFriendLeaderBoardFragment();
+            selectMoreNavigationMenu(1);
+        } else if (itemId == R.id.item_kyc) {
+            openStudentKycInfoFragment();
+            selectMoreNavigationMenu(2);
+            isBackNormal = false;
+        } else if (itemId == R.id.item_privacy_policy) {
+            isBackNormal = false;
+            selectMoreNavigationMenu(3);
+            handlePrivacyPolicytabClick();
         }
 
         return false;

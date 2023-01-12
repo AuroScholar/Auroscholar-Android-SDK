@@ -59,13 +59,10 @@ public class NativeQuizImageDialog extends DialogFragment implements View.OnClic
 
     @Override
     public void onClick(View view) {
-        switch (view.getId())
-        {
-            case R.id.close_button:
-                dismiss();
-                break;
-            case R.id.download_icon:
-                break;
+        int id = view.getId();
+        if (id == R.id.close_button) {
+            dismiss();
+        } else if (id == R.id.download_icon) {
         }
 
     }

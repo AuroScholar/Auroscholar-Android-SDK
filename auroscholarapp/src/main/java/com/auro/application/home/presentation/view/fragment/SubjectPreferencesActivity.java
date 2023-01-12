@@ -200,17 +200,12 @@ public class SubjectPreferencesActivity extends BaseActivity implements CommonCa
     @Override
     public void onClick(View v) {
         AppLogger.e(TAG, "On click called");
-        switch (v.getId()) {
-            case R.id.ic_close:
-                finish();
-                startDashboardActivity();
-                break;
-
-            case R.id.bt_continue:
-                callUpdatePrefApi();
-
-                break;
-
+        int id = v.getId();
+        if (id == R.id.ic_close) {
+            finish();
+            startDashboardActivity();
+        } else if (id == R.id.bt_continue) {
+            callUpdatePrefApi();
         }
     }
 

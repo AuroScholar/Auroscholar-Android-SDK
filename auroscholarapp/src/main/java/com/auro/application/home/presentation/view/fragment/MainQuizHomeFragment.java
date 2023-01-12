@@ -541,49 +541,32 @@ public class MainQuizHomeFragment extends BaseFragment implements CommonCallBack
         if (v.getId() == R.id.sheet_layout_quiz) {
             AppLogger.e(TAG, "On click called sheet_layout 1");
         }
-        switch (v.getId()) {
-            case R.id.sheet_layout_quiz:
-                AppLogger.e(TAG, "On click called sheet_layout");
-                break;
-
-            case R.id.language_layout:
-                ((DashBoardMainActivity) getActivity()).openChangeLanguageDialog();
-                break;
-
-            case R.id.cardView2:
-                ((DashBoardMainActivity) getActivity()).openProfileFragment();
-                break;
-
-            case R.id.walleticon:
-              getKYCStatus();
+        int id = v.getId();
+        if (id == R.id.sheet_layout_quiz) {
+            AppLogger.e(TAG, "On click called sheet_layout");
+        } else if (id == R.id.language_layout) {
+            ((DashBoardMainActivity) getActivity()).openChangeLanguageDialog();
+        } else if (id == R.id.cardView2) {
+            ((DashBoardMainActivity) getActivity()).openProfileFragment();
+        } else if (id == R.id.walleticon) {
+            getKYCStatus();
                /* if (quizViewModel.homeUseCase.checkKycStatus(dashboardResModel)) {
                     ((DashBoardMainActivity) getActivity()).openKYCViewFragment(dashboardResModel, 0);
                 } else {
                     ((DashBoardMainActivity) getActivity()).openKYCFragment(dashboardResModel, 0);
                 }*/
-                break;
+        } else if (id == R.id.float_chat) {// openYuboChatActivty();
+            startActivity(new Intent(getContext(), ChatActivity.class));
 
-            case R.id.float_chat:
-                // openYuboChatActivty();
-                startActivity(new Intent(getContext(), ChatActivity.class));
-
-                //  Toast.makeText(getContext(),"clicked",Toast.LENGTH_SHORT).show();
-                break;
-
-            case R.id.privacy_policy:
-                openWebActivty(URLConstant.PRIVACY_POLICY);
-                break;
-
-            case R.id.terms_of_use:
-                openWebActivty(URLConstant.TERM_CONDITION);
-                break;
-            case R.id.imageChat:
-                openYuboChatActivty();
-                break;
-
-            case R.id.quiz_info_img:
-                openQuizBottomSheetDialog();
-                break;
+            //  Toast.makeText(getContext(),"clicked",Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.privacy_policy) {
+            openWebActivty(URLConstant.PRIVACY_POLICY);
+        } else if (id == R.id.terms_of_use) {
+            openWebActivty(URLConstant.TERM_CONDITION);
+        } else if (id == R.id.imageChat) {
+            openYuboChatActivty();
+        } else if (id == R.id.quiz_info_img) {
+            openQuizBottomSheetDialog();
         }
 
     }

@@ -216,23 +216,15 @@ public class WalletInfoDetailFragment extends BaseFragment implements View.OnCli
     @Override
     public void onClick(View v) {
 
-        switch (v.getId()) {
-            case R.id.cardView2:
-                ((DashBoardMainActivity) getActivity()).openProfileFragment();
-                ((DashBoardMainActivity) getActivity()).closeItemMore();
-                ((DashBoardMainActivity) getActivity()).selectNavigationMenu(2);
-
-
-                break;
-
-            case R.id.language_layout:
-                ((DashBoardMainActivity) getActivity()).openChangeLanguageDialog();
-                break;
-
-
-            case R.id.bt_transfer_money:
-                openSendMoneyFragment();
-                break;
+        int id = v.getId();
+        if (id == R.id.cardView2) {
+            ((DashBoardMainActivity) getActivity()).openProfileFragment();
+            ((DashBoardMainActivity) getActivity()).closeItemMore();
+            ((DashBoardMainActivity) getActivity()).selectNavigationMenu(2);
+        } else if (id == R.id.language_layout) {
+            ((DashBoardMainActivity) getActivity()).openChangeLanguageDialog();
+        } else if (id == R.id.bt_transfer_money) {
+            openSendMoneyFragment();
         }
     }
 

@@ -82,19 +82,14 @@ public class EnterStudentPinActivity extends BaseActivity implements View.OnClic
     @Override
     public void onClick(View v) {
         ViewUtil.hideKeyboard(this);
-        switch (v.getId()) {
-            case R.id.bt_continue:
-                PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
-                SharedPreferences prefs = getSharedPreferences("My_Pref", MODE_PRIVATE);
-                String childid = prefs.getString("studentuserid", "");
-                getProfile(childid);
-                break;
-
-            case R.id.back_button:
-                onBackPressed();
-                break;
-
-
+        int id = v.getId();
+        if (id == R.id.bt_continue) {
+            PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
+            SharedPreferences prefs = getSharedPreferences("My_Pref", MODE_PRIVATE);
+            String childid = prefs.getString("studentuserid", "");
+            getProfile(childid);
+        } else if (id == R.id.back_button) {
+            onBackPressed();
         }
     }
 

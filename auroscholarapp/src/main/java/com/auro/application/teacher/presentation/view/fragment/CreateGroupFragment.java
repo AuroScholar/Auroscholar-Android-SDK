@@ -221,23 +221,21 @@ public class CreateGroupFragment extends BaseFragment implements CommonCallBackL
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.backgroundSprincle_11:
-                if(teacherCreateGroupResModel == null){
-                    AppLogger.v("SizeAuro", " callTeacher  true  " +totalStudentResModelList.size()+"-----");
-                    if(totalStudentResModelList.size() != 0){
-                        callTeacher();
-                    }else{
-                        ViewUtil.showSnackBar(binding.getRoot(), "Please add student in the group");
-                    }
-
-
-                }else{
-                    AppLogger.v("SizeAuro", " callTeacher  false  " +totalStudentResModelList.size()+"-----");
-                    //
-                    ViewUtil.showSnackBar(binding.getRoot(), "Please enter the group name");
+        if (v.getId() == R.id.backgroundSprincle_11) {
+            if (teacherCreateGroupResModel == null) {
+                AppLogger.v("SizeAuro", " callTeacher  true  " + totalStudentResModelList.size() + "-----");
+                if (totalStudentResModelList.size() != 0) {
+                    callTeacher();
+                } else {
+                    ViewUtil.showSnackBar(binding.getRoot(), "Please add student in the group");
                 }
-                break;
+
+
+            } else {
+                AppLogger.v("SizeAuro", " callTeacher  false  " + totalStudentResModelList.size() + "-----");
+                //
+                ViewUtil.showSnackBar(binding.getRoot(), "Please enter the group name");
+            }
         }
     }
 

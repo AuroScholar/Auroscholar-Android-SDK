@@ -159,21 +159,15 @@ public class CertificateFragment extends BaseFragment implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.back_arrow:
-                getActivity().onBackPressed();
-                break;
-            case R.id.download_icon:
-                askPermission();
-                break;
-            case R.id.language_layout:
-                ((DashBoardMainActivity) getActivity()).openChangeLanguageDialog();
-                break;
-
-            case R.id.cardView2:
-                ((DashBoardMainActivity) getActivity()).openProfileFragment();
-                break;
-
+        int id = v.getId();
+        if (id == R.id.back_arrow) {
+            getActivity().onBackPressed();
+        } else if (id == R.id.download_icon) {
+            askPermission();
+        } else if (id == R.id.language_layout) {
+            ((DashBoardMainActivity) getActivity()).openChangeLanguageDialog();
+        } else if (id == R.id.cardView2) {
+            ((DashBoardMainActivity) getActivity()).openProfileFragment();
         }
     }
 

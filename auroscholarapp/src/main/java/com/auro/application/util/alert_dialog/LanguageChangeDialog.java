@@ -67,20 +67,14 @@ public class LanguageChangeDialog extends Dialog implements View.OnClickListener
     @Override
     public void onClick(View v) {
 
-        switch (v.getId()) {
-
-            case R.id.button:
-                dismiss();
-                // ViewUtil.setLanguage(lang);
-                ViewUtil.setLocaleInstant(context);
-                setLanguage();
-                break;
-
-
-            case R.id.close_button:
-                dismiss();
-                break;
-
+        int id = v.getId();
+        if (id == R.id.button) {
+            dismiss();
+            // ViewUtil.setLanguage(lang);
+            ViewUtil.setLocaleInstant(context);
+            setLanguage();
+        } else if (id == R.id.close_button) {
+            dismiss();
         }
     }
 

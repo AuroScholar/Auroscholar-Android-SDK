@@ -858,69 +858,50 @@ public class StudentProfileFragment extends BaseFragment implements View.OnClick
     @Override
     public void onClick(View v) {
 
-        switch (v.getId()) {
+        int id = v.getId();
+        if (id == R.id.edit_subject_icon) {
+            getActivity().finish();
+            Intent newIntent = new Intent(getActivity(), SubjectPreferencesActivity.class);
+            startActivity(newIntent);
+        } else if (id == R.id.language_layout) {
+            ((DashBoardMainActivity) getActivity()).openChangeLanguageDialog();
+        } else if (id == R.id.back_arrow) {
+            getActivity().onBackPressed();
+        } else if (id == R.id.editImage) {
+            if (Build.VERSION.SDK_INT > 26) {
+                askPermission();
+            } else {
+                askPermission();
+            }
+        } else if (id == R.id.submitbutton) {
+            String email = binding.editemail.getText().toString().trim();
+            String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
 
+            Details details1 = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
+            state_Code = getStudentUpdateProfile.getStateId();
 
-            case R.id.edit_subject_icon:
-                getActivity().finish();
-                Intent newIntent = new Intent(getActivity(), SubjectPreferencesActivity.class);
-                startActivity(newIntent);
-                break;
+            district_code = getStudentUpdateProfile.getDistrictId();
+            if (binding.editProfile.getText().toString().isEmpty() || binding.editProfile.getText().toString().equals("")) {
+                Toast.makeText(getActivity(), details1.getEnter_your_name(), Toast.LENGTH_SHORT).show();
 
-            case R.id.language_layout:
-                ((DashBoardMainActivity) getActivity()).openChangeLanguageDialog();
-                break;
+            } else if (binding.editProfile.getText().toString().startsWith(" ")) {
+                Toast.makeText(getActivity(), details1.getEnter_space_name(), Toast.LENGTH_SHORT).show();
+            } else if (!binding.editemail.getText().toString().isEmpty() && !binding.editemail.getText().toString().equals("") && !email.matches(emailPattern)) {
 
-            case R.id.back_arrow:
-                getActivity().onBackPressed();
-                break;
-            case R.id.editImage:
+                Toast.makeText(getActivity(), details1.getPlease_enter_valid_email(), Toast.LENGTH_SHORT).show();
 
-                if (Build.VERSION.SDK_INT > 26) {
-                    askPermission();
-                }
-                else{
-                    askPermission();
-                }
-                break;
+            } else if (binding.editemail.getText().toString().startsWith(" ")) {
+                Toast.makeText(getActivity(), details1.getEnter_space_email(), Toast.LENGTH_SHORT).show();
+            } else if (binding.etStudentGender.getText().toString().equals("Student Gender") || binding.etStudentGender.getText().toString().equals("Please Select Your Gender") || binding.etStudentGender.getText().toString().equals("") || binding.etStudentGender.getText().toString().equals("Select Your Gender") || binding.etStudentGender.getText().toString().equals("Please Select Gender") || binding.etStudentGender.getText().toString().equals("Select Gender") || genderList.get(0).getTranslatedName().equals(binding.etStudentGender.getText().toString())) {
+                Toast.makeText(getActivity(), details1.getPlease_select_gender(), Toast.LENGTH_SHORT).show();
 
-            case R.id.submitbutton:
-                String email = binding.editemail.getText().toString().trim();
-                String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+            } else if (binding.etstate.getText().toString().equals("") || binding.etstate.getText().toString().isEmpty() || binding.etstate.getText().toString().equals(details1.getState()) || binding.etstate.getText().toString().equals("State")) {
+                Toast.makeText(getActivity(), details1.getPlease_select_state(), Toast.LENGTH_SHORT).show();
 
-                Details details1 = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
-                state_Code = getStudentUpdateProfile.getStateId();
+            } else if (binding.etdistrict.getText().toString().equals("") || binding.etdistrict.getText().toString().isEmpty() || binding.etdistrict.getText().toString().equals("District")) {
+                Toast.makeText(getActivity(), details1.getPlease_select_district(), Toast.LENGTH_SHORT).show();
 
-                district_code = getStudentUpdateProfile.getDistrictId();
-                if (binding.editProfile.getText().toString().isEmpty()||binding.editProfile.getText().toString().equals("")) {
-                    Toast.makeText(getActivity(), details1.getEnter_your_name(), Toast.LENGTH_SHORT).show();
-
-                }
-                else if (binding.editProfile.getText().toString().startsWith(" ")){
-                    Toast.makeText(getActivity(), details1.getEnter_space_name(), Toast.LENGTH_SHORT).show();
-                }
-                else if (!binding.editemail.getText().toString().isEmpty()&&!binding.editemail.getText().toString().equals("")&&!email.matches(emailPattern)){
-
-                    Toast.makeText(getActivity(), details1.getPlease_enter_valid_email(), Toast.LENGTH_SHORT).show();
-
-                }
-                else if (binding.editemail.getText().toString().startsWith(" ")){
-                    Toast.makeText(getActivity(), details1.getEnter_space_email(), Toast.LENGTH_SHORT).show();
-                }
-                else if (binding.etStudentGender.getText().toString().equals("Student Gender") || binding.etStudentGender.getText().toString().equals("Please Select Your Gender")||binding.etStudentGender.getText().toString().equals("") ||binding.etStudentGender.getText().toString().equals("Select Your Gender")||binding.etStudentGender.getText().toString().equals("Please Select Gender")||binding.etStudentGender.getText().toString().equals("Select Gender")||genderList.get(0).getTranslatedName().equals(binding.etStudentGender.getText().toString())) {
-                    Toast.makeText(getActivity(), details1.getPlease_select_gender(), Toast.LENGTH_SHORT).show();
-
-                }
-
-
-                else if (binding.etstate.getText().toString().equals("")||binding.etstate.getText().toString().isEmpty()||binding.etstate.getText().toString().equals(details1.getState())||binding.etstate.getText().toString().equals("State")) {
-                    Toast.makeText(getActivity(), details1.getPlease_select_state(), Toast.LENGTH_SHORT).show();
-
-                }
-                else if (binding.etdistrict.getText().toString().equals("")||binding.etdistrict.getText().toString().isEmpty()||binding.etdistrict.getText().toString().equals("District")) {
-                    Toast.makeText(getActivity(), details1.getPlease_select_district(), Toast.LENGTH_SHORT).show();
-
-                }
+            }
 
 //                else if (!binding.etSchoolname.getText().toString().isEmpty()&&binding.etSchoolname.getText().toString().startsWith("")){
 //                    Toast.makeText(getActivity(), details1.getEnter_space_schoolname(), Toast.LENGTH_SHORT).show();
@@ -930,137 +911,107 @@ public class StudentProfileFragment extends BaseFragment implements View.OnClick
 //                    Toast.makeText(getActivity(), details1.getEnter_space_schoolname(), Toast.LENGTH_SHORT).show();
 //
 //                }
-                else if (binding.etSchoolname.getText().toString().isEmpty()||binding.etSchoolname.getText().toString().equals("")){
+            else if (binding.etSchoolname.getText().toString().isEmpty() || binding.etSchoolname.getText().toString().equals("")) {
 
-                    Toast.makeText(getActivity(), details1.getPlease_select_school(), Toast.LENGTH_SHORT).show();
-                }
+                Toast.makeText(getActivity(), details1.getPlease_select_school(), Toast.LENGTH_SHORT).show();
+            }
 
 //
 
-                else if (getStudentUpdateProfile.getProfilePic()==null||getStudentUpdateProfile.getProfilePic().equals("")||getStudentUpdateProfile.getProfilePic().equals("null")||getStudentUpdateProfile.getProfilePic().equals(null)){
-                    if (image_path == null || image_path.equals("null") || image_path.equals("") || image_path.isEmpty()) {
-                        Toast.makeText(getActivity(), details1.getUploadProfilePic(), Toast.LENGTH_SHORT).show();
+            else if (getStudentUpdateProfile.getProfilePic() == null || getStudentUpdateProfile.getProfilePic().equals("") || getStudentUpdateProfile.getProfilePic().equals("null") || getStudentUpdateProfile.getProfilePic().equals(null)) {
+                if (image_path == null || image_path.equals("null") || image_path.equals("") || image_path.isEmpty()) {
+                    Toast.makeText(getActivity(), details1.getUploadProfilePic(), Toast.LENGTH_SHORT).show();
 
-                    }
-
-                    else if (binding.editProfile.getText().toString().startsWith(" ")) {
-                        Toast.makeText(getActivity(), details1.getEnter_space_name(), Toast.LENGTH_SHORT).show();
-                    }
-
-
-
-                    else{
-                        changeTheEditText();
-                        ((DashBoardMainActivity) getActivity()).setProgressVal();
-                        updateChild();
-                        //sendProfileScreenApi();
-                    }
-                }
-
-
-
-                else {
-//                        changeTheEditText();
+                } else if (binding.editProfile.getText().toString().startsWith(" ")) {
+                    Toast.makeText(getActivity(), details1.getEnter_space_name(), Toast.LENGTH_SHORT).show();
+                } else {
+                    changeTheEditText();
                     ((DashBoardMainActivity) getActivity()).setProgressVal();
-
                     updateChild();
                     //sendProfileScreenApi();
                 }
+            } else {
+//                        changeTheEditText();
+                ((DashBoardMainActivity) getActivity()).setProgressVal();
 
-
-                break;
-            case R.id.editUserNameIcon:
-                AppLogger.v("TextEdit", "   UserName");
-                binding.UserName.setVisibility(View.GONE);
+                updateChild();
+                //sendProfileScreenApi();
+            }
+        } else if (id == R.id.editUserNameIcon) {
+            AppLogger.v("TextEdit", "   UserName");
+            binding.UserName.setVisibility(View.GONE);
+            binding.editUserNameIcon.setVisibility(View.GONE);
+            binding.editProfileName.setVisibility(View.VISIBLE);
+            binding.cancelUserNameIcon.setImageResource(R.drawable.ic_cancel_icon);
+            // binding.editProfile.setText(binding.UserName.getText().toString());
+            binding.editProfile.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(binding.editProfile, InputMethodManager.SHOW_IMPLICIT);
+            binding.cancelUserNameIcon.setVisibility(View.VISIBLE);
+        } else if (id == R.id.cancelUserNameIcon) {
+            AppLogger.v("TextEdit", "   cancelUserNameIcon");
+            if (!TextUtil.isEmpty(binding.editProfile.getText().toString())) {
+                binding.UserName.setVisibility(View.VISIBLE);
                 binding.editUserNameIcon.setVisibility(View.GONE);
+                binding.editUserNameIcon.setImageResource(R.drawable.ic_edit_profile);
                 binding.editProfileName.setVisibility(View.VISIBLE);
-                binding.cancelUserNameIcon.setImageResource(R.drawable.ic_cancel_icon);
-                // binding.editProfile.setText(binding.UserName.getText().toString());
-                binding.editProfile.requestFocus();
-                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(binding.editProfile, InputMethodManager.SHOW_IMPLICIT);
-                binding.cancelUserNameIcon.setVisibility(View.VISIBLE);
+                binding.cancelUserNameIcon.setVisibility(View.GONE);
+                binding.UserName.setText(binding.editProfile.getText().toString());
+            } else {
+                binding.editProfileName.setError("Enter Student Name");
+            }
+        } else if (id == R.id.gradeChnage) {
+            if (!TextUtil.isEmpty(binding.editProfile.getText().toString())) {
+                changeTheEditText();
+                openGradeChangeFragment(AppConstant.SENDING_DATA.STUDENT_PROFILE);
+            } else {
 
-                break;
-
-            case R.id.cancelUserNameIcon:
-                AppLogger.v("TextEdit", "   cancelUserNameIcon");
-                if (!TextUtil.isEmpty(binding.editProfile.getText().toString())) {
-                    binding.UserName.setVisibility(View.VISIBLE);
-                    binding.editUserNameIcon.setVisibility(View.GONE);
-                    binding.editUserNameIcon.setImageResource(R.drawable.ic_edit_profile);
-                    binding.editProfileName.setVisibility(View.VISIBLE);
-                    binding.cancelUserNameIcon.setVisibility(View.GONE);
-                    binding.UserName.setText(binding.editProfile.getText().toString());
-                } else {
-                    binding.editProfileName.setError("Enter Student Name");
-                }
-                break;
-            case R.id.gradeChnage:
-                if (!TextUtil.isEmpty(binding.editProfile.getText().toString())) {
-                    changeTheEditText();
-                    openGradeChangeFragment(AppConstant.SENDING_DATA.STUDENT_PROFILE);
-                } else {
-
-                    binding.editProfileName.setError("Enter Student Name");
-                }
-                break;
-            case R.id.wallet_bal_text:
-                if (!TextUtil.isEmpty(binding.editProfile.getText().toString())) {
-                    changeTheEditText();
-                    openFragment(new WalletInfoDetailFragment());
+                binding.editProfileName.setError("Enter Student Name");
+            }
+        } else if (id == R.id.wallet_bal_text) {
+            if (!TextUtil.isEmpty(binding.editProfile.getText().toString())) {
+                changeTheEditText();
+                openFragment(new WalletInfoDetailFragment());
                    /* if (viewModel.homeUseCase.checkKycStatus(dashboardResModel)) {
                         openKYCViewFragment(dashboardResModel);
                     } else {
                         openKYCFragment(dashboardResModel);
                     }*/
-                } else {
-                    binding.editProfileName.setError("Enter Student Name");
-                }
-
-                break;
-            case R.id.linearLayout8:
-                if (!TextUtil.isEmpty(binding.editProfile.getText().toString())) {
-                    changeTheEditText();
-                } else {
-                    binding.editProfileName.setError("Enter Student Name");
-                }
-                break;
-            case R.id.editPhone:
-                if (!TextUtil.isEmpty(binding.editProfile.getText().toString())) {
-                    changeTheEditText();
-                } else {
-                    binding.editProfileName.setError("Enter Student Name");
-                }
-                break;
-            case R.id.editemail:
-                if (!TextUtil.isEmpty(binding.editProfile.getText().toString())) {
-                    changeTheEditText();
-                } else {
-                    binding.editProfileName.setError("Enter Student Name");
-                }
-                break;
-            case R.id.tilteachertxt:
-                if (!TextUtil.isEmpty(binding.editProfile.getText().toString())) {
-                    changeTheEditText();
-                } else {
-                    binding.editProfileName.setError("Enter Student Name");
-                }
-                break;
-            case R.id.inputemailedittext:
-                if (!TextUtil.isEmpty(binding.editProfile.getText().toString())) {
-                    changeTheEditText();
-                } else {
-                    binding.editProfileName.setError("Enter Student Name");
-                }
-                break;
-
-            case R.id.switchProfile:
-
-                openBottomSheetDialog();
-                break;
-
-
+            } else {
+                binding.editProfileName.setError("Enter Student Name");
+            }
+        } else if (id == R.id.linearLayout8) {
+            if (!TextUtil.isEmpty(binding.editProfile.getText().toString())) {
+                changeTheEditText();
+            } else {
+                binding.editProfileName.setError("Enter Student Name");
+            }
+        } else if (id == R.id.editPhone) {
+            if (!TextUtil.isEmpty(binding.editProfile.getText().toString())) {
+                changeTheEditText();
+            } else {
+                binding.editProfileName.setError("Enter Student Name");
+            }
+        } else if (id == R.id.editemail) {
+            if (!TextUtil.isEmpty(binding.editProfile.getText().toString())) {
+                changeTheEditText();
+            } else {
+                binding.editProfileName.setError("Enter Student Name");
+            }
+        } else if (id == R.id.tilteachertxt) {
+            if (!TextUtil.isEmpty(binding.editProfile.getText().toString())) {
+                changeTheEditText();
+            } else {
+                binding.editProfileName.setError("Enter Student Name");
+            }
+        } else if (id == R.id.inputemailedittext) {
+            if (!TextUtil.isEmpty(binding.editProfile.getText().toString())) {
+                changeTheEditText();
+            } else {
+                binding.editProfileName.setError("Enter Student Name");
+            }
+        } else if (id == R.id.switchProfile) {
+            openBottomSheetDialog();
         }
 
     }

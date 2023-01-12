@@ -232,10 +232,8 @@ public class BookSlotFragment extends BaseFragment implements CommonCallBackList
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.back_button:
-                getActivity().onBackPressed();
-                break;
+        if (v.getId() == R.id.back_button) {
+            getActivity().onBackPressed();
         }
     }
 

@@ -145,24 +145,15 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-
-            case R.id.back_button:
-                finish();
-                break;
-
-            case R.id.RPAccept:
-                setPasswordApi();
-                break;
-
-            case R.id.passwordIcon:
-                handleIconClickPassword(binding.etPassword, binding.passwordIcon);
-                break;
-
-            case R.id.confirmpasswordIcon:
-                handleIconClickPassword(binding.etconfirmPassword, binding.confirmpasswordIcon);
-                break;
-
+        int id = v.getId();
+        if (id == R.id.back_button) {
+            finish();
+        } else if (id == R.id.RPAccept) {
+            setPasswordApi();
+        } else if (id == R.id.passwordIcon) {
+            handleIconClickPassword(binding.etPassword, binding.passwordIcon);
+        } else if (id == R.id.confirmpasswordIcon) {
+            handleIconClickPassword(binding.etconfirmPassword, binding.confirmpasswordIcon);
         }
     }
 

@@ -374,16 +374,11 @@ public class InformationDashboardFragment extends BaseFragment implements Common
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-
-            case R.id.rlBook_my_seat:
-                ((HomeActivity) getActivity()).openFragment(new BookSlotFragment());
-                break;
-
-            case R.id.language_layout:
-                ((HomeActivity)getActivity()).openChangeLanguageDialog();
-                break;
-
+        int id = v.getId();
+        if (id == R.id.rlBook_my_seat) {
+            ((HomeActivity) getActivity()).openFragment(new BookSlotFragment());
+        } else if (id == R.id.language_layout) {
+            ((HomeActivity) getActivity()).openChangeLanguageDialog();
         }
 
     }

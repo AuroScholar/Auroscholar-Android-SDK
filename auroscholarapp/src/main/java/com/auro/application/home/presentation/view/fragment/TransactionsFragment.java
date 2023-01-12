@@ -302,36 +302,24 @@ public class TransactionsFragment extends BaseFragment implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.back_arrow:
-                getActivity().getSupportFragmentManager().popBackStack();
-                break;
-            case R.id.lang_eng:
-                changeLanguage();
-                break;
+        int id = v.getId();
+        if (id == R.id.back_arrow) {
+            getActivity().getSupportFragmentManager().popBackStack();
+        } else if (id == R.id.lang_eng) {
+            changeLanguage();
+        } else if (id == R.id.bt_transfer_money) {
+            openSendMoneyFragment();
+        } else if (id == R.id.month_parent_layout) {
+            userClick = true;
+            binding.monthSpinner.performClick();
+        } else if (id == R.id.subject_parent_layout) {
+            userClick = true;
 
-            case R.id.bt_transfer_money:
-                openSendMoneyFragment();
-                break;
-
-            case R.id.month_parent_layout:
-                userClick = true;
-                binding.monthSpinner.performClick();
-                break;
-
-            case R.id.subject_parent_layout:
-                userClick = true;
-
-             //  binding.subjectSpinner.performClick();
-                break;
-
-            case R.id.language_layout:
-                ((DashBoardMainActivity) getActivity()).openChangeLanguageDialog();
-                break;
-
-            case R.id.cardView2:
-                ((DashBoardMainActivity) getActivity()).openProfileFragment();
-                break;
+            //  binding.subjectSpinner.performClick();
+        } else if (id == R.id.language_layout) {
+            ((DashBoardMainActivity) getActivity()).openChangeLanguageDialog();
+        } else if (id == R.id.cardView2) {
+            ((DashBoardMainActivity) getActivity()).openProfileFragment();
         }
     }
 

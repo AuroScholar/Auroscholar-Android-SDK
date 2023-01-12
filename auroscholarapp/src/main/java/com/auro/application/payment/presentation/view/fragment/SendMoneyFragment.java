@@ -271,17 +271,13 @@ public class SendMoneyFragment extends BaseFragment implements CommonCallBackLis
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.back_button:
-             //   getActivity().onBackPressed();
-                Intent i = new Intent(getActivity(), DashBoardMainActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                getActivity().startActivity(i);
-                break;
-
-            case R.id.cardView2:
-                ((DashBoardMainActivity) getActivity()).openProfileFragment();
-                break;
+        int id = v.getId();
+        if (id == R.id.back_button) {//   getActivity().onBackPressed();
+            Intent i = new Intent(getActivity(), DashBoardMainActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            getActivity().startActivity(i);
+        } else if (id == R.id.cardView2) {
+            ((DashBoardMainActivity) getActivity()).openProfileFragment();
         }
 
 

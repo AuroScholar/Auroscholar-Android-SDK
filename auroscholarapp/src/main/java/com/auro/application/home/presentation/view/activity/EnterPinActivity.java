@@ -94,18 +94,13 @@ public class EnterPinActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void onClick(View v) {
         ViewUtil.hideKeyboard(this);
-        switch (v.getId()) {
-            case R.id.bt_continue:
-                callLoginPinApi();
-                break;
-
-            case R.id.back_button:
-                onBackPressed();
-                break;
-
-            case R.id.forgotPassword:
-                sendOtpApi();
-                break;
+        int id = v.getId();
+        if (id == R.id.bt_continue) {
+            callLoginPinApi();
+        } else if (id == R.id.back_button) {
+            onBackPressed();
+        } else if (id == R.id.forgotPassword) {
+            sendOtpApi();
         }
     }
 

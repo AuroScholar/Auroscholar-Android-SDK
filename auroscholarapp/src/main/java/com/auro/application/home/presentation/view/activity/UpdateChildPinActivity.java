@@ -97,39 +97,31 @@ public class UpdateChildPinActivity extends BaseActivity implements View.OnClick
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.back_button:
-                onBackPressed();
-                break;
+        int id = v.getId();
+        if (id == R.id.back_button) {
+            onBackPressed();
+        } else if (id == R.id.bt_done_new) {
+            AppLogger.e("onClick--", "step 1");
+            String pin = binding.pinView.getText().toString();
+            String confirmpin = binding.confirmPin.getText().toString();
+            Details details1 = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
 
-            case R.id.bt_done_new:
-                AppLogger.e("onClick--", "step 1");
-                String pin = binding.pinView.getText().toString();
-                String confirmpin = binding.confirmPin.getText().toString();
-                Details details1 = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
+            if (pin.isEmpty() || pin.equals("")) {
+                Toast.makeText(this, details1.getEnter_the_pin(), Toast.LENGTH_SHORT).show();
+            } else if (pin.length() < 4) {
+                Toast.makeText(this, details1.getEnter_pin_digit(), Toast.LENGTH_SHORT).show();
 
-                if(pin.isEmpty()||pin.equals("")){
-                    Toast.makeText(this, details1.getEnter_the_pin(), Toast.LENGTH_SHORT).show();
-                }
-                else if (pin.length()<4){
-                    Toast.makeText(this, details1.getEnter_pin_digit(), Toast.LENGTH_SHORT).show();
+            } else if (confirmpin.isEmpty() || confirmpin.equals("")) {
+                Toast.makeText(this, details1.getEnter_the_confirm_pin(), Toast.LENGTH_SHORT).show();
 
-                }
-                else if (confirmpin.isEmpty()||confirmpin.equals("")){
-                    Toast.makeText(this, details1.getEnter_the_confirm_pin(), Toast.LENGTH_SHORT).show();
+            } else if (confirmpin.length() < 4) {
+                Toast.makeText(this, details1.getEnter_confirmpin_digit(), Toast.LENGTH_SHORT).show();
 
-                }
-                else if (confirmpin.length()<4){
-                    Toast.makeText(this, details1.getEnter_confirmpin_digit(), Toast.LENGTH_SHORT).show();
-
-                }
-                else if (pin == confirmpin || pin.equals(confirmpin)){
-                    setchildpin(pin);
-                }
-                else{
-                    Toast.makeText(this, details1.getPin_and_confirm_not_match(), Toast.LENGTH_SHORT).show();
-                }
-                break;
+            } else if (pin == confirmpin || pin.equals(confirmpin)) {
+                setchildpin(pin);
+            } else {
+                Toast.makeText(this, details1.getPin_and_confirm_not_match(), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

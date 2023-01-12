@@ -148,66 +148,51 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.RPButtonSendOtp:
-                ViewUtil.hideKeyboard(this);
-                break;
+        int id = view.getId();
+        if (id == R.id.RPButtonSendOtp) {
+            ViewUtil.hideKeyboard(this);
+        } else if (id == R.id.back_button) {
+            SharedPreferences preferences = getSharedPreferences("My_Pref", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.clear();
+            editor.apply();
+            backButton();
+        } else if (id == R.id.RPAccept) {
+            comingFromText = "";
+            ViewUtil.hideKeyboard(this);
 
-            case R.id.back_button:
-
-                SharedPreferences preferences =getSharedPreferences("My_Pref", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.clear();
-                editor.apply();
-                backButton();
-                break;
-            case R.id.RPAccept:
-                comingFromText = "";
-                ViewUtil.hideKeyboard(this);
-
-                String mobileno = binding.etMobileNumber.getText().toString();
-                SharedPreferences.Editor editor2 = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
-                editor2.putString("usermobilenumber", mobileno);
-                editor2.apply();
-                closeProgressAfterFewSeconds();
-                setSrID();
-                checkUserType();
-                break;
-
-            case R.id.forgotPassword:
-                comingFromText = "";
-                setForgotFlowStatus(true);
-                try {
-                    binding.passwordlayout.setVisibility(View.GONE);
-                    binding.etPassword.setVisibility(View.GONE);
-                    binding.etPassword.setText("");
-                    String mobileno2 = binding.etMobileNumber.getText().toString();
-                    sendOtpApiReqPassForForget(mobileno2);
-                    SharedPreferences.Editor editor1 = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
-                    editor1.putString("forgetusermobilenumber", mobileno2);
-                    editor1.apply();
-                } catch (Exception e) {
-
-                }
-                break;
-
-            case R.id.loginWithOtp:
+            String mobileno = binding.etMobileNumber.getText().toString();
+            SharedPreferences.Editor editor2 = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
+            editor2.putString("usermobilenumber", mobileno);
+            editor2.apply();
+            closeProgressAfterFewSeconds();
+            setSrID();
+            checkUserType();
+        } else if (id == R.id.forgotPassword) {
+            comingFromText = "";
+            setForgotFlowStatus(true);
+            try {
                 binding.passwordlayout.setVisibility(View.GONE);
                 binding.etPassword.setVisibility(View.GONE);
                 binding.etPassword.setText("");
-                comingFromText = AppConstant.ComingFromStatus.COMING_FROM_LOGIN_WITH_OTP;
-                setForgotFlowStatus(false);
-                String mobileno3 = binding.etMobileNumber.getText().toString();
-                sendOtpApiReqPass(mobileno3);
-                break;
+                String mobileno2 = binding.etMobileNumber.getText().toString();
+                sendOtpApiReqPassForForget(mobileno2);
+                SharedPreferences.Editor editor1 = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
+                editor1.putString("forgetusermobilenumber", mobileno2);
+                editor1.apply();
+            } catch (Exception e) {
 
-
-            case R.id.passwordIcon:
-                handleClickPassword();
-                break;
-
-
-
+            }
+        } else if (id == R.id.loginWithOtp) {
+            binding.passwordlayout.setVisibility(View.GONE);
+            binding.etPassword.setVisibility(View.GONE);
+            binding.etPassword.setText("");
+            comingFromText = AppConstant.ComingFromStatus.COMING_FROM_LOGIN_WITH_OTP;
+            setForgotFlowStatus(false);
+            String mobileno3 = binding.etMobileNumber.getText().toString();
+            sendOtpApiReqPass(mobileno3);
+        } else if (id == R.id.passwordIcon) {
+            handleClickPassword();
         }
     }
 

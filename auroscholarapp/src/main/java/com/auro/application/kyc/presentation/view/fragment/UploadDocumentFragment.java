@@ -143,17 +143,12 @@ public class UploadDocumentFragment extends BaseDialog implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.upload_icon:
-                askPermission();
-                break;
-            case R.id.parentLayout:
-                /*Nothing*/
-                break;
-
-            case R.id.closeButton:
-                getActivity().onBackPressed();
-                break;
+        int id = v.getId();
+        if (id == R.id.upload_icon) {
+            askPermission();
+        } else if (id == R.id.parentLayout) {/*Nothing*/
+        } else if (id == R.id.closeButton) {
+            getActivity().onBackPressed();
         }
     }
 

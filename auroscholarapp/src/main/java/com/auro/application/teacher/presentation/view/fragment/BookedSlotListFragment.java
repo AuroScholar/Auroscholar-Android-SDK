@@ -114,10 +114,8 @@ public class BookedSlotListFragment extends BaseFragment implements CommonCallBa
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.bookWebinar:
-                ((BookSlotFragment) getParentFragment()).setPositonInViewpager(1);
-                break;
+        if (v.getId() == R.id.bookWebinar) {
+            ((BookSlotFragment) getParentFragment()).setPositonInViewpager(1);
         }
 
 

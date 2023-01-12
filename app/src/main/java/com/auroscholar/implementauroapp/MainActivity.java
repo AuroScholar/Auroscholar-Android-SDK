@@ -57,7 +57,7 @@ EditText language;
                     Toast.makeText(MainActivity.this, "Please Enter class", Toast.LENGTH_SHORT).show();
                 } else {
                     prefModel.setUserMobile(mobileNumber);
-                    prefModel.setUserLoginId(mobileNumber);
+                    //prefModel.setUserLoginId(mobileNumber);
                     prefModel.setUserType(0);
 
                    // ((LoginActivity) getApplicationContext()).checkUserType();

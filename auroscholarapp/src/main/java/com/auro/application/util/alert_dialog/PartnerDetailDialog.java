@@ -61,18 +61,15 @@ public class PartnerDetailDialog extends Dialog implements View.OnClickListener 
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.close_button:
-                dismiss();
-                break;
+        int id = view.getId();
+        if (id == R.id.close_button) {
+            dismiss();
+        } else if (id == R.id.RPButtonExplore) {
+            dismiss();
+            if (commonCallBackListner != null) {
+                commonCallBackListner.commonEventListner(AppUtil.getCommonClickModel(0, Status.PARTNER_EXPLORE, ""));
 
-            case R.id.RPButtonExplore:
-                dismiss();
-                if (commonCallBackListner != null) {
-                    commonCallBackListner.commonEventListner( AppUtil.getCommonClickModel(0, Status.PARTNER_EXPLORE, ""));
-
-                }
-                break;
+            }
         }
 
     }

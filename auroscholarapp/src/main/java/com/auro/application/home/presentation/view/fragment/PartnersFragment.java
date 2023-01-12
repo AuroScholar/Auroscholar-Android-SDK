@@ -309,15 +309,11 @@ public class PartnersFragment extends BaseFragment implements CommonCallBackList
         if (v.getId() == R.id.sheet_layout_quiz) {
             AppLogger.e(TAG, "On click called sheet_layout 1");
         }
-        switch (v.getId()) {
-
-            case R.id.language_layout:
-                ((DashBoardMainActivity) getActivity()).openChangeLanguageDialog();
-                break;
-
-            case R.id.cardView2:
-                ((DashBoardMainActivity) getActivity()).openProfileFragment();
-                break;
+        int id = v.getId();
+        if (id == R.id.language_layout) {
+            ((DashBoardMainActivity) getActivity()).openChangeLanguageDialog();
+        } else if (id == R.id.cardView2) {
+            ((DashBoardMainActivity) getActivity()).openProfileFragment();
         }
 
 

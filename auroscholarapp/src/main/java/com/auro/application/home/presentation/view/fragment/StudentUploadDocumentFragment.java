@@ -203,33 +203,25 @@ public class StudentUploadDocumentFragment extends BaseDialog implements View.On
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.upload_icon:
-                if(kycDocumentDatamodel.getDocumentName().equals("Upload Your Photo")){
-                    if (Build.VERSION.SDK_INT > 26) {
-                        askPermissionCamera();
-                    }
-                    else{
-                        askPermissionCamera();
-                    }
-                }else{
-                    if (Build.VERSION.SDK_INT > 26) {
-                        askPermission();
-                    }
-                    else{
-                        askPermission();
-                        // askPermission();
-                    }
+        int id = v.getId();
+        if (id == R.id.upload_icon) {
+            if (kycDocumentDatamodel.getDocumentName().equals("Upload Your Photo")) {
+                if (Build.VERSION.SDK_INT > 26) {
+                    askPermissionCamera();
+                } else {
+                    askPermissionCamera();
                 }
-
-                break;
-            case R.id.parentLayout:
-                /*Nothing*/
-                break;
-
-            case R.id.closeButton:
-                dismiss();
-                break;
+            } else {
+                if (Build.VERSION.SDK_INT > 26) {
+                    askPermission();
+                } else {
+                    askPermission();
+                    // askPermission();
+                }
+            }
+        } else if (id == R.id.parentLayout) {/*Nothing*/
+        } else if (id == R.id.closeButton) {
+            dismiss();
         }
     }
 

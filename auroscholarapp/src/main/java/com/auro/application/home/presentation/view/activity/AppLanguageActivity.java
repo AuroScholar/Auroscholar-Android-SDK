@@ -111,33 +111,27 @@ public class AppLanguageActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.backButton:
-                openFadeOutSelectionLayout();
-                setAdapterLanguage();
-                click = true;
-                break;
+        int id = view.getId();
+        if (id == R.id.backButton) {
+            openFadeOutSelectionLayout();
+            setAdapterLanguage();
+            click = true;
+        } else if (id == R.id.RpTeacher) {
+            SharedPreferences.Editor editor1 = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
+            editor1.putInt("session_usertype", AppConstant.UserType.TEACHER);
 
-            case R.id.RpTeacher:
-                SharedPreferences.Editor editor1 = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
-                editor1.putInt("session_usertype", AppConstant.UserType.TEACHER);
+            editor1.apply();
+            setValuesInPref(AppConstant.UserType.TEACHER);
+            funnelChoose(AppConstant.UserType.TEACHER);
+            openLoginActivity();
+        } else if (id == R.id.RpStudent) {
+            SharedPreferences.Editor editor = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
+            editor.putInt("session_usertype", AppConstant.UserType.STUDENT);
 
-                editor1.apply();
-                setValuesInPref(AppConstant.UserType.TEACHER);
-                funnelChoose(AppConstant.UserType.TEACHER);
-                openLoginActivity();
-                break;
-
-            case R.id.RpStudent:
-                SharedPreferences.Editor editor = getSharedPreferences("My_Pref", MODE_PRIVATE).edit();
-                editor.putInt("session_usertype", AppConstant.UserType.STUDENT);
-
-                editor.apply();
-                setValuesInPref(AppConstant.UserType.STUDENT);
-                funnelChoose(AppConstant.UserType.TEACHER);
-                openLoginActivity();
-                break;
-
+            editor.apply();
+            setValuesInPref(AppConstant.UserType.STUDENT);
+            funnelChoose(AppConstant.UserType.TEACHER);
+            openLoginActivity();
         }
     }
 
@@ -360,7 +354,7 @@ public class AppLanguageActivity extends BaseActivity implements View.OnClickLis
                 binding.customProgressLayout.textMsg.setVisibility(View.VISIBLE);
                 binding.customProgressLayout.textMsg.setText(msg);
                 binding.customProgressLayout.btRetry.setVisibility(View.VISIBLE);
-                binding.customProgressLayout.background.setBackgroundColor(this.getResources().getColor(R.color.red));
+                binding.customProgressLayout.background.setBackgroundColor(this.getResources().getColor(R.color.color_red));
                 binding.customProgressLayout.btRetry.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

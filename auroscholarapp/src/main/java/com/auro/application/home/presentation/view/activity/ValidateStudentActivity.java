@@ -98,14 +98,11 @@ public class ValidateStudentActivity extends BaseActivity implements View.OnClic
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.RPButtonSendOtp:
-                checkValidation();
-                break;
-
-            case R.id.back_button:
-                finish();
-                break;
+        int id = view.getId();
+        if (id == R.id.RPButtonSendOtp) {
+            checkValidation();
+        } else if (id == R.id.back_button) {
+            finish();
         }
     }
 

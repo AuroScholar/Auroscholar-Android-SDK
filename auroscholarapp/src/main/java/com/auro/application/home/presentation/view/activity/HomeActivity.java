@@ -391,33 +391,22 @@ public class HomeActivity extends BaseActivity implements OnItemClickListener, V
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-
-
-                        case R.id.action_teacherbuddy:
-                openFragment(new InviteTeacherBuddyFragment());
-                selectNavigationMenu(2);
-                break;
-
-            case R.id.action_dashboard:
-                openFragment(new InformationDashboardFragment());
-                selectNavigationMenu(0);
-                break;
-
-            case R.id.action_kyc:
-                openFragment(new TeacherKycInfoFragment());
-                selectNavigationMenu(3);
-                break;
-
-            case R.id.action_info:
-                openFragment(new MyClassRoomGroupFragment());
-                selectNavigationMenu(1);
-                break;
-            case R.id.action_studentpassport:
-                openFragment(new MyStudentPassportFragment());
-                selectNavigationMenu(4);
-                break;
-
+        int itemId = menuItem.getItemId();
+        if (itemId == R.id.action_teacherbuddy) {
+            openFragment(new InviteTeacherBuddyFragment());
+            selectNavigationMenu(2);
+        } else if (itemId == R.id.action_dashboard) {
+            openFragment(new InformationDashboardFragment());
+            selectNavigationMenu(0);
+        } else if (itemId == R.id.action_kyc) {
+            openFragment(new TeacherKycInfoFragment());
+            selectNavigationMenu(3);
+        } else if (itemId == R.id.action_info) {
+            openFragment(new MyClassRoomGroupFragment());
+            selectNavigationMenu(1);
+        } else if (itemId == R.id.action_studentpassport) {
+            openFragment(new MyStudentPassportFragment());
+            selectNavigationMenu(4);
         }
 
         return false;

@@ -368,22 +368,15 @@ public class OtpActivity extends BaseActivity implements View.OnClickListener, C
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.resend_btn:
-                startSMSListener();
-                sendOtpApiReqPass();
-
-                break;
-            case R.id.back_button:
-                finish();
-                break;
-
-            case R.id.RPAccept:
-                break;
-
-            case R.id.opt_over_call_txt:
-                callOverOTPApi();
-                break;
+        int id = view.getId();
+        if (id == R.id.resend_btn) {
+            startSMSListener();
+            sendOtpApiReqPass();
+        } else if (id == R.id.back_button) {
+            finish();
+        } else if (id == R.id.RPAccept) {
+        } else if (id == R.id.opt_over_call_txt) {
+            callOverOTPApi();
         }
 
     }

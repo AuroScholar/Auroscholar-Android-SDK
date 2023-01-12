@@ -82,17 +82,12 @@ public class ForgotPinActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.back_button:
-                onBackPressed();
-                break;
-
-            case R.id.bt_done_new:
-                AppLogger.e("onClick--", "step 1");
-                callSetPinApi();
-                break;
-
-
+        int id = v.getId();
+        if (id == R.id.back_button) {
+            onBackPressed();
+        } else if (id == R.id.bt_done_new) {
+            AppLogger.e("onClick--", "step 1");
+            callSetPinApi();
         }
     }
 

@@ -622,32 +622,24 @@ public class KYCFragment extends BaseFragment implements CommonCallBackListner, 
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.bt_upload_all:
-                comingFrom = "";
-                if (kycViewModel.homeUseCase.checkUploadButtonDoc(kycDocumentDatamodelArrayList)) {
-                    uploadBtnStatus = true;
-                    uploadAllDocApi();
-                } else {
-                    ViewUtil.showSnackBar(binding.getRoot(), getString(R.string.document_all_four_error_msg));
-                }
-                break;
-
-            case R.id.lang_eng:
-                reloadFragment();
-                break;
-            case R.id.back_arrow:
-                getActivity().onBackPressed();
-                break;
-
-            case R.id.bt_transfer_money:
-                openSendMoneyFragment();
-                break;
-
-            case R.id.wallet_info:
-                comingFrom = "";
-                openWalletInfoFragment();
-                break;
+        int id = v.getId();
+        if (id == R.id.bt_upload_all) {
+            comingFrom = "";
+            if (kycViewModel.homeUseCase.checkUploadButtonDoc(kycDocumentDatamodelArrayList)) {
+                uploadBtnStatus = true;
+                uploadAllDocApi();
+            } else {
+                ViewUtil.showSnackBar(binding.getRoot(), getString(R.string.document_all_four_error_msg));
+            }
+        } else if (id == R.id.lang_eng) {
+            reloadFragment();
+        } else if (id == R.id.back_arrow) {
+            getActivity().onBackPressed();
+        } else if (id == R.id.bt_transfer_money) {
+            openSendMoneyFragment();
+        } else if (id == R.id.wallet_info) {
+            comingFrom = "";
+            openWalletInfoFragment();
         }
     }
 

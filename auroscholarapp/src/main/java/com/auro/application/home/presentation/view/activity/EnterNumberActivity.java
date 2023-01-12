@@ -98,21 +98,18 @@ public class EnterNumberActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.RPButtonSendOtp:
-                PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
-                int userType = prefModel.getUserType();
-                AppLogger.e("enter Number Activity --", "" + userType);
-                if (userType == AppConstant.UserType.TEACHER) {
-                    oldSendOtpApi();
-                } else {
-                    sendOtpApiReqPass();
-                }
-                break;
-
-            case R.id.back_button:
-                finish();
-                break;
+        int id = view.getId();
+        if (id == R.id.RPButtonSendOtp) {
+            PrefModel prefModel = AuroAppPref.INSTANCE.getModelInstance();
+            int userType = prefModel.getUserType();
+            AppLogger.e("enter Number Activity --", "" + userType);
+            if (userType == AppConstant.UserType.TEACHER) {
+                oldSendOtpApi();
+            } else {
+                sendOtpApiReqPass();
+            }
+        } else if (id == R.id.back_button) {
+            finish();
         }
     }
 

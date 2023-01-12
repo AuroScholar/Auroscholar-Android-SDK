@@ -190,52 +190,32 @@ public class ResetPasswordActivity extends BaseActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-
-            case R.id.back_button:
-                Intent intent = new Intent(ResetPasswordActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-
-            case R.id.RPAccept:
-                String password = binding.etPassword.getText().toString();
-                String confrimpass = binding.etconfirmPassword.getText().toString();
-                Details details = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
-            if (password.isEmpty()||password.equals("")){
+        int id = v.getId();
+        if (id == R.id.back_button) {
+            Intent intent = new Intent(ResetPasswordActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (id == R.id.RPAccept) {
+            String password = binding.etPassword.getText().toString();
+            String confrimpass = binding.etconfirmPassword.getText().toString();
+            Details details = AuroAppPref.INSTANCE.getModelInstance().getLanguageMasterDynamic().getDetails();
+            if (password.isEmpty() || password.equals("")) {
                 Toast.makeText(this, details.getPlease_enter_password(), Toast.LENGTH_SHORT).show();
-            }
-
-               else if (confrimpass.isEmpty()||confrimpass.equals("")){
-                    Toast.makeText(this, details.getEnter_get_confirm_password(), Toast.LENGTH_SHORT).show();
-                }
-
-
-                else if (password.equals(confrimpass) || password == confrimpass){
-                    setPasswordApi();
-                }
-                else if (password.startsWith(" ")){
+            } else if (confrimpass.isEmpty() || confrimpass.equals("")) {
+                Toast.makeText(this, details.getEnter_get_confirm_password(), Toast.LENGTH_SHORT).show();
+            } else if (password.equals(confrimpass) || password == confrimpass) {
+                setPasswordApi();
+            } else if (password.startsWith(" ")) {
                 Toast.makeText(this, details.getEnter_space_password(), Toast.LENGTH_SHORT).show();
-            }
-
-            else if (confrimpass.startsWith(" ")){
+            } else if (confrimpass.startsWith(" ")) {
                 Toast.makeText(this, details.getEnter_space_confirmpassword(), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, details.getPassword_confirm_password(), Toast.LENGTH_SHORT).show();
             }
-
-            else{
-                    Toast.makeText(this, details.getPassword_confirm_password(), Toast.LENGTH_SHORT).show();
-                }
-
-                break;
-
-            case R.id.passwordIcon:
-                handleIconClickPassword(binding.etPassword, binding.passwordIcon);
-                break;
-
-            case R.id.confirmpasswordIcon:
-                handleIconClickPassword(binding.etconfirmPassword, binding.confirmpasswordIcon);
-                break;
-
+        } else if (id == R.id.passwordIcon) {
+            handleIconClickPassword(binding.etPassword, binding.passwordIcon);
+        } else if (id == R.id.confirmpasswordIcon) {
+            handleIconClickPassword(binding.etconfirmPassword, binding.confirmpasswordIcon);
         }
     }
 

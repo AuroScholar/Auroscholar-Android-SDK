@@ -783,32 +783,18 @@ else {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.editImage:
-            case R.id.profile_image:
-                if (Build.VERSION.SDK_INT > 26) {
-                    askPermission();
-                }
-                else{
-                    askPermission();
+        int id = v.getId();
+        if (id == R.id.editImage || id == R.id.profile_image) {
+            if (Build.VERSION.SDK_INT > 26) {
+                askPermission();
+            } else {
+                askPermission();
 
-                }
-
-                break;
-
-            case R.id.skip_for_now:
-                startDashboardActivity();
-                break;
-
-            case R.id.nextButton:
-
-
-                    updateUser();
-
-
-
-                break;
-
+            }
+        } else if (id == R.id.skip_for_now) {
+            startDashboardActivity();
+        } else if (id == R.id.nextButton) {
+            updateUser();
         }
 
     }

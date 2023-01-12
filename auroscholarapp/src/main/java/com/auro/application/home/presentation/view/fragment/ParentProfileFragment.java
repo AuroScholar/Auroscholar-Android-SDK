@@ -475,20 +475,13 @@ public class ParentProfileFragment extends BaseFragment implements View.OnFocusC
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.editImage:
-            case R.id.profile_image:
-                askPermission();
-                break;
-
-            case R.id.skip_for_now:
-                startDashboardActivity();
-                break;
-
-            case R.id.nextButton:
-                updateUser();
-
-                break;
+        int id = v.getId();
+        if (id == R.id.editImage || id == R.id.profile_image) {
+            askPermission();
+        } else if (id == R.id.skip_for_now) {
+            startDashboardActivity();
+        } else if (id == R.id.nextButton) {
+            updateUser();
         }
 
     }

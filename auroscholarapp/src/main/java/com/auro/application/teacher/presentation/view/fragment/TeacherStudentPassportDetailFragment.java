@@ -231,11 +231,9 @@ public class TeacherStudentPassportDetailFragment extends BaseFragment implement
     }
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.month_parent_layout:
-                userClick = true;
-                binding.monthSpinner.performClick();
-                break;
+        if (v.getId() == R.id.month_parent_layout) {
+            userClick = true;
+            binding.monthSpinner.performClick();
         }
     }
 

@@ -172,18 +172,11 @@ public class MyClassRoomGroupFragment extends BaseFragment implements CommonCall
     @Override
     public void onClick(View v) {
 
-        switch (v.getId()) {
-            case R.id.bt_add_group:
-                openCreateGroupFragment();
-                break;
-
-            case R.id.txtShareWithOther:
-            case R.id.whats_app_layout:
-                getTeacherList();
-
-
-                break;
-
+        int id = v.getId();
+        if (id == R.id.bt_add_group) {
+            openCreateGroupFragment();
+        } else if (id == R.id.txtShareWithOther || id == R.id.whats_app_layout) {
+            getTeacherList();
         }
     }
     public void callRefferApi() {

@@ -607,22 +607,19 @@ public class InviteTeacherBuddyFragment extends BaseFragment implements CommonCa
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btnshare:
-                ((HomeActivity) getActivity()).setCommonCallBackListner(this);
-               ((HomeActivity) getActivity()).callRefferApi();
-                //callRefferApi();
-                handleRefferProgress(0);
+        if (v.getId() == R.id.btnshare) {
+            ((HomeActivity) getActivity()).setCommonCallBackListner(this);
+            ((HomeActivity) getActivity()).callRefferApi();
+            //callRefferApi();
+            handleRefferProgress(0);
 
 
-                //                    final String appPackageName = getActivity().getPackageName(); // getPackageName() from Context or Activity object
+            //                    final String appPackageName = getActivity().getPackageName(); // getPackageName() from Context or Activity object
 //                    try {
 //                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
 //                    } catch (android.content.ActivityNotFoundException anfe) {
 //                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
 //                    }
-                break;
-
         }
     }
     private void handleRefferProgress(int val) {

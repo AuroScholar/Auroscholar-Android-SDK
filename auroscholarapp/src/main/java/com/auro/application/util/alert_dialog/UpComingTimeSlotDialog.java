@@ -168,12 +168,8 @@ public class UpComingTimeSlotDialog extends BaseDialog implements CommonCallBack
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.closeButton:
-
-                dismiss();
-
-                break;
+        if (v.getId() == R.id.closeButton) {
+            dismiss();
         }
     }
 
